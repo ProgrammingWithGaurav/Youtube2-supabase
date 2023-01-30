@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  .icon {
+    @apply text-gray-900 dark:text-white w-10 h-10 p-2 transition rounded hover:bg-gray-50 active:bg-gray-100 rounded-full cursor-pointer;
+  }
+}
