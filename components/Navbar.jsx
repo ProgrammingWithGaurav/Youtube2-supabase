@@ -2,20 +2,36 @@ import {
   Bars3Icon,
   BellIcon,
   MagnifyingGlassIcon,
-  MicrophoneIcon,
   VideoCameraIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
+import { MicrophoneIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
 import { useState } from "react";
 import { useStateContext } from "../context/StateContext";
 import ProfileMenu from "./ProfileMenu";
 import Tooltip from "./Tooltip";
+import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
+import { useEffect } from "react";
+
 
 const Header = () => {
   const { isSidebar, setIsSidebar, appearance, searchString, setSearchString } =
     useStateContext();
   const [hasFocused, setHasFocused] = useState(false);
+
+  const {
+    transcript,
+    listening,
+    resetTranscript,
+    browserSupportsSpeechRecognition
+  } = useSpeechRecognition();
+
+  useEffect(() => {
+    setSearchString(transcript)
+    SpeechRecognition.stopListening();
+  }, [transcript])
+
   return (
     <div className="flex items-center justify-between w-full h-[10vh] p-2">
       <div className="flex items-center">
@@ -64,7 +80,7 @@ const Header = () => {
         </div>
 
         <Tooltip
-          element={<MicrophoneIcon className="icon w-6 h-6 p-1" />}
+          element={<MicrophoneIcon onClick={() => SpeechRecognition.startListening()} className={`icon ${listening && 'text-blue-400 shadow-lg'} w-6 h-6 p-1`}/>}
           hoverText="Search with your voice"
         />
       </div>
