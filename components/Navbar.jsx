@@ -11,9 +11,10 @@ import { useState } from "react";
 import { useStateContext } from "../context/StateContext";
 import ProfileMenu from "./ProfileMenu";
 import Tooltip from "./Tooltip";
-import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
+import SpeechRecognition, {
+  useSpeechRecognition,
+} from "react-speech-recognition";
 import { useEffect } from "react";
-
 
 const Header = () => {
   const { isSidebar, setIsSidebar, appearance, searchString, setSearchString } =
@@ -24,16 +25,16 @@ const Header = () => {
     transcript,
     listening,
     resetTranscript,
-    browserSupportsSpeechRecognition
+    browserSupportsSpeechRecognition,
   } = useSpeechRecognition();
 
   useEffect(() => {
-    setSearchString(transcript)
+    setSearchString(transcript);
     SpeechRecognition.stopListening();
-  }, [transcript])
+  }, [transcript]);
 
   return (
-    <div className="flex items-center justify-between w-full h-[10vh] p-2">
+    <div className={`flex items-center justify-between w-full h-[10vh] p-2`}>
       <div className="flex items-center">
         {isSidebar ? (
           <XMarkIcon className="icon" onClick={() => setIsSidebar(false)} />
@@ -55,14 +56,14 @@ const Header = () => {
       </div>
       <div className="flex items-center">
         <div
-          className={`border items-center lg:w-[33vw] sm:w-[50vw] flex border-gray-300 rounded-full p-1 shadow-inner ${
-            hasFocused && "ring-blue-400 ring-1"
+          className={`border items-center lg:w-[33vw] sm:w-[50vw] flex border-gray-300 dark:border-gray-700 rounded-full p-1 shadow-inner ${
+            hasFocused && "ring-indigo-700 ring-1"
           }`}
           onBlur={() => setHasFocused(false)}
         >
           <input
             type="search"
-            className="flex-1 focus:outline-none text-sm px-4"
+            className="flex-1 focus:outline-none text-sm px-4 bg-transparent dark:text-gray-100"
             placeholder="Search"
             onFocus={() => setHasFocused(true)}
             value={searchString}
@@ -80,7 +81,18 @@ const Header = () => {
         </div>
 
         <Tooltip
-          element={<MicrophoneIcon onClick={() => SpeechRecognition.startListening()} className={`icon ${listening && 'text-blue-400 shadow-lg'} w-6 h-6 p-1`}/>}
+          element={
+            <MicrophoneIcon
+              onClick={() =>
+                listening
+                  ? SpeechRecognition.stopListening()
+                  : SpeechRecognition.startListening()
+              }
+              className={`icon ${
+                listening && "text-blue-400 shadow-lg"
+              } w-6 h-6 p-1`}
+            />
+          }
           hoverText="Search with your voice"
         />
       </div>

@@ -4,6 +4,13 @@
 
 @layer components {
   .icon {
-    @apply text-gray-900 dark:text-white w-10 h-10 p-2 transition rounded hover:bg-gray-50 active:bg-gray-100 rounded-full cursor-pointer;
+    @apply text-gray-900 w-10 h-10 p-2 transition hover:bg-gray-50 active:bg-gray-100 rounded-full cursor-pointer dark:text-white dark:hover:bg-white/20;
+  }
+  body {
+    @apply bg-white;
+  }
+
+  .dark {
+    @apply bg-[#0f0f0f] w-full h-screen;
   }
 }

@@ -1,6 +1,9 @@
+import Navbar from "../components/Navbar";
 import Head from "next/head";
+import { useStateContext } from "../context/StateContext";
 
 export default function Home() {
+  const {appearance} = useStateContext();
   return (
     <>
       <Head>
@@ -15,7 +18,10 @@ export default function Home() {
           href="https://cdn-icons-png.flaticon.com/128/1384/1384060.png"
         />
       </Head>
-      <div></div>
+      <div className={`${appearance === 'dark' && 'dark'}`}>
+        
+      <Navbar />
+      </div>
     </>
   );
 }
