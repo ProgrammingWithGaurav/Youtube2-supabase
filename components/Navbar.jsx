@@ -73,7 +73,7 @@ const Header = () => {
             element={
               <MagnifyingGlassIcon
                 onClick={() => console.log("hi")}
-                className="icon w-6 h-6 p-1"
+                className="clickable-icon w-6 h-6 p-1"
               />
             }
             hoverText="Search"
@@ -88,9 +88,9 @@ const Header = () => {
                   ? SpeechRecognition.stopListening()
                   : SpeechRecognition.startListening()
               }
-              className={`icon ${
+              className={`clickable-icon ${
                 listening && "text-blue-400 shadow-lg"
-              } w-6 h-6 p-1`}
+              } w-6 h-6 p-1 dark:bg-white/10 dark:hover:bg-white/20`}
             />
           }
           hoverText="Search with your voice"
@@ -98,11 +98,11 @@ const Header = () => {
       </div>
       <div className="flex items-center">
         <Tooltip
-          element={<VideoCameraIcon className="icon" />}
+          element={<VideoCameraIcon className="clickable-icon" />}
           hoverText="Create"
         />
         <Tooltip
-          element={<BellIcon className="icon" />}
+          element={<BellIcon className="clickable-icon" />}
           hoverText="Notifications"
         />
         <ProfileMenu />

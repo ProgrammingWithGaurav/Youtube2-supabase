@@ -13,7 +13,7 @@ export default function ProfileMenu() {
             <img
               src="https://avatars.githubusercontent.com/u/88154142?v=4"
               alt="profile picture"
-              className="icon w-10 h-10 active:ring-2 active:ring-blue-500 p-0"
+              className="icon w-10 h-10 active:ring-2 active:ring-blue-500 p-0 opacity-90 active:opacity-100"
             />
           </Menu.Button>
         </div>
@@ -34,13 +34,13 @@ export default function ProfileMenu() {
                     <img
                       src="https://avatars.githubusercontent.com/u/88154142?v=4"
                       alt="profile picture"
-                      className="icon w-14 object-cover"
+                      className="icon w-14 h-14 hover:opacity-85 object-contain"
                     />
                     <span className="font-semibold text-xl">Gaurav</span>
                   </div>
                   <Link
                     href={"/"}
-                    className="font-semibold text-[14px] text-blue-500/50 hover:text-blue-500/70"
+                    className="font-semibold text-[14px] text-blue-400 hover:text-blue-500/70"
                   >
                     Manage your Account
                   </Link>

@@ -1,9 +1,10 @@
 import Navbar from "../components/Navbar";
 import Head from "next/head";
 import { useStateContext } from "../context/StateContext";
+import Home from "../components/Home";
 
-export default function Home() {
-  const {appearance} = useStateContext();
+export default function Page() {
+  const { appearance } = useStateContext();
   return (
     <>
       <Head>
@@ -18,9 +19,13 @@ export default function Home() {
           href="https://cdn-icons-png.flaticon.com/128/1384/1384060.png"
         />
       </Head>
-      <div className={`${appearance === 'dark' && 'dark'}`}>
-        
-      <Navbar />
+      <div
+        className={`flex w-full h-screen flex-col ${
+          appearance === "dark" && "dark"
+        }`}
+      >
+        <Navbar />
+        <Home />
       </div>
     </>
   );

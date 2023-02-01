@@ -3,9 +3,15 @@
 @tailwind utilities;
 
 @layer components {
-  .icon {
+  .clickable-icon {
     @apply text-gray-900 w-10 h-10 p-2 transition hover:bg-gray-50 active:bg-gray-100 rounded-full cursor-pointer dark:text-white dark:hover:bg-white/20;
   }
+
+  .icon {
+    @apply text-gray-900 w-10 h-10 p-2 transition rounded-full cursor-pointer dark:text-white;
+  }
+
+
   body {
     @apply bg-white;
   }

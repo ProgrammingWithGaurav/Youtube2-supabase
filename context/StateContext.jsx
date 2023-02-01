@@ -2,17 +2,24 @@
 import { useContext, createContext, useState } from "react";
 
 // Icons
-import { ArrowLeftOnRectangleIcon, MoonIcon, PlayIcon, SunIcon, UserCircleIcon, UserPlusIcon } from "@heroicons/react/24/outline";
+import {
+  ArrowLeftOnRectangleIcon,
+  MoonIcon,
+  PlayIcon,
+  SunIcon,
+  UserCircleIcon,
+  UserPlusIcon,
+} from "@heroicons/react/24/outline";
+import {UserCircleIcon as ActiveUserCircleIcon} from '@heroicons/react/24/solid';
 import { useRouter } from "next/router";
-import { Switch } from '@headlessui/react'
 
 export const StateContext = createContext();
 
 export const StateProvider = ({ children }) => {
   const [appearance, setAppearance] = useState("light");
   const [isSidebar, setIsSidebar] = useState(true);
+  const [activeSidebar, setActiveSidebar] = useState('Home');
   const [searchString, setSearchString] = useState("");
-  const [enabled, setEnabled] = useState(false)
 
   const router = useRouter();
 
@@ -46,10 +53,26 @@ export const StateProvider = ({ children }) => {
       },
     },
     {
-      name: appearance === 'dark' ? 'Light Mode' : 'Dark Mode',
-      icon: appearance === 'dark' ? <SunIcon className="icon"/> : <MoonIcon className='icon' />,
+      name: appearance === "dark" ? "Light Mode" : "Dark Mode",
+      icon:
+        appearance === "dark" ? (
+          <SunIcon className="icon" />
+        ) : (
+          <MoonIcon className="icon" />
+        ),
       onClick: () => {
-        setAppearance(appearance === 'dark' ? 'light' : 'dark')
+        setAppearance(appearance === "dark" ? "light" : "dark");
+      },
+    },
+  ];
+
+  const SidebarIcons = [
+    {
+      name: "Home",
+      icon: <UserCircleIcon className="icon" />,
+      icon: <ActiveUserCircleIcon className="icon" />,
+      onClick: () => {
+        router.push("/profile");
       },
     },
   ];
@@ -64,6 +87,7 @@ export const StateProvider = ({ children }) => {
         searchString,
         setSearchString,
         ProfileMenuIcons,
+        SidebarIcons,
       }}
     >
       {children}
