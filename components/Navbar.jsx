@@ -17,7 +17,7 @@ import SpeechRecognition, {
 import { useEffect } from "react";
 
 const Header = () => {
-  const { isSidebar, setIsSidebar, appearance, searchString, setSearchString } =
+  const { isSidebar, setIsSidebar, user, searchString, setSearchString } =
     useStateContext();
   const [hasFocused, setHasFocused] = useState(false);
 
@@ -105,7 +105,11 @@ const Header = () => {
           element={<BellIcon className="clickable-icon" />}
           hoverText="Notifications"
         />
+        {user ? 
         <ProfileMenu />
+         : 
+         <button type="button" className="text-red-400 hover:text-white border border-red-400 hover:bg-red-400 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-3 py-1.5 text-center mr-2">Login</button>
+        }
       </div>
     </div>
   );

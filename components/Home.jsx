@@ -1,12 +1,13 @@
-import React from 'react';
-import Sidebar from './Sidebar';
+import React from "react";
+import { useStateContext } from "../context/StateContext";
+import Sidebar from "./Sidebar";
 
 const Home = () => {
-  return (
-    <div className='flex-1'>
-      <Sidebar />
-    </div>
-  )
-}
+  const { user } = useStateContext();
+  return <div className="flex-1 flex items-center">
+    {user && <Sidebar />}
+    <div className="flex-1 h-full bg-red-50"></div>
+  </div>;
+};
 
-export default Home
+export default Home;
