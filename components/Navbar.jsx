@@ -15,6 +15,7 @@ import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
 import { useEffect } from "react";
+import AutoComplete from "./AutoComplete";
 
 const Header = () => {
   const { isSidebar, setIsSidebar, user, searchString, setSearchString } =
@@ -59,7 +60,11 @@ const Header = () => {
           className={`border items-center lg:w-[33vw] sm:w-[50vw] flex border-gray-300 dark:border-gray-700 rounded-full p-1 shadow-inner ${
             hasFocused && "ring-indigo-700 ring-1"
           }`}
-          onBlur={() => setHasFocused(false)}
+          onBlur={() =>
+            setTimeout(() => {
+              setHasFocused(false);
+            }, 200)
+          }
         >
           <input
             type="search"
@@ -69,6 +74,14 @@ const Header = () => {
             value={searchString}
             onChange={(e) => setSearchString(e.target.value)}
           />
+          <div>
+            {hasFocused && (
+              <AutoComplete
+                searchString={searchString}
+                setSearchString={setSearchString}
+              />
+            )}
+          </div>
           <Tooltip
             element={
               <MagnifyingGlassIcon
@@ -105,11 +118,16 @@ const Header = () => {
           element={<BellIcon className="clickable-icon" />}
           hoverText="Notifications"
         />
-        {user ? 
-        <ProfileMenu />
-         : 
-         <button type="button" className="text-red-400 hover:text-white border border-red-400 hover:bg-red-400 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-3 py-1.5 text-center mr-2">Login</button>
-        }
+        {user ? (
+          <ProfileMenu />
+        ) : (
+          <button
+            type="button"
+            className="text-red-400 hover:text-white border border-red-400 hover:bg-red-400 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-3 py-1.5 text-center mr-2"
+          >
+            Login
+          </button>
+        )}
       </div>
     </div>
   );

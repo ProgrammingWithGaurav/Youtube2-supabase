@@ -6,7 +6,7 @@ const Home = () => {
   const { user } = useStateContext();
   return <div className="flex-1 flex items-center">
     {user && <Sidebar />}
-    <div className="flex-1 h-full bg-red-50"></div>
+    <div className="flex-1 h-full"></div>
   </div>;
 };
 
