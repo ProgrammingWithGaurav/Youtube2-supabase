@@ -36,6 +36,8 @@ export const StateProvider = ({ children }) => {
   const [appearance, setAppearance] = useState("light");
   const [isSidebar, setIsSidebar] = useState(true);
   const [activeSidebar, setActiveSidebar] = useState("Home");
+  const [activeSubscription, setActiveSubscription] = useState("");
+  const [activeCategory, setActiveCategory] = useState("All");
   const [searchString, setSearchString] = useState("");
   const [user, setUser] = useState(true);
 
@@ -158,6 +160,18 @@ export const StateProvider = ({ children }) => {
     },
   ];
 
+  const Subscriptions =  [ 
+    {
+      channelName: '@CodeWithHarry',
+      channelDisplayName: 'CodeWithHarry',
+      profileImage: 'https://yt3.googleusercontent.com/ytc/AL5GRJX7LBvNaQFl0ODpVbrt2F4ajG_wY0fKpZGsEqi8Jw=s176-c-k-c0x00ffffff-no-rj'
+    }
+  ]
+
+  const Categories = [
+    "All", "Programming", "Development", "Github", "AI", "Python", "Gaming", "Genshin Impact", "Youtube", "Twitter", "Facebook", "Instagram", "TikTok", "Snapchat", "WhatsApp", "Messenger", "Telegram", "Discord", "Reddit", "Quora"
+  ]
+
   return (
     <StateContext.Provider
       value={{
@@ -173,6 +187,12 @@ export const StateProvider = ({ children }) => {
         setUser,
         activeSidebar,
         setActiveSidebar,
+        Subscriptions,
+        activeSubscription, 
+        setActiveSubscription,
+        Categories,
+        activeCategory,
+        setActiveCategory
       }}
     >
       {children}
