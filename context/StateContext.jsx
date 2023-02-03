@@ -160,13 +160,28 @@ export const StateProvider = ({ children }) => {
     },
   ];
 
-  const Subscriptions =  [ 
+  const [subscriptions, setSubscription] =  useState([ 
     {
-      channelName: '@CodeWithHarry',
-      channelDisplayName: 'CodeWithHarry',
-      profileImage: 'https://yt3.googleusercontent.com/ytc/AL5GRJX7LBvNaQFl0ODpVbrt2F4ajG_wY0fKpZGsEqi8Jw=s176-c-k-c0x00ffffff-no-rj'
+      channelName: 'CleverProgrammer',
+      channelDisplayName: 'Clever Programmer',
+      channelImage: 'https://yt3.ggpht.com/ytc/AL5GRJXoWnTXp_oljCbsD07kYmc6Vktj3J0Vs64ALooxgA=s68-c-k-c0x00ffffff-no-rj'
     }
-  ]
+  ])
+
+  const [videos, setVideos] = useState([
+    {
+      thumbnail: 'https://i.ytimg.com/vi/XIrOM9oP3pA/hq720.jpg?sqp=-oaymwEcCNAFEJQDSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLDiN7R1akv6_cbfMTpTV_lUm1PgaQ',
+      title: 'How to make a Youtube Clone with React JS for Beginners',
+      channelName: 'CleverProgrammer',
+      channelDisplayName: 'Clever Prorammer',
+      views: '1.2M Views',
+      timestamp: new Date(),
+      duration: '10:00',
+      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+      url: 'https://www.youtube.com/watch?v=XIrOM9oP3pA',
+      channelImage: 'https://yt3.ggpht.com/ytc/AL5GRJXoWnTXp_oljCbsD07kYmc6Vktj3J0Vs64ALooxgA=s68-c-k-c0x00ffffff-no-rj',
+    }
+  ]);
 
   const Categories = [
     "All", "Programming", "Development", "Github", "AI", "Python", "Gaming", "Genshin Impact", "Youtube", "Twitter", "Facebook", "Instagram", "TikTok", "Snapchat", "WhatsApp", "Messenger", "Telegram", "Discord", "Reddit", "Quora"
@@ -187,12 +202,14 @@ export const StateProvider = ({ children }) => {
         setUser,
         activeSidebar,
         setActiveSidebar,
-        Subscriptions,
+        subscriptions,
         activeSubscription, 
         setActiveSubscription,
         Categories,
         activeCategory,
-        setActiveCategory
+        setActiveCategory,
+        videos, 
+        setVideos
       }}
     >
       {children}

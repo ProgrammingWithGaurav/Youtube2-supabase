@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import { useStateContext } from "../context/StateContext";
 
 const Sidebar = () => {
-  const { isSidebar, SidebarIcons, activeSidebar, setActiveSidebar, Subscriptions, activeSubscription, setActiveSubscription } =
+  const { isSidebar, SidebarIcons, activeSidebar, setActiveSidebar,subscriptions, activeSubscription, setActiveSubscription } =
     useStateContext();
     const router = useRouter()
 
@@ -47,7 +47,7 @@ const Sidebar = () => {
             <h2 className="dark:text-white ext-sl m-2">Subscriptions</h2>
         )}
             <div>
-            {Subscriptions?.map((subscription) => (
+            {subscriptions?.map((subscription) => (
           <div
             onClick={() => {
               setActiveSubscription(subscription.channelDisplayName);
@@ -60,7 +60,7 @@ const Sidebar = () => {
             key={subscription.channelName}
           >
             <span className="1/3">
-             <img src={subscription.profileImage} className='icon'  alt="profile picture" />
+             <img src={subscription.channelImage} className='icon'  alt="profile picture" />
             </span>
             {isSidebar && (
               <span

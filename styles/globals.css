@@ -17,6 +17,6 @@
   }
 
   .dark {
-    @apply bg-[#0f0f0f] w-full h-screen;
+    @apply bg-[#0f0f0f] w-full h-screen scrollbar;
   }
 }
