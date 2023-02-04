@@ -40,7 +40,7 @@ const Sidebar = () => {
             )}
           </div>
         ))}
-        <div class="border-b border-1 border-b-gray-300 dark:border-b-gray-600"></div>
+        <div className="border-b border-1 border-b-gray-300 dark:border-b-gray-600"></div>
 
           <div>
         {isSidebar && (

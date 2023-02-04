@@ -27,6 +27,8 @@ import {
   SwatchIcon as ActiveSwatchIcon,
   Cog6ToothIcon as ActiveCog6ToothIcon,
   HandThumbUpIcon as ActiveHandThumbUpIcon,
+  PlusIcon,
+  ShareIcon,
 } from "@heroicons/react/24/solid";
 import { useRouter } from "next/router";
 
@@ -176,15 +178,66 @@ export const StateProvider = ({ children }) => {
       channelDisplayName: 'Clever Prorammer',
       views: '1.2M Views',
       timestamp: new Date(),
-      duration: '10:00',
+      duration: 500,
       description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
       url: 'https://www.youtube.com/watch?v=XIrOM9oP3pA',
+      type: 'programming',
       channelImage: 'https://yt3.ggpht.com/ytc/AL5GRJXoWnTXp_oljCbsD07kYmc6Vktj3J0Vs64ALooxgA=s68-c-k-c0x00ffffff-no-rj',
-    }
+    },
+    {
+      thumbnail: 'https://i.ytimg.com/vi/_6Zhfts2iao/hq720.jpg?sqp=-oaymwEcCNAFEJQDSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLAMsuyEuPTwZh9umlkAV2Vm5dmLLQ',
+      title: 'Top 5 Programming Languages to Learn in 2023 to Get a Job Without a College',
+      channelName: 'CleverProgrammer',
+      channelDisplayName: 'Clever Prorammer',
+      views: '1.2M Views',
+      timestamp: new Date(),
+      duration: 500,
+      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+      url: 'https://www.youtube.com/watch?v=XIrOM9oP3pA',
+      type: 'programming',
+      channelImage: 'https://yt3.ggpht.com/ytc/AL5GRJXoWnTXp_oljCbsD07kYmc6Vktj3J0Vs64ALooxgA=s68-c-k-c0x00ffffff-no-rj',
+    },
+    {
+      thumbnail: 'https://i.ytimg.com/an_webp/QObVQSmlG_c/mqdefault_6s.webp?du=3000&sqp=CI2P954G&rs=AOn4CLC1tQrXDYbVW6bWzMWqqtlQ6MJAPw',
+      title: 'Build Turo Web3 App with NextJS',
+      channelName: 'CleverProgrammer',
+      channelDisplayName: 'Clever Prorammer',
+      views: '1.2M Views',
+      timestamp: new Date(),
+      duration: 500,
+      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+      url: 'https://www.youtube.com/watch?v=XIrOM9oP3pA',
+      type: 'programming',
+      channelImage: 'https://yt3.ggpht.com/ytc/AL5GRJXoWnTXp_oljCbsD07kYmc6Vktj3J0Vs64ALooxgA=s68-c-k-c0x00ffffff-no-rj',
+    },
   ]);
 
   const Categories = [
     "All", "Programming", "Development", "Github", "AI", "Python", "Gaming", "Genshin Impact", "Youtube", "Twitter", "Facebook", "Instagram", "TikTok", "Snapchat", "WhatsApp", "Messenger", "Telegram", "Discord", "Reddit", "Quora"
+  ]
+
+  const VideoOptions = [
+    {
+      name: 'Save to Watch Later',
+      icon: <ClockIcon className="icon"/>,
+      onClick: () => {
+        console.log('saved video to watch later')
+      }
+    },
+    {
+      name: 'Add To Playlislt',
+      icon: <PlusIcon className="icon"/>,
+      onClick: () => {
+        console.log('saved video to watch later')
+      }
+    },
+    {
+      name: 'Share',
+      icon: <ShareIcon className="icon"/>,
+      onClick: () => {
+        console.log('saved video to watch later')
+      }
+    }
   ]
 
   return (
@@ -209,7 +262,8 @@ export const StateProvider = ({ children }) => {
         activeCategory,
         setActiveCategory,
         videos, 
-        setVideos
+        setVideos,
+        VideoOptions
       }}
     >
       {children}

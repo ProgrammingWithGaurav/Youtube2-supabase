@@ -26,7 +26,7 @@ const Home = () => {
         />
         <Masonry
           breakpointCols={breakpointColumnsObj}
-          className="flex gap-2"
+          className="flex gap-4 flex-wrap"
           columnClassName="my-masonry-grid_column"
         >
           {videos.map((video) => (
