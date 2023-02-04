@@ -1,5 +1,5 @@
 "use client";
-import { useContext, createContext, useState } from "react";
+import { useContext, createContext, useState, useEffect } from "react";
 
 // Icons
 import {
@@ -42,6 +42,21 @@ export const StateProvider = ({ children }) => {
   const [activeCategory, setActiveCategory] = useState("All");
   const [searchString, setSearchString] = useState("");
   const [user, setUser] = useState(true);
+  const [activeChannel, setActiveChannel] = useState({
+    channelName: 'CleverProgrammer',
+    channelImage: 'https://yt3.googleusercontent.com/ytc/AL5GRJXoWnTXp_oljCbsD07kYmc6Vktj3J0Vs64ALooxgA=s176-c-k-c0x00ffffff-no-rj',
+    channelBannerImage: "https://cdn.pixabay.com/photo/2017/10/31/19/05/web-design-2906159__480.jpg",
+    subscribers: 1022000,
+    socialLinks: [
+      {
+        name: 'facebook',
+        logo: 'https://cdn-icons-png.flaticon.com/128/5968/5968764.png',
+        url: 'http://www.facebook.com'
+      },
+      
+      
+    ]
+  })
 
   const router = useRouter();
 
@@ -169,7 +184,7 @@ export const StateProvider = ({ children }) => {
       channelImage: 'https://yt3.ggpht.com/ytc/AL5GRJXoWnTXp_oljCbsD07kYmc6Vktj3J0Vs64ALooxgA=s68-c-k-c0x00ffffff-no-rj'
     }
   ])
-
+  
   const [videos, setVideos] = useState([
     {
       thumbnail: 'https://i.ytimg.com/vi/XIrOM9oP3pA/hq720.jpg?sqp=-oaymwEcCNAFEJQDSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLDiN7R1akv6_cbfMTpTV_lUm1PgaQ',
@@ -263,7 +278,9 @@ export const StateProvider = ({ children }) => {
         setActiveCategory,
         videos, 
         setVideos,
-        VideoOptions
+        VideoOptions,
+        activeChannel,
+        setActiveChannel
       }}
     >
       {children}

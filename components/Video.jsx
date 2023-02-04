@@ -26,7 +26,7 @@ export default function Video({
   const [videoOptions, setVideoOptions] = useState();
 
   return (
-    <div className=" cursor-pointer w-full h-64 hover:scale-105 transition group">
+    <div className=" cursor-pointer w-full h-64 my-2 hover:scale-105 transition group">
       <div className="relative">
         <img
           src={thumbnail}

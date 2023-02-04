@@ -1,14 +1,18 @@
 import Navbar from "../components/Navbar";
 import Head from "next/head";
 import { useStateContext } from "../context/StateContext";
-import Home from "../components/Home";
+import { useRouter } from "next/router";
+import Sidebar from "../components/Sidebar";
+import ChannelPage from "../components/ChannelPage";
 
-export default function Page() {
+const channel = () => {
+  const { query } = useRouter();
   const { appearance, user } = useStateContext();
+  const { channel } = query;
   return (
-    <>
+    <div>
       <Head>
-        <title>Youtube</title>
+        <title>{channel?.slice(1, 10000)} - Youtube</title>
         <meta
           name="description"
           content="Youtube 2.0 with Nextjs and Supabase"
@@ -19,15 +23,18 @@ export default function Page() {
           href="https://cdn-icons-png.flaticon.com/128/1384/1384060.png"
         />
       </Head>
+
       <div
         className={`flex w-full h-screen flex-col ${
           appearance === "dark" && "dark"
         }`}
       >
-        <Navbar />
         {user && <Sidebar />}
-        <Home />
+        <Navbar />
+        <ChannelPage />
       </div>
-    </>
+    </div>
   );
-}
+};
+
+export default channel;

@@ -10,7 +10,7 @@ const Sidebar = () => {
     <div
       className={`${
         isSidebar ? "min-w-[200px]" : "max-w-[60px]"
-      } h-full flex flex-col justify-self-center p-2 scrollbar scrollbar-thumb-gray-900 scrollbar-track-gray-100`}
+      } h-screen flex flex-col p-2 scrollbar absolute z-[1000] bg-white top-10 pb-10`}
     >
       <div>
         {SidebarIcons?.map((icon) => (

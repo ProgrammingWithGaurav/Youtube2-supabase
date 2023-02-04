@@ -6,7 +6,7 @@ import Masonry from "react-masonry-css";
 import Video from "./Video";
 
 const Home = () => {
-  const { user, Categories, activeCategory, videos, setActiveCategory } =
+  const { Categories, activeCategory, videos, setActiveCategory } =
     useStateContext();
   const breakpointColumnsObj = {
     default: 4,
@@ -16,9 +16,8 @@ const Home = () => {
   };
 
   return (
-    <div className="flex-1 flex items-center">
-      {user && <Sidebar />}
-      <div className="flex-1 ml-2 h-full flex flex-col">
+    <div className="flex-1">
+      <div className="flex-1 pl-20 h-full flex flex-col">
         <CategoriesBar
           categories={Categories}
           activeCategory={activeCategory}
