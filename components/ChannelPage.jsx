@@ -31,6 +31,7 @@ const ChannelPage = () => {
           <div>
             {socialLinks?.map((link) => (
               <Tooltip
+              key={link.name}
                 element={
                   <a href={link.url}>
                     <img

@@ -5,14 +5,14 @@ import { useRouter } from "next/router";
 import Sidebar from "../components/Sidebar";
 import ChannelPage from "../components/ChannelPage";
 
-const channel = () => {
+const Channel = () => {
   const { query } = useRouter();
   const { appearance, user } = useStateContext();
-  const { channel } = query;
+  const { Channel } = query;
   return (
     <div>
       <Head>
-        <title>{channel?.slice(1, 10000)} - Youtube</title>
+        <title>{Channel?.slice(1, 10000)} - Youtube</title>
         <meta
           name="description"
           content="Youtube 2.0 with Nextjs and Supabase"
@@ -37,4 +37,4 @@ const channel = () => {
   );
 };
 
-export default channel;
+export default Channel;

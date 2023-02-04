@@ -2,6 +2,7 @@ import Navbar from "../components/Navbar";
 import Head from "next/head";
 import { useStateContext } from "../context/StateContext";
 import Home from "../components/Home";
+import Sidebar from "../components/Sidebar";
 
 export default function Page() {
   const { appearance, user } = useStateContext();
