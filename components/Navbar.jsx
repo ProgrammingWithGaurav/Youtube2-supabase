@@ -21,12 +21,11 @@ const Header = () => {
   const { isSidebar, setIsSidebar, user, searchString, setSearchString } =
     useStateContext();
   const [hasFocused, setHasFocused] = useState(false);
+  const [input, setInput] = useState(searchString);
 
   const {
     transcript,
     listening,
-    resetTranscript,
-    browserSupportsSpeechRecognition,
   } = useSpeechRecognition();
 
   useEffect(() => {
@@ -34,8 +33,12 @@ const Header = () => {
     SpeechRecognition.stopListening();
   }, [transcript]);
 
+  const handleSearch = () => {
+    setSearchString(input)
+  }
+
   return (
-    <div className={`flex items-center justify-between w-full h-[10vh] p-2`}>
+    <div className={`flex items-center justify-between w-full h-[10vh] z-[10000] bg-white dark:bg-neutral-900 p-2`}>
       <div className="flex items-center">
         {isSidebar ? (
           <XMarkIcon className="icon" onClick={() => setIsSidebar(false)} />
@@ -71,8 +74,8 @@ const Header = () => {
             className="flex-1 focus:outline-none text-sm px-4 bg-transparent dark:text-gray-100"
             placeholder="Search"
             onFocus={() => setHasFocused(true)}
-            value={searchString}
-            onChange={(e) => setSearchString(e.target.value)}
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
           />
           <div>
             {hasFocused && (
@@ -85,7 +88,7 @@ const Header = () => {
           <Tooltip
             element={
               <MagnifyingGlassIcon
-                onClick={() => console.log("hi")}
+                onClick={() => handleSearch()}
                 className="clickable-icon w-6 h-6 p-1"
               />
             }

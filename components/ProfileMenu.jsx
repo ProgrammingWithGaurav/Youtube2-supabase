@@ -27,7 +27,7 @@ export default function ProfileMenu() {
           leaveFrom="transform opacity-100 scale-100"
           leaveTo="transform opacity-0 scale-95"
         >
-          <Menu.Items className="absolute right-0 dark:text-white dark:bg-[#282828] shadow mt-2 w-56 origin-top-right rounded-md bg-white">
+          <Menu.Items className="absolute right-0 z-[1000] dark:text-white dark:bg-[#282828] shadow mt-2 w-56 origin-top-right rounded-md bg-white">
             <div className="px-1 py-1 ">
               <Menu.Item>
                 <div className="flex items-center justify-center flex-col mb-2">

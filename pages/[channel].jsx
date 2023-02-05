@@ -3,11 +3,12 @@ import Head from "next/head";
 import { useStateContext } from "../context/StateContext";
 import { useRouter } from "next/router";
 import Sidebar from "../components/Sidebar";
-import ChannelPage from "../components/ChannelPage";
+import ChannelHeader from "../components/ChannelHeader";
+import LoadingBar from "react-top-loading-bar";
 
 const Channel = () => {
   const { query } = useRouter();
-  const { appearance, user } = useStateContext();
+  const { appearance, user, loading, loadingProgress } = useStateContext();
   const { Channel } = query;
   return (
     <div>
@@ -31,7 +32,8 @@ const Channel = () => {
       >
         {user && <Sidebar />}
         <Navbar />
-        <ChannelPage />
+        <ChannelHeader />
+        {loading && <LoadingBar color="#f11946" progress={loadingProgress} />}
       </div>
     </div>
   );

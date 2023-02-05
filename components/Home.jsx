@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useStateContext } from "../context/StateContext";
 import CategoriesBar from "./CategoriesBar";
 import Sidebar from "./Sidebar";
@@ -6,14 +6,55 @@ import Masonry from "react-masonry-css";
 import Video from "./Video";
 
 const Home = () => {
-  const { Categories, activeCategory, videos, setActiveCategory } =
-    useStateContext();
+  const {
+    Categories,
+    activeCategory,
+    videos,
+    searchString,
+    setVideos,
+    setActiveCategory,
+    setLoading,
+    setLoadingProgress,
+  } = useStateContext();
+  const [newVideos, setNewVideos] = useState(videos);
   const breakpointColumnsObj = {
     default: 4,
     1100: 3,
     700: 2,
     500: 1,
   };
+
+  // useEffect(() => {
+  //   if(searchString === '') return;
+  //   setLoadingProgress(70);
+  //   setLoading(true);
+  //   setTimeout(() => {
+  //     const newVideos = videos?.filter((video) =>
+  //       video?.title?.toLowerCase().includes(searchString.toLowerCase())
+  //     );
+  //     setLoadingProgress(90);
+  //     setNewVideos(newVideos);
+  //     setLoading(false);
+  //     setLoadingProgress(100);
+  //   }, [1000]);
+  // }, [searchString]);
+
+  // useEffect(() => {
+  //   if(activeCategory === 'All') setVideos(videos); 
+  //   setLoadingProgress(70);
+  //   setLoading(true);
+  //   setTimeout(() => {
+  //     const newVideos = videos?.filter((video) =>
+  //       video?.type?.includes(activeCategory.toLowerCase())
+  //     );
+  //     setLoadingProgress(90);
+  //     setNewVideos(newVideos);
+  //     setLoading(false);
+  //     setLoadingProgress(100);
+  //   }, [1000]);
+  // }, [activeCategory])
+
+  // useEffect(() => {setNewVideos(videos)}, [])
 
   return (
     <div className="flex-1">
@@ -28,8 +69,8 @@ const Home = () => {
           className="flex gap-4 flex-wrap"
           columnClassName="my-masonry-grid_column"
         >
-          {videos.map((video) => (
-           <Video key={video.channelName} {...video}/>
+          {newVideos?.map((video) => (
+            <Video key={video.channelName} {...video} />
           ))}
         </Masonry>
       </div>

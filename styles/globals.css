@@ -13,7 +13,7 @@
 
 
   body {
-    @apply bg-white overflow-hidden;
+    @apply bg-white overflow-x-hidden scroll-smooth;
   }
 
   .dark {

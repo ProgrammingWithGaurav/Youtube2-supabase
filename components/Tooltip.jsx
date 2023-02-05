@@ -1,6 +1,6 @@
 export default function Tooltip({ element, hoverText }) {
   return (
-    <div className="group flex relative opacity-80">
+    <div className="group flex relative opacity-80 z-[100]">
       {element}
       <span
         className="group-hover:opacity-100 transition-opacity bg-gray-500 px-1 text-sm text-gray-100 rounded absolute left-1/2 

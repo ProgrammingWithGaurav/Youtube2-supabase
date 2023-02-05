@@ -3,9 +3,11 @@ import Head from "next/head";
 import { useStateContext } from "../context/StateContext";
 import Home from "../components/Home";
 import Sidebar from "../components/Sidebar";
+import LoadingBar from "react-top-loading-bar";
 
 export default function Page() {
-  const { appearance, user } = useStateContext();
+  const { appearance, user, loading, loadingProgress } = useStateContext();
+
   return (
     <>
       <Head>
@@ -28,6 +30,7 @@ export default function Page() {
         <Navbar />
         {user && <Sidebar />}
         <Home />
+        {loading && <LoadingBar color="#f11946" progress={loadingProgress} />}
       </div>
     </>
   );
