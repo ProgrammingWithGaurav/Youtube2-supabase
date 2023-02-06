@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useStateContext } from "../context/StateContext";
 import CategoriesBar from "./CategoriesBar";
-import Sidebar from "./Sidebar";
 import Masonry from "react-masonry-css";
 import Video from "./Video";
 

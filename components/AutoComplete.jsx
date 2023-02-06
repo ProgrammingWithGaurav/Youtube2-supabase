@@ -1,6 +1,6 @@
 import { ClockIcon } from "@heroicons/react/24/outline";
 
-export default function AutoComplete({ searchString, setSearchString }) {
+export default function AutoComplete({ searchString, setSearchString, setInput }) {
   const search = [
     "hello world",
     "programming",
@@ -9,7 +9,7 @@ export default function AutoComplete({ searchString, setSearchString }) {
     "ReactJs",
   ];
   const searches = search.filter((search) =>
-    search.toString().startsWith(searchString)
+    search.toString().toLocaleLowerCase().includes(searchString.toLocaleLowerCase())
   );
   return (
     <div className="flex flex-col left-[31vw] fixed top-[10vh] cursor-default rounded-lg w-[33vw] min-w-300px h-auto bg-white z-[1000]">
@@ -19,7 +19,10 @@ export default function AutoComplete({ searchString, setSearchString }) {
             <ClockIcon className="icon w-4 h-4 p-0 mr-2 dark:text-gray-900" />
             <span
               className="w-10/12 text-sm"
-              onClick={() => setSearchString(search)}
+              onClick={() => {
+                setInput(search)
+                setSearchString(search);
+              }}
             >
               {search}
             </span>

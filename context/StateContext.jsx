@@ -77,13 +77,23 @@ export const StateProvider = ({ children }) => {
     views: 243144111,
     joinedDate: new Date(),
     description: `You can find awesome programming lessons here! Also, expect programming tips and tricks that will take your coding skills to the next level.`,
-    location: 'United States',
+    location: "United States",
     subscriptions: [
       {
-        channelName: 'MyChannel',
-        channelDisplayName: 'My Channel',
+        channelName: "MyChannel",
+        channelDisplayName: "My Channel",
         subscribers: 3777,
-        channelImage: 'https://yt3.googleusercontent.com/ytc/AL5GRJXoWnTXp_oljCbsD07kYmc6Vktj3J0Vs64ALooxgA=s176-c-k-c0x00ffffff-no-rj'
+        channelImage:
+          "https://yt3.googleusercontent.com/ytc/AL5GRJXoWnTXp_oljCbsD07kYmc6Vktj3J0Vs64ALooxgA=s176-c-k-c0x00ffffff-no-rj",
+      },
+    ],
+    store: [
+      {
+        name: "Premium Programmer's Shirt",
+        price: 1000,
+        productPage: 'https://unsplash.com/photos/Wr0TpKqf26s',
+        productImage: 'https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80',
+        sponsor: 'Unsplash'
       }
     ]
   });
@@ -322,6 +332,7 @@ export const StateProvider = ({ children }) => {
     "Live",
     "Playlists",
     "Community",
+    "Store",
     "Channels",
     "About",
   ];

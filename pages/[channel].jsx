@@ -15,12 +15,17 @@ import ChannelPlaylists from '../components/Channel/ChannelPlaylists';
 import ChannelCommunity from '../components/Channel/ChannelCommunity';
 import ChannelChannels from '../components/Channel/ChannelChannels';
 import ChannelAbout from '../components/Channel/ChannelAbout';
+import { useEffect } from "react";
+import ChannelStore from "../components/Channel/ChannelStore";
 
-const Channel = () => {
+const Channel = ({channel}) => {
   const { query } = useRouter();
-  const { appearance, user, loading, loadingProgress, channelTab } = useStateContext();
-  const { channel } = query;
+  const router = useRouter();
+  const { appearance, user, loading, loadingProgress, channelTab, activeChannel } = useStateContext();
+  // const { channel } = query;
+  
   console.log(query)
+  useEffect(() => {activeChannel === null && router.push()}, [activeChannel])
   return (
     <div>
       <Head>
@@ -53,6 +58,7 @@ const Channel = () => {
         {channelTab === 'Live' && <ChannelLive />}
         {channelTab === 'Playlists' && <ChannelPlaylists />}
         {channelTab === 'Community' && <ChannelCommunity />}
+        {channelTab === 'Store' && <ChannelStore />}
         {channelTab === 'Channels' && <ChannelChannels />}
         {channelTab === 'About' && <ChannelAbout />}
         </div>
@@ -63,3 +69,11 @@ const Channel = () => {
 };
 
 export default Channel;
+
+export async function getServerSideProps(context) {
+  console.log(context.query.channel)
+
+  return {
+    props: {channel: context.query.channel}, // will be passed to the page component as props
+  }
+}

@@ -16,12 +16,14 @@ import SpeechRecognition, {
 } from "react-speech-recognition";
 import { useEffect } from "react";
 import AutoComplete from "./AutoComplete";
+import { useRouter } from "next/router";
 
 const Header = () => {
   const { isSidebar, setIsSidebar, user, searchString, setSearchString } =
     useStateContext();
   const [hasFocused, setHasFocused] = useState(false);
   const [input, setInput] = useState(searchString);
+  const router = useRouter();
 
   const {
     transcript,
@@ -34,7 +36,8 @@ const Header = () => {
   }, [transcript]);
 
   const handleSearch = () => {
-    setSearchString(input)
+    setSearchString(input);
+    router.push('/')
   }
 
   return (
@@ -80,8 +83,9 @@ const Header = () => {
           <div>
             {hasFocused && (
               <AutoComplete
-                searchString={searchString}
+                searchString={input}
                 setSearchString={setSearchString}
+                setInput={setInput}
               />
             )}
           </div>
