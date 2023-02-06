@@ -40,6 +40,7 @@ const ChannelAbout = () => {
                 key={link.name}
                 target="_blank"
                 href={link?.url}
+                rel="noreferrer" 
                 className="w-6/12 flex items-center gap-2"
               >
                 <img

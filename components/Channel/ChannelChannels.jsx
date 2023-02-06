@@ -52,6 +52,7 @@ const ChannelChannels = () => {
         {subscriptions.map(
           ({ channelImage, channelName, channelDisplayName, subscribers }) => (
             <Channel
+              key={channelName}
               image={channelImage}
               name={channelName}
               displayName={channelDisplayName}
