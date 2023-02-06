@@ -38,7 +38,7 @@ const Header = () => {
   }
 
   return (
-    <div className={`flex items-center justify-between w-full h-[10vh] z-[10000] bg-white dark:bg-neutral-900 p-2`}>
+    <div className={`flex items-center justify-between w-full h-[10vh] fixed top-0 z-[10000] bg-white dark:bg-neutral-900 p-2`}>
       <div className="flex items-center">
         {isSidebar ? (
           <XMarkIcon className="icon" onClick={() => setIsSidebar(false)} />

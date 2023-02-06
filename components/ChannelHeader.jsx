@@ -2,6 +2,7 @@ import {
   BellIcon,
   ChevronDownIcon,
   ChevronRightIcon,
+  MagnifyingGlassIcon,
 } from "@heroicons/react/24/outline";
 import React, { useRef, useState } from "react";
 import { useStateContext } from "../context/StateContext";
@@ -45,9 +46,22 @@ const ChannelHeader = () => {
       setSubscribed(false);
     }, 2000);
   };
+  
+  const changeChannelTab = (tab) => {
+    setLoading(true);
+    setLoadingProgress(90);
+    setTimeout(() => {
+      setLoadingProgress(100);
+      setLoading(false);
+      setChannelTab(tab);
+    }, 1000);
+  }
+
+  const inputRef = useRef();
+  const [isInput, setIsInput] = useState(false);
 
   return (
-    <div className="w-full h-screen scrollbar overflow-x-hidden pl-10">
+    <div className="scrollbar overflow-x-hidden pl-10">
       <div className="w-full h-[35vh] relative">
         <img
           src={channelBannerImage}
@@ -61,7 +75,7 @@ const ChannelHeader = () => {
               className="w-4 h-4 rounded-full"
               alt="profile picture"
             />
-            <p className="text-neutral-900 dark:text-white font-semibold text-xs">
+            <p className="text-neutral-900 dark:text-white font-semibold text-sm">
               {channelName}
             </p>
           </div>
@@ -104,16 +118,16 @@ const ChannelHeader = () => {
           {subscribed ? (
             <div
               onClick={Unsubscribe}
-              className="space-x-2 dark:hover:bg-neutral-700 mr-8 text-neutral-900 dark:text-white dark:bg-neutral-800 flex items-center py-2 px-4 bg-gray-100 text-xs rounded-full cursor-pointer font-semibold hover:bg-gray-200"
+              className="space-x-2 dark:hover:bg-neutral-700 mr-8 text-neutral-900 dark:text-white dark:bg-neutral-800 flex items-center py-2 px-4 bg-gray-100 text-sm rounded-full cursor-pointer font-semibold hover:bg-gray-200"
             >
               <BellIcon className="icon p-0 w-6 h-6" />
-              <span>Subscribed</span>
+              <span>Unsubscribe</span>
               <ChevronDownIcon className="icon p-0 w-4 h-4" />
             </div>
           ) : (
             <button
               onClick={Subscribe}
-              className="text-white dark:text-neutral-900 bg-neutral-900 dark:bg-white text-xs rounded-full px-4 py-2 cursor-pointer font-semibold hover:opacity-90"
+              className="subscribe"
             >
               Subscribe
             </button>
@@ -132,16 +146,33 @@ const ChannelHeader = () => {
                 ? "border-b-neutral-900 border-b-2 text-neutral-900 dark:text-white dark:border-b-white"
                 : "text-gray-500 dark:text-gray-400"
             }`}
-            onClick={() => setChannelTab(option)}
+            onClick={() => changeChannelTab(option)}
           >
             {option}
           </div>
         ))}
+
+        <MagnifyingGlassIcon
+          onClick={() => {
+            setIsInput(true);
+            inputRef?.current?.focus();
+          }}
+          className="clickable-icon mx-4"
+        />
+        {isInput && (
+          <input
+            ref={inputRef}
+            className="bg-black/5 dark:bg-white/10 rounded-full p-2 px-4 focus:ring-1 focus:ring-blue-400 focus:outline-none dark:text-white"
+            type="search"
+          />
+        )}
         <ChevronRightIcon
           onClick={() => scrollRef.current.scrollIntoView()}
           className="lg:hidden clickable-icon absolute right-4"
         />
       </div>
+      <div className="border-b -mt-4 border-1 border-b-gray-300 dark:border-b-gray-600"></div>
+      
     </div>
   );
 };
