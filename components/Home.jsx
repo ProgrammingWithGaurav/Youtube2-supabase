@@ -57,7 +57,7 @@ const Home = () => {
 
   return (
     <div className="flex-1">
-      <div className="flex-1 pl-20 h-full flex flex-col">
+      <div className="flex-1 pl-20 h-full flex flex-col mt-20">
         <CategoriesBar
           categories={Categories}
           activeCategory={activeCategory}

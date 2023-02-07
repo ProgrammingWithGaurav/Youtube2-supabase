@@ -233,7 +233,7 @@ export const StateProvider = ({ children }) => {
       title: "How to make a Youtube Clone with React JS for Beginners",
       channelName: "CleverProgrammer",
       channelDisplayName: "Clever Prorammer",
-      views: "1.2M Views",
+      views: 1313121,
       timestamp: new Date(),
       duration: 500,
       description:
@@ -250,7 +250,7 @@ export const StateProvider = ({ children }) => {
         "Top 5 Programming Languages to Learn in 2023 to Get a Job Without a College",
       channelName: "CleverProgrammer",
       channelDisplayName: "Clever Prorammer",
-      views: "1.2M Views",
+      views: 1222222222,
       timestamp: new Date(),
       duration: 500,
       description:
@@ -264,9 +264,9 @@ export const StateProvider = ({ children }) => {
       thumbnail:
         "https://i.ytimg.com/an_webp/QObVQSmlG_c/mqdefault_6s.webp?du=3000&sqp=CI2P954G&rs=AOn4CLC1tQrXDYbVW6bWzMWqqtlQ6MJAPw",
       title: "Build Turo Web3 App with NextJS",
-      channelName: "CleverProgrammer",
+      channelName: "CleverProgrammer2",
       channelDisplayName: "Clever Prorammer",
-      views: "1.2M Views",
+      views: 1222222131,
       timestamp: new Date(),
       duration: 500,
       description:

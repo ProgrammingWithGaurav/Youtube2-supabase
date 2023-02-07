@@ -7,6 +7,7 @@ import {
 import ytDuration from "youtube-duration";
 import { useStateContext } from "../context/StateContext";
 import { useState } from "react";
+import { numify } from "numify";
 
 export default function Video({
   duration,
@@ -65,7 +66,7 @@ export default function Video({
               className="dark:text-gray-400 text-sm font-normal"
               onClick={() => router.push(`/${channelName}`)}
             >
-              {views} • {timeAgo.format(timestamp)}
+              {numify(views)} views • {timeAgo.format(timestamp)}
             </span>
           </div>
           <EllipsisVerticalIcon
