@@ -1,19 +1,25 @@
 import React, { useState, useEffect } from "react";
 import Masonry from "react-masonry-css";
+import { useChannelState } from "../../context/ChannelState";
 import { useStateContext } from "../../context/StateContext";
 import Video from "../Video";
 
 const ChannelVideos = () => {
-  const { videos, setVideos, activeChannel : {channelName} } = useStateContext();
+  const {
+    videos,
+    setVideos,
+    activeChannel: { channelName },
+  } = useStateContext();
+  const { channelSearch, setChannelSearch } = useChannelState();
   const [videoFilter, setVideoFilter] = useState("Recently Uploaded");
   const videoFilters = [
     {
       name: "Recently Uploaded",
-      onClick: () => handleRecentlyPosted()
+      onClick: () => handleRecentlyPosted(),
     },
     {
       name: "Popular",
-      onClick: () => handlePopularVideos()
+      onClick: () => handlePopularVideos(),
     },
   ];
 
@@ -27,26 +33,54 @@ const ChannelVideos = () => {
   const [channelVideos, setChannelVideos] = useState([]);
 
   const handlePopularVideos = () => {
-    const channelVideos = videos.filter((video) => video?.channelName === channelName)
-    setChannelVideos(channelVideos.sort((video1, video2) => parseFloat(video2.views) - parseFloat(video1.views)));
-  }
+    const channelVideos = videos.filter(
+      (video) => video?.channelName === channelName
+    );
+    setChannelVideos(
+      channelVideos.sort(
+        (video1, video2) => parseFloat(video2.views) - parseFloat(video1.views)
+      )
+    );
+  };
 
   const handleRecentlyPosted = () => {
-    const channelVideos = videos.filter((video) => video?.channelName === channelName)
-    setChannelVideos(channelVideos.sort((video1, video2) => parseFloat(video2.timestamp) - parseFloat(video1.timestamp)));
+    const channelVideos = videos.filter(
+      (video) => video?.channelName === channelName
+    );
+    setChannelVideos(
+      channelVideos.sort(
+        (video1, video2) =>
+          parseFloat(video2.timestamp) - parseFloat(video1.timestamp)
+      )
+    );
+  };
+
+  const searchChannelVideos = () => {
+    if(channelSearch?.trim() === '') return;
+    const channelVideos = videos.filter(
+      (video) => video?.channelName === channelName
+    );
+    setChannelVideos(
+      channelVideos.filter((video) => video.title.toLowerCase().includes(channelSearch.toLowerCase()))
+    );
+  };
+
+  const fetchChannelVideos = () => {
+    setChannelVideos(
+      videos.filter((video) => video?.channelName === channelName)
+      );
   }
 
   useEffect(() => {
-    setChannelVideos(
-      videos.filter((video) => video?.channelName === channelName)
-    );
-  }, [videos]);
+    channelSearch.trim() === '' ? fetchChannelVideos() : searchChannelVideos();
+  }, [videos, channelSearch]);
 
   return (
     <div className="w-full flex items-start flex-col p-4 mt-4 dark:text-white h-screen">
       <div className="flex items-center mb-4 scrollbar w-[65vw] lg:w-[85vw] gap-2">
         {videoFilters.map((filter) => (
           <span
+            key={filter.name}
             onClick={() => {
               setVideoFilter(filter.name);
               filter.onClick();

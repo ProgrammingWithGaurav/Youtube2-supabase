@@ -7,29 +7,60 @@ import ChannelHeader from "../components/ChannelHeader";
 import LoadingBar from "react-top-loading-bar";
 
 // Channel
-import ChannelHome from '../components/Channel/ChannelHome';
-import ChannelVideos from '../components/Channel/ChannelVideos';
-import ChannelShorts from '../components/Channel/ChannelShorts';
-import ChannelLive from '../components/Channel/ChannelLive';
-import ChannelPlaylists from '../components/Channel/ChannelPlaylists';
-import ChannelCommunity from '../components/Channel/ChannelCommunity';
-import ChannelChannels from '../components/Channel/ChannelChannels';
-import ChannelAbout from '../components/Channel/ChannelAbout';
+import ChannelHome from "../components/Channel/ChannelHome";
+import ChannelVideos from "../components/Channel/ChannelVideos";
+import ChannelShorts from "../components/Channel/ChannelShorts";
+import ChannelLive from "../components/Channel/ChannelLive";
+import ChannelPlaylists from "../components/Channel/ChannelPlaylists";
+import ChannelCommunity from "../components/Channel/ChannelCommunity";
+import ChannelChannels from "../components/Channel/ChannelChannels";
+import ChannelAbout from "../components/Channel/ChannelAbout";
 import { useEffect } from "react";
 import ChannelStore from "../components/Channel/ChannelStore";
+import { useChannelState } from "../context/ChannelState";
 
-const Channel = ({channel}) => {
+const Channel = ({ channel }) => {
   const { query } = useRouter();
   const router = useRouter();
-  const { appearance, user, loading, loadingProgress, channelTab, activeChannel } = useStateContext();
-  // const { channel } = query;
-  
-  console.log(query)
-  useEffect(() => {activeChannel === null && router.push()}, [activeChannel])
+  const {
+    appearance,
+    user,
+    loading,
+    loadingProgress,
+    channelTab,
+    setActiveChannel,
+    activeChannel,
+    setLoading,
+    setLoadingProgress,
+  } = useStateContext();
+  const { channels } = useChannelState();
+
+  useEffect(() => {
+    const channelName = channel?.startsWith("@")
+      ? channel?.slice(1, 1000)
+      : channel;
+
+    const channelDetails = channels.filter(
+      (channel) => channel.channelName === channelName
+    );
+    if (channelDetails.length === 0) router.push("/");
+    else {
+      setActiveChannel(channelDetails[0]);
+    }
+  }, []);
+
+  useEffect(() => {
+    activeChannel === null && router.push("/");
+  }, [activeChannel]);
   return (
     <div>
       <Head>
-        <title>{channel?.startsWith('@')  ? channel?.slice(1, 10000) : channel} - Youtube</title>
+        <title>
+          {activeChannel?.title?.startsWith("@")
+            ? activeChannel?.title?.channel?.slice(1, 10000)
+            : channel}{" "}
+          - Youtube
+        </title>
         <meta
           name="description"
           content="Youtube 2.0 with Nextjs and Supabase"
@@ -41,29 +72,30 @@ const Channel = ({channel}) => {
         />
       </Head>
 
-      <div
-        className={`flex w-full h-auto pb-40 scrollbar flex-col ${
-          appearance === "dark" && "dark"
-        }`}
-      >
-        {user && <Sidebar />}
-        <Navbar />
-        <ChannelHeader />
-        {loading && <LoadingBar color="#f11946" progress={loadingProgress} />}
+      {activeChannel && (
+        <div
+          className={`flex w-full h-auto pb-40 scrollbar flex-col ${
+            appearance === "dark" && "dark"
+          }`}
+        >
+          {user && <Sidebar />}
+          <Navbar />
+          <ChannelHeader />
+          {loading && <LoadingBar color="#f11946" progress={loadingProgress} />}
 
-        <div className="w-[90vw] px-24">
-        {channelTab === 'Home' && <ChannelHome />}
-        {channelTab === 'Videos' && <ChannelVideos />}
-        {channelTab === 'Shorts' && <ChannelShorts />}
-        {channelTab === 'Live' && <ChannelLive />}
-        {channelTab === 'Playlists' && <ChannelPlaylists />}
-        {channelTab === 'Community' && <ChannelCommunity />}
-        {channelTab === 'Store' && <ChannelStore />}
-        {channelTab === 'Channels' && <ChannelChannels />}
-        {channelTab === 'About' && <ChannelAbout />}
+          <div className="w-[90vw] px-24">
+            {channelTab === "Home" && <ChannelHome />}
+            {channelTab === "Videos" && <ChannelVideos />}
+            {channelTab === "Shorts" && <ChannelShorts />}
+            {channelTab === "Live" && <ChannelLive />}
+            {channelTab === "Playlists" && <ChannelPlaylists />}
+            {channelTab === "Community" && <ChannelCommunity />}
+            {channelTab === "Store" && <ChannelStore />}
+            {channelTab === "Channels" && <ChannelChannels />}
+            {channelTab === "About" && <ChannelAbout />}
+          </div>
         </div>
-        
-      </div>
+      )}
     </div>
   );
 };
@@ -71,9 +103,7 @@ const Channel = ({channel}) => {
 export default Channel;
 
 export async function getServerSideProps(context) {
-  console.log(context.query.channel)
-
   return {
-    props: {channel: context.query.channel}, // will be passed to the page component as props
-  }
+    props: { channel: context.query.channel }, // will be passed to the page component as props
+  };
 }

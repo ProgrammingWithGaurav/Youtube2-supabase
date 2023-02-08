@@ -16,9 +16,9 @@ export default function Video({
   channelImage,
   title,
   views,
-  url,
   channelName,
   channelDisplayName,
+  uid,
 }) {
   const { VideoOptions } = useStateContext();
   const router = useRouter();
@@ -27,7 +27,7 @@ export default function Video({
   const [videoOptions, setVideoOptions] = useState();
 
   return (
-    <div className=" cursor-pointer w-full h-64 my-2 hover:scale-105 transition group">
+    <div className=" cursor-pointer w-full h-64 my-2 hover:scale-105 transition group" onClick={() => router.push(`/watch/${uid}`)}>
       <div className="relative">
         <img
           src={thumbnail}

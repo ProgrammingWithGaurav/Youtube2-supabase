@@ -2,9 +2,11 @@ import { Menu, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 import Link from "next/link";
 import { useStateContext } from "../context/StateContext";
+import { useChannelState } from "../context/ChannelState";
 
 export default function ProfileMenu() {
   const {ProfileMenuIcons} = useStateContext();
+  const {currentChannel: {channelImage}}  = useChannelState();
 
   return (
     <div>
@@ -12,7 +14,7 @@ export default function ProfileMenu() {
         <div>
           <Menu.Button>
             <img
-              src="https://avatars.githubusercontent.com/u/88154142?v=4"
+              src={channelImage}
               alt="profile picture"
               className="icon w-14 h-14"
             />

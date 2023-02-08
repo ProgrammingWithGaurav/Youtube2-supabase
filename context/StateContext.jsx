@@ -31,6 +31,7 @@ import {
   ShareIcon,
 } from "@heroicons/react/24/solid";
 import { useRouter } from "next/router";
+import { uid } from "uid";
 
 export const StateContext = createContext();
 
@@ -42,6 +43,7 @@ export const StateProvider = ({ children }) => {
   const [activeSubscription, setActiveSubscription] = useState("");
   const [activeCategory, setActiveCategory] = useState("All");
   const [channelTab, setChannelTab] = useState("Home");
+  const [activeVideo, setActiveVideo] = useState();
 
   const [searchString, setSearchString] = useState("");
   const [user, setUser] = useState(true);
@@ -49,54 +51,7 @@ export const StateProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [loadingProgress, setLoadingProgress] = useState(0);
 
-  const [activeChannel, setActiveChannel] = useState({
-    channelName: "CleverProgrammer",
-    channelImage:
-      "https://yt3.googleusercontent.com/ytc/AL5GRJXoWnTXp_oljCbsD07kYmc6Vktj3J0Vs64ALooxgA=s176-c-k-c0x00ffffff-no-rj",
-    channelBannerImage:
-      "https://cdn.pixabay.com/photo/2017/10/31/19/05/web-design-2906159__480.jpg",
-    subscribers: 1222000,
-    channelDisplayName: "CleverProgrammer",
-    socialLinks: [
-      {
-        name: "facebook",
-        logo: "https://cdn-icons-png.flaticon.com/128/5968/5968764.png",
-        url: "http://www.facebook.com",
-      },
-      {
-        name: "instagram",
-        logo: "https://cdn-icons-png.flaticon.com/128/174/174855.png",
-        url: "http://www.instagram.com",
-      },
-      {
-        name: "twitter",
-        logo: "https://cdn-icons-png.flaticon.com/128/733/733579.png",
-        url: "http://www.twitter.com",
-      },
-    ],
-    views: 243144111,
-    joinedDate: new Date(),
-    description: `You can find awesome programming lessons here! Also, expect programming tips and tricks that will take your coding skills to the next level.`,
-    location: "United States",
-    subscriptions: [
-      {
-        channelName: "MyChannel",
-        channelDisplayName: "My Channel",
-        subscribers: 3777,
-        channelImage:
-          "https://yt3.googleusercontent.com/ytc/AL5GRJXoWnTXp_oljCbsD07kYmc6Vktj3J0Vs64ALooxgA=s176-c-k-c0x00ffffff-no-rj",
-      },
-    ],
-    store: [
-      {
-        name: "Premium Programmer's Shirt",
-        price: 1000,
-        productPage: 'https://unsplash.com/photos/Wr0TpKqf26s',
-        productImage: 'https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80',
-        sponsor: 'Unsplash'
-      }
-    ]
-  });
+  const [activeChannel, setActiveChannel] = useState();
 
   const router = useRouter();
 
@@ -242,6 +197,7 @@ export const StateProvider = ({ children }) => {
       type: "programming",
       channelImage:
         "https://yt3.ggpht.com/ytc/AL5GRJXoWnTXp_oljCbsD07kYmc6Vktj3J0Vs64ALooxgA=s68-c-k-c0x00ffffff-no-rj",
+      uid: '802618681ff'
     },
     {
       thumbnail:
@@ -259,6 +215,8 @@ export const StateProvider = ({ children }) => {
       type: "programming",
       channelImage:
         "https://yt3.ggpht.com/ytc/AL5GRJXoWnTXp_oljCbsD07kYmc6Vktj3J0Vs64ALooxgA=s68-c-k-c0x00ffffff-no-rj",
+      uid: '802618681ff2'
+
     },
     {
       thumbnail:
@@ -275,6 +233,8 @@ export const StateProvider = ({ children }) => {
       type: "programming",
       channelImage:
         "https://yt3.ggpht.com/ytc/AL5GRJXoWnTXp_oljCbsD07kYmc6Vktj3J0Vs64ALooxgA=s68-c-k-c0x00ffffff-no-rj",
+      uid: '802618681ff1'
+
     },
   ]);
 
@@ -370,6 +330,8 @@ export const StateProvider = ({ children }) => {
         channelTabs,
         channelTab,
         setChannelTab,
+        activeVideo,
+        setActiveVideo
       }}
     >
       {children}

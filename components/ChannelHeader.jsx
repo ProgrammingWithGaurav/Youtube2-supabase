@@ -8,6 +8,7 @@ import React, { useRef, useState } from "react";
 import { useStateContext } from "../context/StateContext";
 import Tooltip from "./Tooltip";
 import { numify } from "numify";
+import { useChannelState } from "../context/ChannelState";
 
 const ChannelHeader = () => {
   const {
@@ -56,7 +57,7 @@ const ChannelHeader = () => {
       setChannelTab(tab);
     }, 1000);
   }
-
+  const {channelSearch, setChannelSearch} = useChannelState();
   const inputRef = useRef();
   const [isInput, setIsInput] = useState(false);
 
@@ -164,6 +165,8 @@ const ChannelHeader = () => {
             ref={inputRef}
             className="bg-black/5 dark:bg-white/10 rounded-full p-2 px-4 focus:ring-1 focus:ring-blue-400 focus:outline-none dark:text-white"
             type="search"
+            value={channelSearch}
+            onChange={(e) => setChannelSearch(e.target.value)}
           />
         )}
         <ChevronRightIcon
