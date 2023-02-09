@@ -190,6 +190,7 @@ export const StateProvider = ({ children }) => {
       channelDisplayName: "Clever Prorammer",
       views: 1313121,
       timestamp: new Date(),
+      subscribers: 1222000,
       duration: 500,
       description:
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
@@ -209,6 +210,7 @@ export const StateProvider = ({ children }) => {
       views: 1222222222,
       timestamp: new Date(),
       duration: 500,
+      subscribers: 1222000,
       description:
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
       url: "https://www.youtube.com/watch?v=XIrOM9oP3pA",
@@ -227,6 +229,7 @@ export const StateProvider = ({ children }) => {
       views: 1222222131,
       timestamp: new Date(),
       duration: 500,
+      subscribers: 122200,
       description:
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
       url: "https://www.youtube.com/watch?v=XIrOM9oP3pA",

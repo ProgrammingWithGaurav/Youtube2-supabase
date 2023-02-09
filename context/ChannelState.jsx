@@ -156,10 +156,22 @@ export const ChannelStateProvider = ({ children }) => {
     }
   ])
 
+  const UnSubscribe = (setSubscribed) => {
+    setTimeout(() => {
+        setSubscribed(false)
+    }, 500);
+  }
+
+  const Subscribe = (setSubscribed) => {
+    setTimeout(() => {
+        setSubscribed(true)
+    }, 500);
+  }
+
   return (
     <ChannelState.Provider
       value={{
-        currentChannel, setCurrentChannel, channelSearch, setChannelSearch, channels, setChannels
+        currentChannel, setCurrentChannel, channelSearch, setChannelSearch, channels, setChannels, Subscribe, UnSubscribe
       }}
     >
       {children}

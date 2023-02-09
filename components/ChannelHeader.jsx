@@ -29,25 +29,6 @@ const ChannelHeader = () => {
   const [subscribed, setSubscribed] = useState(false);
   const scrollRef = useRef();
 
-  const Subscribe = () => {
-    setLoading(true);
-    setLoadingProgress(90);
-    setTimeout(() => {
-      setLoadingProgress(100);
-      setLoading(false);
-      setSubscribed(true);
-    }, 2000);
-  };
-  const Unsubscribe = () => {
-    setLoading(true);
-    setLoadingProgress(90);
-    setTimeout(() => {
-      setLoadingProgress(100);
-      setLoading(false);
-      setSubscribed(false);
-    }, 2000);
-  };
-  
   const changeChannelTab = (tab) => {
     setLoading(true);
     setLoadingProgress(90);
@@ -58,6 +39,7 @@ const ChannelHeader = () => {
     }, 1000);
   }
   const {channelSearch, setChannelSearch} = useChannelState();
+  const {Subscribe, UnSubscribe} = useChannelState();
   const inputRef = useRef();
   const [isInput, setIsInput] = useState(false);
 
@@ -118,7 +100,7 @@ const ChannelHeader = () => {
         <div>
           {subscribed ? (
             <div
-              onClick={Unsubscribe}
+              onClick={() => UnSubscribe(setSubscribed)}
               className="space-x-2 dark:hover:bg-neutral-700 mr-8 text-neutral-900 dark:text-white dark:bg-neutral-800 flex items-center py-2 px-4 bg-gray-100 text-sm rounded-full cursor-pointer font-semibold hover:bg-gray-200"
             >
               <BellIcon className="icon p-0 w-6 h-6" />
@@ -127,7 +109,7 @@ const ChannelHeader = () => {
             </div>
           ) : (
             <button
-              onClick={Subscribe}
+              onClick={() => Subscribe(setSubscribed)}
               className="subscribe"
             >
               Subscribe

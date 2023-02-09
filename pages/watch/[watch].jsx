@@ -5,6 +5,8 @@ import Sidebar from "../../components/Sidebar";
 import LoadingBar from "react-top-loading-bar";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
+import VideoScreen from "../../components/Watch/VideoScreen";
+import SuggestedVideos from "../../components/Watch/SuggestedVideos";
 
 export default function Watch({ uid }) {
   const {
@@ -67,6 +69,11 @@ export default function Watch({ uid }) {
           <Navbar />
           {user && <Sidebar />}
           {loading && <LoadingBar color="#f11946" progress={loadingProgress} />}
+
+          <div className='flex lg:ml-20 ml-12 w-[90vw] py-8 h-screen dark:text-white'>
+            <VideoScreen />
+            <SuggestedVideos />
+          </div>
         </div>
       )}
     </>

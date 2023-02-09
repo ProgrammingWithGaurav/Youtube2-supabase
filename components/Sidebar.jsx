@@ -19,7 +19,7 @@ const Sidebar = () => {
     <div
       className={`${
         isSidebar ? "min-w-[200px]" : "max-w-[60px]"
-      } h-screen flex flex-col p-2 scrollbar z-[100] bg-white fixed left-0 dark:bg-neutral-900 top-10 pb-10 pt-4`}
+      } h-screen flex flex-col p-2 scrollbar z-[100] bg-white fixed left-0 dark:bg-neutral-900 top-10 pb-10 pt-2`}
     >
       <div>
         {SidebarIcons?.map((icon) => (
@@ -74,15 +74,14 @@ const Sidebar = () => {
                   setLoading(true);
                   setLoadingProgress(60);
                   setTimeout(() => {
-                    setLoadingProgress(80);
-                  }, 500);
-
-                  setTimeout(() => {
+                    setLoadingProgress(100);
                     setActiveSubscription(subscription.channelDisplayName);
                     router.push(`/${subscription.channelName}`);
-                    setLoadingProgress(100);
+                  }, 500);
+                  
+                  setTimeout(() => {
                     setLoading(false);
-                  }, 700);
+                  }, 800);
                 }}
                 className={`${
                   isSidebar ? "rounded-lg" : "rounded-full"
