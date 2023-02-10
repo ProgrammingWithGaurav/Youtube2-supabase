@@ -4,7 +4,7 @@
 
 @layer components {
   .clickable-icon {
-    @apply text-gray-900 w-10 h-10 p-2 transition hover:bg-gray-50 active:bg-gray-100 rounded-full cursor-pointer dark:text-white dark:hover:bg-white/20;
+    @apply text-gray-900 w-10 h-10 p-2 transition hover:bg-gray-50 active:bg-gray-100 rounded-full cursor-pointer dark:text-white dark:hover:bg-white/20 dark:active:bg-white/10;
   }
 
   .icon {
@@ -26,4 +26,15 @@
   .video-control {
     @apply dark:bg-white/10 dark:hover:bg-white/20 transition-none bg-gray-100 hover:bg-gray-200;
   }
+
+  .video {
+    @apply  hover:bg-gray-100 rounded-xl dark:hover:bg-white/10;
+  }
+
+
+  .input {
+    @apply bg-transparent outline-none p-2 px-4 rounded-full focus:border-b-2 focus:border-b-blue-400;
+  }
 }
+
+

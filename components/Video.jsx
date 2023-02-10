@@ -27,7 +27,10 @@ export default function Video({
   const [videoOptions, setVideoOptions] = useState();
 
   return (
-    <div className=" cursor-pointer w-full h-64 my-2 hover:scale-105 transition group" onClick={() => router.push(`/watch/${uid}`)}>
+    <div
+      className=" cursor-pointer w-full h-64 my-2 hover:scale-105 transition group"
+      onClick={() => router.push(`/watch/${uid}`)}
+    >
       <div className="relative">
         <img
           src={thumbnail}
@@ -39,7 +42,7 @@ export default function Video({
         </span>
       </div>
       <div className="p-1 -mt-2 px-0">
-        <h4 className="text-gray-900 dark:text-white font-bold truncate flex">
+        <div className="text-gray-900 dark:text-white font-bold truncate flex">
           <img
             onClick={() => router.push(`/${channelName}`)}
             src={channelImage}
@@ -66,14 +69,15 @@ export default function Video({
               className="dark:text-gray-400 text-sm font-normal"
               onClick={() => router.push(`/${channelName}`)}
             >
-              {numify(views)} views • {timeAgo.format(timestamp)}
+              {numify(views)} {views > 1 ? "views" : "view"} •{" "}
+              {timeAgo.format(timestamp)}
             </span>
           </div>
           <EllipsisVerticalIcon
             onClick={() => setVideoOptions(!videoOptions)}
             className="clickable-icon w-8 h-8 p-1 dark:text-white text-gray-600 rounded-lg mt-4 opacity-0 group-hover:opacity-100"
           />
-        </h4>
+        </div>
         {videoOptions && (
           <div className="bg-white shadow p-2 rounded-xl dark:bg-neutral-900 w-[300px] h-auto aboslute">
             {VideoOptions.map((option) => (

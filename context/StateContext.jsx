@@ -198,7 +198,15 @@ export const StateProvider = ({ children }) => {
       type: "programming",
       channelImage:
         "https://yt3.ggpht.com/ytc/AL5GRJXoWnTXp_oljCbsD07kYmc6Vktj3J0Vs64ALooxgA=s68-c-k-c0x00ffffff-no-rj",
-      uid: '802618681ff'
+      uid: '802618681ff',
+      comments: [
+        {
+          channeName: 'Gaurav',
+          channeDisplayName: 'Gaurav',
+          subscribers: 122233232000,
+          comment: 'This is an awesome video 🙂'
+        }
+      ]
     },
     {
       thumbnail:
@@ -217,8 +225,8 @@ export const StateProvider = ({ children }) => {
       type: "programming",
       channelImage:
         "https://yt3.ggpht.com/ytc/AL5GRJXoWnTXp_oljCbsD07kYmc6Vktj3J0Vs64ALooxgA=s68-c-k-c0x00ffffff-no-rj",
-      uid: '802618681ff2'
-
+      uid: '802618681ff2',
+      comments: []
     },
     {
       thumbnail:
@@ -236,7 +244,8 @@ export const StateProvider = ({ children }) => {
       type: "programming",
       channelImage:
         "https://yt3.ggpht.com/ytc/AL5GRJXoWnTXp_oljCbsD07kYmc6Vktj3J0Vs64ALooxgA=s68-c-k-c0x00ffffff-no-rj",
-      uid: '802618681ff1'
+      uid: '802618681ff1',
+      comments: []
 
     },
   ]);

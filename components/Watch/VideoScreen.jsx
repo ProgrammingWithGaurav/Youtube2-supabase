@@ -11,14 +11,23 @@ import { numify } from "numify";
 import { useState } from "react";
 import { useChannelState } from "../../context/ChannelState";
 import { useStateContext } from "../../context/StateContext";
+import {
+  HandThumbUpIcon as ActiveHandThumbUpIcon,
+  HandThumbDownIcon as ActiveHandThumbDownIcon,
+} from "@heroicons/react/24/solid";
+import TimeAgo from "javascript-time-ago";
+import CommentInput from '../Comment/CommentInput';
 
 const VideoScreen = () => {
   const {
-    activeVideo: { url, title, channelImage, channelDisplayName, subscribers },
+    activeVideo: { url,views, title, channelImage, channelDisplayName, subscribers, timestamp, type, description, comments },
   } = useStateContext();
-  const { Subscribe, UnSubscribe } = useChannelState();
-  const [hasLiked, setHasLiked] = useState(false);
+  const { Subscribe, UnSubscribe, Like, Dislike } = useChannelState();
+  const [like, setLike] = useState({ like: true, dislike: false });
   const [subscribed, setSubscribed] = useState(false);
+  const [showDescription, setShowDescription] = useState(false);
+  
+  const timeAgo = new TimeAgo("en-US");
 
   return (
     <div className="lg:w-8/12 w-screen scrollbar overflow-x-hidden h-screen flex flex-col p-2">
@@ -73,18 +82,71 @@ const VideoScreen = () => {
 
         <div className="flex gap-2 items-center">
           <div className="dark:bg-white/10 bg-gray-100 transition-none flex items-center rounded-full">
-            <span className='video-control rounded-full rounded-r-none text-sm cursor-pointer pr-2 flex items-center'>
-            <HandThumbUpIcon className="icon" />
+            <span className="video-control rounded-full rounded-r-none text-sm cursor-pointer pr-2 flex items-center">
+              {like?.like ? (
+                <ActiveHandThumbUpIcon
+                  className="icon"
+                  onClick={() => Like(like, setLike)}
+                />
+              ) : (
+                <HandThumbUpIcon
+                  className="icon"
+                  onClick={() => Like(like, setLike)}
+                />
+              )}
               1.1k
             </span>
             <div className="w-[1px] video- h-8 py-2 bg-gray-300 dark:bg-white"></div>
-            <HandThumbDownIcon className="icon rounded-l-none video-control" />
+            {like.dislike ? (
+              <ActiveHandThumbDownIcon
+                className="icon rounded-l-none video-control"
+                onClick={() => Dislike(like, setLike)}
+              />
+            ) : (
+              <HandThumbDownIcon
+                className="icon rounded-l-none video-control"
+                onClick={() => Dislike(like, setLike)}
+              />
+            )}
           </div>
           <ShareIcon className="clickable-icon video-control" />
           <CurrencyDollarIcon className="clickable-icon video-control" />
           <EllipsisHorizontalIcon className="clickable-icon video-control" />
         </div>
       </div>
+
+      <div onClick={() => showDescription === false && setShowDescription( true)} className="w-full p-4 video-control rounded-xl cursor-pointer my-2 flex flex-col">
+              <p className="font-semibold text-sm my-1">
+                 <span>{numify(views)} {views > 1 ? 'views' : 'view'} </span>
+                 <span>{timeAgo.format(timestamp)} </span>
+                 <span className='text-blue-500 dark:text-blue-400'>#{type}</span>
+              </p>
+
+              <p className='my-2'>
+                {description.length > 100 && !showDescription ? 
+                <span>{description.slice(0, 100)}...</span>
+                : 
+                <span>{description}</span>
+                }
+                <br/>
+                <span className='mt-4 text-blue-500 dark:text-blue-400'>#{type}</span>
+                <br />
+                <span className='my-4 font-semibold' onClick={() => {setShowDescription(!showDescription); console.log(showDescription)}}>Show {showDescription ? 'less' : 'more'}</span>
+                
+
+              </p>
+      </div>
+
+
+<div className="py-4 ">
+  <p className='text-lg'>Comments</p>
+  <CommentInput />
+  <div>
+
+  </div>
+</div>
+    
+      
     </div>
   );
 };

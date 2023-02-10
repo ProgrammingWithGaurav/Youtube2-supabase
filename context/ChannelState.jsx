@@ -2,12 +2,9 @@ import { useContext, createContext, useState } from "react";
 export const ChannelState = createContext();
 
 export const ChannelStateProvider = ({ children }) => {
-
-  
   const [currentChannel, setCurrentChannel] = useState({
     channelName: "Gaurav",
-    channelImage:
-      "https://avatars.githubusercontent.com/u/88154142?v=4",
+    channelImage: "https://avatars.githubusercontent.com/u/88154142?v=4",
     channelBannerImage:
       "https://cdn.pixabay.com/photo/2017/10/31/19/05/web-design-2906159__480.jpg",
     subscribers: 1301310301,
@@ -49,10 +46,10 @@ export const ChannelStateProvider = ({ children }) => {
           "https://yt3.googleusercontent.com/ytc/AL5GRJXoWnTXp_oljCbsD07kYmc6Vktj3J0Vs64ALooxgA=s176-c-k-c0x00ffffff-no-rj",
       },
     ],
-    email: 'gaurav@gmail.com'
-});
+    email: "gaurav@gmail.com",
+  });
 
-  const [channelSearch, setChannelSearch] = useState('');
+  const [channelSearch, setChannelSearch] = useState("");
 
   const [channels, setChannels] = useState([
     {
@@ -97,18 +94,18 @@ export const ChannelStateProvider = ({ children }) => {
         {
           name: "Premium Programmer's Shirt",
           price: 1000,
-          productPage: 'https://unsplash.com/photos/Wr0TpKqf26s',
-          productImage: 'https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80',
-          sponsor: 'Unsplash'
-        }
+          productPage: "https://unsplash.com/photos/Wr0TpKqf26s",
+          productImage:
+            "https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80",
+          sponsor: "Unsplash",
+        },
       ],
-      email: 'gaurav@gmail.com'
+      email: "gaurav@gmail.com",
     },
-    
+
     {
       channelName: "Gaurav",
-      channelImage:
-        "https://avatars.githubusercontent.com/u/88154142?v=4",
+      channelImage: "https://avatars.githubusercontent.com/u/88154142?v=4",
       channelBannerImage:
         "https://cdn.pixabay.com/photo/2017/10/31/19/05/web-design-2906159__480.jpg",
       subscribers: 122233232000,
@@ -147,31 +144,53 @@ export const ChannelStateProvider = ({ children }) => {
         {
           name: "Premium Programmer's Shirt",
           price: 1000,
-          productPage: 'https://unsplash.com/photos/Wr0TpKqf26s',
-          productImage: 'https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80',
-          sponsor: 'Unsplash'
-        }
+          productPage: "https://unsplash.com/photos/Wr0TpKqf26s",
+          productImage:
+            "https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80",
+          sponsor: "Unsplash",
+        },
       ],
-      email: 'gaurav@gmail.com'
-    }
-  ])
+      email: "gaurav@gmail.com",
+    },
+  ]);
 
   const UnSubscribe = (setSubscribed) => {
     setTimeout(() => {
-        setSubscribed(false)
+      setSubscribed(false);
     }, 500);
-  }
+  };
 
   const Subscribe = (setSubscribed) => {
     setTimeout(() => {
-        setSubscribed(true)
+      setSubscribed(true);
     }, 500);
-  }
+  };
+
+  const Like = (like, setLike) => {
+    like.like
+      ? setLike({ like: false, dislike: false })
+      : setLike({ like: true, dislike: false });
+  };
+
+  const Dislike = (like, setLike) => {
+    like.dislike
+      ? setLike({ like: false, dislike: false })
+      : setLike({ like: false, dislike: true });
+  };
 
   return (
     <ChannelState.Provider
       value={{
-        currentChannel, setCurrentChannel, channelSearch, setChannelSearch, channels, setChannels, Subscribe, UnSubscribe
+        currentChannel,
+        setCurrentChannel,
+        channelSearch,
+        setChannelSearch,
+        channels,
+        setChannels,
+        Subscribe,
+        UnSubscribe,
+        Like,
+        Dislike,
       }}
     >
       {children}
