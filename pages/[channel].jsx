@@ -45,7 +45,18 @@ const Channel = ({ channel }) => {
     );
     if (channelDetails.length === 0) router.push("/");
     else {
-      setActiveChannel(channelDetails[0]);
+      setLoading(true);
+      setLoadingProgress(70);
+      setTimeout(() => {
+        setLoadingProgress(100);
+      }, 500);
+
+      setTimeout(() => {
+        setLoadingProgress(100);
+        setActiveChannel(channelDetails[0]);
+
+        setLoading(false);
+      }, 700);
     }
   }, []);
 

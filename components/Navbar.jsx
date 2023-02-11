@@ -114,6 +114,7 @@ const Header = () => {
             />
           }
           hoverText="Search with your voice"
+          width="w-40"
         />
       </div>
       <div className="flex items-center">

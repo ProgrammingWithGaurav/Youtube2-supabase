@@ -50,6 +50,7 @@ export const ChannelStateProvider = ({ children }) => {
   });
 
   const [channelSearch, setChannelSearch] = useState("");
+  const [commentOption, setCommentOption] = useState('');
 
   const [channels, setChannels] = useState([
     {
@@ -166,17 +167,38 @@ export const ChannelStateProvider = ({ children }) => {
     }, 500);
   };
 
-  const Like = (like, setLike) => {
-    like.like
-      ? setLike({ like: false, dislike: false })
-      : setLike({ like: true, dislike: false });
+  const Like = (like, setLike, type) => {
+    if (type === "video") {
+      like.like
+        ? setLike({ like: false, dislike: false })
+        : setLike({ like: true, dislike: false });
+    } else if (type === "comment") {
+      like.like
+        ? setLike({ like: false, dislike: false })
+        : setLike({ like: true, dislike: false });
+    } else if (type === "reply") {
+      like.like
+        ? setLike({ like: false, dislike: false })
+        : setLike({ like: true, dislike: false });
+    }
   };
 
-  const Dislike = (like, setLike) => {
-    like.dislike
-      ? setLike({ like: false, dislike: false })
-      : setLike({ like: false, dislike: true });
+  const Dislike = (like, setLike, type) => {
+    if (type === "video") {
+      like.dislike
+        ? setLike({ like: false, dislike: false })
+        : setLike({ like: false, dislike: true });
+    } else if (type === "comment") {
+      like.dislike
+        ? setLike({ like: false, dislike: false })
+        : setLike({ like: false, dislike: true });
+    } else if (type === "reply") {
+      like.dislike
+        ? setLike({ like: false, dislike: false })
+        : setLike({ like: false, dislike: true });
+    }
   };
+
 
   return (
     <ChannelState.Provider
@@ -191,6 +213,8 @@ export const ChannelStateProvider = ({ children }) => {
         UnSubscribe,
         Like,
         Dislike,
+        commentOption,
+        setCommentOption
       }}
     >
       {children}

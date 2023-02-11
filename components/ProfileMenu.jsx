@@ -16,7 +16,7 @@ export default function ProfileMenu() {
             <img
               src={channelImage}
               alt="profile picture"
-              className="icon w-14 h-14"
+              className="clickable-icon w-14 h-14"
             />
           </Menu.Button>
         </div>

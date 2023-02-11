@@ -33,7 +33,15 @@
 
 
   .input {
-    @apply bg-transparent outline-none p-2 px-4 rounded-full focus:border-b-2 focus:border-b-blue-400;
+    @apply bg-transparent outline-none p-2 px-4 transition border-b-2 border-b-transparent dark:bg-white/10 focus:border-b-blue-400  rounded-full focus:rounded-b-none focus:rounded-t-xl bg-gray-100;
+  }
+
+  .text-gray {
+    @apply text-gray-500 dark:hover:text-gray-400 hover:text-gray-600 text-sm cursor-pointer transition;
+  }
+
+  .text-bold {
+    @apply text-gray-800 dark:text-white font-semibold;
   }
 }
 

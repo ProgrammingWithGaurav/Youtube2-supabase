@@ -198,15 +198,54 @@ export const StateProvider = ({ children }) => {
       type: "programming",
       channelImage:
         "https://yt3.ggpht.com/ytc/AL5GRJXoWnTXp_oljCbsD07kYmc6Vktj3J0Vs64ALooxgA=s68-c-k-c0x00ffffff-no-rj",
-      uid: '802618681ff',
+      uid: "802618681ff",
       comments: [
         {
-          channeName: 'Gaurav',
-          channeDisplayName: 'Gaurav',
-          subscribers: 122233232000,
-          comment: 'This is an awesome video 🙂'
-        }
-      ]
+          channelName: "Gaurav",
+          timestamp: new Date(),
+          channelDisplayName: "Gaurav",
+          comment: "This is an awesome video 🙂",
+          uid: 32553252,
+          channelImage: "https://avatars.githubusercontent.com/u/88154142?v=4",
+          gotHeart: true,
+          likes: [
+            'Gaurav'
+          ],
+          replies: [
+            {
+              channelName: "Gaurav",
+              channelDisplayName: "Gaurav",
+              channelImage:
+                "https://avatars.githubusercontent.com/u/88154142?v=4",
+              reply: "This is my reply 🙂",
+              timestamp: new Date(),
+            },
+          ],
+        },
+        
+        {
+          channelName: "CleverProgrammer",
+          timestamp: new Date(),
+          channelDisplayName: "Clever Programmer",
+          comment: "Thanks",
+          uid: 32553252,
+          channelImage: "https://avatars.githubusercontent.com/u/88154142?v=4",
+          gotHeart: true,
+          likes: [
+            'Gaurav'
+          ],
+          replies: [
+            {
+              channelName: "Gaurav",
+              channelDisplayName: "Gaurav",
+              channelImage:
+                "https://yt3.ggpht.com/ytc/AL5GRJXoWnTXp_oljCbsD07kYmc6Vktj3J0Vs64ALooxgA=s88-c-k-c0x00ffffff-no-rj",
+              reply: "This is my reply 🙂",
+              timestamp: new Date(),
+            },
+          ],
+        },
+      ],
     },
     {
       thumbnail:
@@ -225,8 +264,8 @@ export const StateProvider = ({ children }) => {
       type: "programming",
       channelImage:
         "https://yt3.ggpht.com/ytc/AL5GRJXoWnTXp_oljCbsD07kYmc6Vktj3J0Vs64ALooxgA=s68-c-k-c0x00ffffff-no-rj",
-      uid: '802618681ff2',
-      comments: []
+      uid: "802618681ff2",
+      comments: [],
     },
     {
       thumbnail:
@@ -244,9 +283,8 @@ export const StateProvider = ({ children }) => {
       type: "programming",
       channelImage:
         "https://yt3.ggpht.com/ytc/AL5GRJXoWnTXp_oljCbsD07kYmc6Vktj3J0Vs64ALooxgA=s68-c-k-c0x00ffffff-no-rj",
-      uid: '802618681ff1',
-      comments: []
-
+      uid: "802618681ff1",
+      comments: [],
     },
   ]);
 
@@ -343,7 +381,7 @@ export const StateProvider = ({ children }) => {
         channelTab,
         setChannelTab,
         activeVideo,
-        setActiveVideo
+        setActiveVideo,
       }}
     >
       {children}
