@@ -69,7 +69,7 @@ const Home = () => {
           columnClassName="my-masonry-grid_column"
         >
           {newVideos?.map((video) => (
-            <Video key={video.channelName} {...video} />
+            <Video key={video.uid} {...video} />
           ))}
         </Masonry>
       </div>

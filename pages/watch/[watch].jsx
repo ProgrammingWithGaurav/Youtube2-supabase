@@ -19,7 +19,7 @@ export default function Watch({ uid }) {
     setActiveVideo,
     activeVideo,
     setLoading,
-    setLoadingProgress
+    setLoadingProgress,
   } = useStateContext();
   const router = useRouter();
 
@@ -28,20 +28,20 @@ export default function Watch({ uid }) {
     const videoDetails = videos.filter((video) => video.uid === uid);
     if (videoDetails.length === 0) router.push("/");
     else {
-      setLoading(true)
-      setLoadingProgress(70)
+      setLoading(true);
+      setLoadingProgress(70);
       setTimeout(() => {
-        setLoadingProgress(100)
-      }, 500)
-      
+        setLoadingProgress(100);
+      }, 500);
+
       setTimeout(() => {
-        setLoadingProgress(100)
+        setLoadingProgress(100);
         setActiveVideo(videoDetails[0]);
-        setLoading(false)
-      }, 700)
+        setLoading(false);
+      }, 700);
     }
   }, []);
-  
+
   useEffect(() => {
     activeVideo === null && router.push("/");
   }, [activeVideo]);
@@ -70,7 +70,7 @@ export default function Watch({ uid }) {
           {user && <Sidebar />}
           {loading && <LoadingBar color="#f11946" progress={loadingProgress} />}
 
-          <div className='flex lg:ml-20 ml-12 w-[90vw] py-8 h-screen dark:text-white'>
+          <div className="flex lg:ml-20 ml-12 mt-4 w-[90vw] py-8 pb-20 min-h-screen overflow-x-hidden scrollbar dark:text-white">
             <VideoScreen />
             <SuggestedVideos />
           </div>

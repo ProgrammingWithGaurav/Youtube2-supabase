@@ -18,6 +18,7 @@ import {
 import TimeAgo from "javascript-time-ago";
 import CommentInput from "../Comment/CommentInput";
 import Comment from "../Comment/Comment";
+import { useRouter } from "next/router";
 
 const VideoScreen = () => {
   const {
@@ -25,26 +26,32 @@ const VideoScreen = () => {
       url,
       views,
       title,
-      channelImage,
-      channelDisplayName,
-      subscribers,
-      timestamp,
       type,
       description,
       comments,
+      channelRef,
+      timestamp,
+      uid,
     },
+    videoOption,
+    VideoOptions,
+    setVideoOption,
   } = useStateContext();
-  const { Subscribe, UnSubscribe, Like, Dislike } = useChannelState();
+  const { Subscribe, UnSubscribe, Like, Dislike, fetchChannelDetails } =
+    useChannelState();
   const [like, setLike] = useState({ like: true, dislike: false });
   const [subscribed, setSubscribed] = useState(false);
+  const { channelImage, channelDisplayName, subscribers, channelName } =
+    fetchChannelDetails(channelRef);
   const [showDescription, setShowDescription] = useState(false);
 
   const timeAgo = new TimeAgo("en-US");
+  const router = useRouter();
 
   return (
-    <div className="lg:w-8/12 w-screen scrollbar overflow-x-hidden h-screen flex flex-col p-2">
+    <div className="lg:w-8/12 w-screen flex flex-col p-2">
       <video
-        className="w-full lg:h-[70vh] sm:h-[500px] object-cover rounded-xl"
+        className="w-full lg:h-[75vh] sm:h-[550px] object-cover rounded-xl"
         controls
       >
         <source
@@ -56,15 +63,19 @@ const VideoScreen = () => {
       </video>
       <p className="text-xl my-1 font-bold leading-6">{title}</p>
 
-      <div className="flex items-center justify-between  my-2">
+      <div className="flex items-center justify-between my-2 relative">
         <div className="flex gap-2 items-center">
           <img
             src={channelImage}
             alt="channel picture"
+            onClick={() => router.push(`/@${channelName}`)}
             className="clickable-icon w-10 h-10 p-0"
           />
           <div className="flex flex-col">
-            <span className="font-semibold dark:text-white text-sm">
+            <span
+              className="font-semibold dark:text-white text-sm cursor-pointer"
+              onClick={() => router.push(`/@${channelName}`)}
+            >
               {channelDisplayName}
             </span>
             <span className="dark:text-gray-400 text-xs">
@@ -95,7 +106,7 @@ const VideoScreen = () => {
         <div className="flex gap-2 items-center">
           <div className="dark:bg-white/10 bg-gray-100 transition-none flex items-center rounded-full">
             <span
-              onClick={() => Like(like, setLike, 'video')}
+              onClick={() => Like(like, setLike, "video")}
               className="video-control rounded-full rounded-r-none text-sm cursor-pointer pr-2 flex items-center"
             >
               {like?.like ? (
@@ -109,30 +120,54 @@ const VideoScreen = () => {
             {like.dislike ? (
               <ActiveHandThumbDownIcon
                 className="icon rounded-l-none video-control"
-                onClick={() => Dislike(like, setLike, 'video')}
+                onClick={() => Dislike(like, setLike, "video")}
               />
             ) : (
               <HandThumbDownIcon
                 className="icon rounded-l-none video-control"
-                onClick={() => Dislike(like, setLike, 'video')}
+                onClick={() => Dislike(like, setLike, "video")}
               />
             )}
           </div>
           <ShareIcon className="clickable-icon video-control" />
           <CurrencyDollarIcon className="clickable-icon video-control" />
-          <EllipsisHorizontalIcon className="clickable-icon video-control" />
+          <EllipsisHorizontalIcon
+            onClick={() =>
+              videoOption === uid ? setVideoOption("") : setVideoOption(uid)
+            }
+            className="clickable-icon video-control"
+          />
         </div>
+        {videoOption === uid && (
+          <div className="bg-white shadow p-2 rounded-xl dark:bg-neutral-900 w-[300px] h-auto absolute right-10 top-10">
+            {VideoOptions.map((option) => (
+              <div
+                onClick={() => {
+                  option.onClick();
+                  setVideoOption("");
+                }}
+                className={`flex rounded-xl dark:hover:bg-white/20 items-center cursor-pointer transition my-2 hover:bg-gray-100 active:bg-gray-200`}
+                key={option.name}
+              >
+                <span className="1/3">{option.icon}</span>
+                <span className={`text-sm text-gray-900 dark:text-white`}>
+                  {option.name}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       <div
         onClick={() => showDescription === false && setShowDescription(true)}
-        className="w-full p-4 video-control rounded-xl cursor-pointer my-2 flex flex-col"
+        className="lg:w-full p-4 video-control h-auto rounded-xl cursor-pointer my-2 flex flex-col"
       >
         <p className="font-semibold text-sm my-1">
           <span>
             {numify(views)} {views > 1 ? "views" : "view"}{" "}
           </span>
-          <span>{timeAgo.format(timestamp)} </span>
+          <span>{timeAgo?.format(timestamp)} </span>
           <span className="text-blue-500 dark:text-blue-400">#{type}</span>
         </p>
 
@@ -149,7 +184,6 @@ const VideoScreen = () => {
             className="my-4 font-semibold"
             onClick={() => {
               setShowDescription(!showDescription);
-              console.log(showDescription);
             }}
           >
             Show {showDescription ? "less" : "more"}
@@ -161,7 +195,11 @@ const VideoScreen = () => {
         <p className="text-lg">Comments</p>
         <CommentInput />
         {comments?.map((comment) => (
-          <Comment channelCommented={channelDisplayName} key={comment?.timestamp} {...comment} />
+          <Comment
+            channelCommented={channelDisplayName}
+            key={comment?.timestamp}
+            {...comment}
+          />
         ))}
         <div></div>
       </div>

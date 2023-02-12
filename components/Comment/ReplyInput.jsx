@@ -4,8 +4,8 @@ import { useChannelState } from "../../context/ChannelState";
 import { FaceSmileIcon } from "@heroicons/react/24/outline";
 import { useStateContext } from "../../context/StateContext";
 
-const ReplyInput = ({ setReplyInput, setLoading }) => {
-  const [reply, setReply] = useState("");
+const ReplyInput = ({ setReplyInput, setLoading, input }) => {
+  const [reply, setReply] = useState(input ? input : "");
   const { currentChannel } = useChannelState();
   const { appearance } = useStateContext();
   const { channelImage } = currentChannel;

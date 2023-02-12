@@ -20,9 +20,8 @@ import Tooltip from "../Tooltip";
 import { numify } from "numify";
 import { PacmanLoader } from "react-spinners";
 import ReplyInput from "./ReplyInput";
-import Reply from "./Reply";
 
-const Comment = ({
+const Reply = ({
   channelImage,
   channelDisplayName,
   timestamp,
@@ -31,14 +30,13 @@ const Comment = ({
   channelName,
   gotHeart,
   replies,
-  channelCommented,
+  channelReplied,
   uid,
 }) => {
   const timeAgo = new TimeAgo("en-US");
   const router = useRouter();
   const { Like, Dislike, setCommentOption, commentOption } = useChannelState();
   const [like, setLike] = useState({ like: true, dislike: false });
-  const [showReply, setShowReply] = useState(true);
   const [loading, setLoading] = useState(false);
   const [replyInput, setReplyInput] = useState(false);
 
@@ -47,7 +45,7 @@ const Comment = ({
       className="flex flex-col dark:text-white"
       onClick={() => commentOption && setCommentOption("")}
     >
-      <div className="flex items-center relative w-full">
+      <div className="flex items-center relative lg:w-[53vw] w-[90vw] ">
         <img
           onClick={() => router.push(`/${channelName}`)}
           src={channelImage}
@@ -123,7 +121,7 @@ const Comment = ({
                   <HeartIcon className="text-red-500 w-4 h-4 absolute -bottom-1 -right-1" />
                 </span>
               }
-              hoverText={`🤍 by ${channelCommented}`}
+              hoverText={`🤍 by ${channelReplied}`}
               width="w-36"
             />
           )}
@@ -136,48 +134,15 @@ const Comment = ({
           </button>
         </p>
         {replyInput && (
-          <ReplyInput setLoading={setLoading} setReplyInput={setReplyInput} />
+          <ReplyInput
+            input={`@${channelName} `}
+            setLoading={setLoading}
+            setReplyInput={setReplyInput}
+          />
         )}
-
-        <div className="flex flex-col px-16 my-4 ">
-          {replies.length > 0 && (
-            <span
-              className="flex items-center text-sm gap-2 w-28 px-4 py-2 text-blue-500 cursor-pointer hover:bg-blue-500/20 rounded-full"
-              onClick={() => {
-                if (showReply) {
-                  setShowReply(false);
-                } else {
-                  setShowReply(true);
-                  setLoading(true);
-                  setTimeout(() => {
-                    setLoading(false);
-                  }, 800);
-                }
-              }}
-            >
-              {showReply ? (
-                <ChevronUpIcon className="w-4 h-4 text-blue-500" />
-              ) : (
-                <ChevronDownIcon className="w-4 h-4 text-blue-500" />
-              )}
-              <span>{replies.length}</span>
-              <span>
-                
-              {replies.length > 1 ? "replies" : "reply"}
-              </span>
-            </span>
-          )}
-          {loading && <PacmanLoader className="my-4 mx-auto" size={10} />}
-          {showReply && !loading && replies.length > 0 && <div className="flex">
-                {replies?.map(reply => (
-                  <Reply channelReplied={channelCommented} {...reply} key={reply?.uid} />
-                ))}
-            
-            </div>}
-        </div>
       </div>
     </div>
   );
 };
 
-export default Comment;
+export default Reply;

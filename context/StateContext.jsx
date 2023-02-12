@@ -42,8 +42,10 @@ export const StateProvider = ({ children }) => {
   const [activeSidebar, setActiveSidebar] = useState("Home");
   const [activeSubscription, setActiveSubscription] = useState("");
   const [activeCategory, setActiveCategory] = useState("All");
+  const [activeVideo, setActiveVideo] = useState("");
   const [channelTab, setChannelTab] = useState("Home");
-  const [activeVideo, setActiveVideo] = useState();
+  const [videoOption, setVideoOption] = useState("");
+  // video option will contain a uid of the video through which we can add that video the user's playlist/library when they save to watch later/playlist
 
   const [searchString, setSearchString] = useState("");
   const [user, setUser] = useState(true);
@@ -189,6 +191,8 @@ export const StateProvider = ({ children }) => {
       channelName: "CleverProgrammer",
       channelDisplayName: "Clever Prorammer",
       views: 1313121,
+      uid: "44242141",
+      channelRef: "a00c3e26-aa9b-11ed-afa1-0242ac120002",
       timestamp: new Date(),
       subscribers: 1222000,
       duration: 500,
@@ -198,19 +202,17 @@ export const StateProvider = ({ children }) => {
       type: "programming",
       channelImage:
         "https://yt3.ggpht.com/ytc/AL5GRJXoWnTXp_oljCbsD07kYmc6Vktj3J0Vs64ALooxgA=s68-c-k-c0x00ffffff-no-rj",
-      uid: "802618681ff",
       comments: [
         {
           channelName: "Gaurav",
           timestamp: new Date(),
           channelDisplayName: "Gaurav",
           comment: "This is an awesome video 🙂",
-          uid: 32553252,
+          uid: 325532252,
+          channelRef: "a00c3e26-aa9b-11fa-afa1-0242ac120003",
           channelImage: "https://avatars.githubusercontent.com/u/88154142?v=4",
           gotHeart: true,
-          likes: [
-            'Gaurav'
-          ],
+          likes: ["Gaurav"],
           replies: [
             {
               channelName: "Gaurav",
@@ -219,31 +221,23 @@ export const StateProvider = ({ children }) => {
                 "https://avatars.githubusercontent.com/u/88154142?v=4",
               reply: "This is my reply 🙂",
               timestamp: new Date(),
+              likes: ["Gaurav"],
+              gotHeart: true,
             },
           ],
         },
-        
+
         {
           channelName: "CleverProgrammer",
           timestamp: new Date(),
           channelDisplayName: "Clever Programmer",
           comment: "Thanks",
+          channelRef: "a00c3e26-aa9b-11ed-afa1-0242ac120002",
           uid: 32553252,
           channelImage: "https://avatars.githubusercontent.com/u/88154142?v=4",
           gotHeart: true,
-          likes: [
-            'Gaurav'
-          ],
-          replies: [
-            {
-              channelName: "Gaurav",
-              channelDisplayName: "Gaurav",
-              channelImage:
-                "https://yt3.ggpht.com/ytc/AL5GRJXoWnTXp_oljCbsD07kYmc6Vktj3J0Vs64ALooxgA=s88-c-k-c0x00ffffff-no-rj",
-              reply: "This is my reply 🙂",
-              timestamp: new Date(),
-            },
-          ],
+          likes: ["Gaurav"],
+          replies: [],
         },
       ],
     },
@@ -256,6 +250,7 @@ export const StateProvider = ({ children }) => {
       channelDisplayName: "Clever Prorammer",
       views: 1222222222,
       timestamp: new Date(),
+      channelRef: "a00c3e26-aa9b-11ed-afa1-0242ac120002",
       duration: 500,
       subscribers: 1222000,
       description:
@@ -265,25 +260,6 @@ export const StateProvider = ({ children }) => {
       channelImage:
         "https://yt3.ggpht.com/ytc/AL5GRJXoWnTXp_oljCbsD07kYmc6Vktj3J0Vs64ALooxgA=s68-c-k-c0x00ffffff-no-rj",
       uid: "802618681ff2",
-      comments: [],
-    },
-    {
-      thumbnail:
-        "https://i.ytimg.com/an_webp/QObVQSmlG_c/mqdefault_6s.webp?du=3000&sqp=CI2P954G&rs=AOn4CLC1tQrXDYbVW6bWzMWqqtlQ6MJAPw",
-      title: "Build Turo Web3 App with NextJS",
-      channelName: "CleverProgrammer2",
-      channelDisplayName: "Clever Prorammer",
-      views: 1222222131,
-      timestamp: new Date(),
-      duration: 500,
-      subscribers: 122200,
-      description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-      url: "https://www.youtube.com/watch?v=XIrOM9oP3pA",
-      type: "programming",
-      channelImage:
-        "https://yt3.ggpht.com/ytc/AL5GRJXoWnTXp_oljCbsD07kYmc6Vktj3J0Vs64ALooxgA=s68-c-k-c0x00ffffff-no-rj",
-      uid: "802618681ff1",
       comments: [],
     },
   ]);
@@ -382,6 +358,8 @@ export const StateProvider = ({ children }) => {
         setChannelTab,
         activeVideo,
         setActiveVideo,
+        videoOption,
+        setVideoOption,
       }}
     >
       {children}

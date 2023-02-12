@@ -8,32 +8,30 @@ import ytDuration from "youtube-duration";
 import { useStateContext } from "../context/StateContext";
 import { useState } from "react";
 import { numify } from "numify";
+import { useChannelState } from "../context/ChannelState";
 
 export default function Video({
   duration,
   thumbnail,
   timestamp,
-  channelImage,
   title,
   views,
-  channelName,
-  channelDisplayName,
   uid,
+  channelRef,
 }) {
-  const { VideoOptions } = useStateContext();
+  const { VideoOptions, videoOption, setVideoOption } = useStateContext();
+  const { fetchChannelDetails } = useChannelState();
   const router = useRouter();
+  const { channelImage, channelDisplayName, channelName } =
+    fetchChannelDetails(channelRef);
   const timeAgo = new TimeAgo("en-US");
 
-  const [videoOptions, setVideoOptions] = useState();
-
   return (
-    <div
-      className=" cursor-pointer w-full h-64 my-2 hover:scale-105 transition group"
-      onClick={() => router.push(`/watch/${uid}`)}
-    >
+    <div className=" cursor-pointer w-full h-64 my-2 hover:scale-105 transition group">
       <div className="relative">
         <img
           src={thumbnail}
+          onClick={() => router.push(`/watch/${uid}`)}
           className="rounded-xl object-cover"
           alt="video thumbnail"
         />
@@ -74,17 +72,17 @@ export default function Video({
             </span>
           </div>
           <EllipsisVerticalIcon
-            onClick={() => setVideoOptions(!videoOptions)}
+            onClick={() => videoOption === uid ? setVideoOption('') : setVideoOption(uid)}
             className="clickable-icon w-8 h-8 p-1 dark:text-white text-gray-600 rounded-lg mt-4 opacity-0 group-hover:opacity-100"
           />
         </div>
-        {videoOptions && (
-          <div className="bg-white shadow p-2 rounded-xl dark:bg-neutral-900 w-[300px] h-auto aboslute">
+        {videoOption === uid && (
+          <div className="bg-white shadow p-2 rounded-xl dark:bg-neutral-900 w-[300px] h-auto top-16 right-6 z-[1000000000] absolute">
             {VideoOptions.map((option) => (
               <div
                 onClick={() => {
                   option.onClick();
-                  setVideoOptions(false);
+                  setVideoOption("");
                 }}
                 className={`flex rounded-xl dark:hover:bg-white/20 items-center cursor-pointer transition my-2 hover:bg-gray-100 active:bg-gray-200`}
                 key={option.name}
