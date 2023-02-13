@@ -7,6 +7,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/router";
 import VideoScreen from "../../components/Watch/VideoScreen";
 import SuggestedVideos from "../../components/Watch/SuggestedVideos";
+import ShareVideo from "../../components/ShareVideo";
 
 export default function Watch({ uid }) {
   const {
@@ -41,7 +42,6 @@ export default function Watch({ uid }) {
       }, 700);
     }
   }, []);
-
   useEffect(() => {
     activeVideo === null && router.push("/");
   }, [activeVideo]);
@@ -76,6 +76,7 @@ export default function Watch({ uid }) {
           </div>
         </div>
       )}
+      <ShareVideo />
     </>
   );
 }

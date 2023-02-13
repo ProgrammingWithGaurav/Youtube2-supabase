@@ -22,12 +22,10 @@ import { PacmanLoader } from "react-spinners";
 import ReplyInput from "./ReplyInput";
 
 const Reply = ({
-  channelImage,
-  channelDisplayName,
   timestamp,
   comment,
   likes,
-  channelName,
+  channelRef,
   gotHeart,
   replies,
   channelReplied,
@@ -35,7 +33,14 @@ const Reply = ({
 }) => {
   const timeAgo = new TimeAgo("en-US");
   const router = useRouter();
-  const { Like, Dislike, setCommentOption, commentOption } = useChannelState();
+  const {
+    Like,
+    Dislike,
+    setCommentOption,
+    commentOption,
+    fetchChannelDetails,
+  } = useChannelState();
+  const { channelImage, channelDisplayName, channelName } = fetchChannelDetails(channelRef);
   const [like, setLike] = useState({ like: true, dislike: false });
   const [loading, setLoading] = useState(false);
   const [replyInput, setReplyInput] = useState(false);

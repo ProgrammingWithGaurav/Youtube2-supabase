@@ -87,7 +87,7 @@ export default function Video({
                 className={`flex rounded-xl dark:hover:bg-white/20 items-center cursor-pointer transition my-2 hover:bg-gray-100 active:bg-gray-200`}
                 key={option.name}
               >
-                <span className="1/3">{option.icon}</span>
+                <span>{option.icon}</span>
                 <span className={`text-sm text-gray-900 dark:text-white`}>
                   {option.name}
                 </span>

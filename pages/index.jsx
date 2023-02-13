@@ -3,6 +3,7 @@ import Head from "next/head";
 import { useStateContext } from "../context/StateContext";
 import Home from "../components/Home";
 import Sidebar from "../components/Sidebar";
+import ShareVideo from '../components/ShareVideo';
 import LoadingBar from "react-top-loading-bar";
 
 export default function Page() {
@@ -30,6 +31,7 @@ export default function Page() {
         <Navbar />
         {user && <Sidebar />}
         <Home />
+        <ShareVideo />
         {loading && <LoadingBar color="#f11946" progress={loadingProgress} />}
       </div>
     </>

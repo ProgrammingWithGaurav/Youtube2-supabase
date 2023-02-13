@@ -23,22 +23,28 @@ import ReplyInput from "./ReplyInput";
 import Reply from "./Reply";
 
 const Comment = ({
-  channelImage,
-  channelDisplayName,
   timestamp,
   comment,
   likes,
-  channelName,
   gotHeart,
   replies,
   channelCommented,
+  channelRef,
   uid,
 }) => {
   const timeAgo = new TimeAgo("en-US");
   const router = useRouter();
-  const { Like, Dislike, setCommentOption, commentOption } = useChannelState();
+  const {
+    Like,
+    Dislike,
+    setCommentOption,
+    commentOption,
+    fetchChannelDetails,
+  } = useChannelState();
   const [like, setLike] = useState({ like: true, dislike: false });
   const [showReply, setShowReply] = useState(true);
+  const { channelImage, channelDisplayName, channelName } =
+    fetchChannelDetails(channelRef);
   const [loading, setLoading] = useState(false);
   const [replyInput, setReplyInput] = useState(false);
 
@@ -161,19 +167,21 @@ const Comment = ({
                 <ChevronDownIcon className="w-4 h-4 text-blue-500" />
               )}
               <span>{replies.length}</span>
-              <span>
-                
-              {replies.length > 1 ? "replies" : "reply"}
-              </span>
+              <span>{replies.length > 1 ? "replies" : "reply"}</span>
             </span>
           )}
           {loading && <PacmanLoader className="my-4 mx-auto" size={10} />}
-          {showReply && !loading && replies.length > 0 && <div className="flex">
-                {replies?.map(reply => (
-                  <Reply channelReplied={channelCommented} {...reply} key={reply?.uid} />
-                ))}
-            
-            </div>}
+          {showReply && !loading && replies.length > 0 && (
+            <div className="flex">
+              {replies?.map((reply) => (
+                <Reply
+                  channelReplied={channelCommented}
+                  {...reply}
+                  key={reply?.uid}
+                />
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>

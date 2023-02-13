@@ -41,7 +41,7 @@ export const StateProvider = ({ children }) => {
 
   const [activeSidebar, setActiveSidebar] = useState("Home");
   const [activeSubscription, setActiveSubscription] = useState("");
-  const [activeCategory, setActiveCategory] = useState("All");
+  const [activeCataegory, setActiveCataegory] = useState("All");
   const [activeVideo, setActiveVideo] = useState("");
   const [channelTab, setChannelTab] = useState("Home");
   const [videoOption, setVideoOption] = useState("");
@@ -188,83 +188,91 @@ export const StateProvider = ({ children }) => {
       thumbnail:
         "https://i.ytimg.com/vi/XIrOM9oP3pA/hq720.jpg?sqp=-oaymwEcCNAFEJQDSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLDiN7R1akv6_cbfMTpTV_lUm1PgaQ",
       title: "How to make a Youtube Clone with React JS for Beginners",
-      channelName: "CleverProgrammer",
-      channelDisplayName: "Clever Prorammer",
       views: 1313121,
       uid: "44242141",
       channelRef: "a00c3e26-aa9b-11ed-afa1-0242ac120002",
       timestamp: new Date(),
-      subscribers: 1222000,
       duration: 500,
       description:
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
       url: "https://www.youtube.com/watch?v=XIrOM9oP3pA",
       type: "programming",
-      channelImage:
-        "https://yt3.ggpht.com/ytc/AL5GRJXoWnTXp_oljCbsD07kYmc6Vktj3J0Vs64ALooxgA=s68-c-k-c0x00ffffff-no-rj",
       comments: [
         {
-          channelName: "Gaurav",
           timestamp: new Date(),
-          channelDisplayName: "Gaurav",
           comment: "This is an awesome video 🙂",
           uid: 325532252,
           channelRef: "a00c3e26-aa9b-11fa-afa1-0242ac120003",
-          channelImage: "https://avatars.githubusercontent.com/u/88154142?v=4",
           gotHeart: true,
-          likes: ["Gaurav"],
+          likes: ["a00c3e26-aa9b-11fa-afa1-0242ac120003"],
           replies: [
             {
-              channelName: "Gaurav",
-              channelDisplayName: "Gaurav",
-              channelImage:
-                "https://avatars.githubusercontent.com/u/88154142?v=4",
+              channelRef: "a00c3e26-aa9b-11fa-afa1-0242ac120003",
               reply: "This is my reply 🙂",
               timestamp: new Date(),
-              likes: ["Gaurav"],
+              likes: ["a00c3e26-aa9b-11fa-afa1-0242ac120003"],
               gotHeart: true,
             },
           ],
         },
 
         {
-          channelName: "CleverProgrammer",
           timestamp: new Date(),
-          channelDisplayName: "Clever Programmer",
           comment: "Thanks",
           channelRef: "a00c3e26-aa9b-11ed-afa1-0242ac120002",
           uid: 32553252,
-          channelImage: "https://avatars.githubusercontent.com/u/88154142?v=4",
           gotHeart: true,
-          likes: ["Gaurav"],
+          likes: ["a00c3e26-aa9b-11fa-afa1-0242ac120003"],
           replies: [],
         },
       ],
     },
     {
       thumbnail:
-        "https://i.ytimg.com/vi/_6Zhfts2iao/hq720.jpg?sqp=-oaymwEcCNAFEJQDSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLAMsuyEuPTwZh9umlkAV2Vm5dmLLQ",
-      title:
-        "Top 5 Programming Languages to Learn in 2023 to Get a Job Without a College",
-      channelName: "CleverProgrammer",
-      channelDisplayName: "Clever Prorammer",
-      views: 1222222222,
-      timestamp: new Date(),
+        "https://i.ytimg.com/vi/XIrOM9oP3pA/hq720.jpg?sqp=-oaymwEcCNAFEJQDSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLDiN7R1akv6_cbfMTpTV_lUm1PgaQ",
+      title: "How to make a Youtube Clone with React JS for Beginners",
+      views: 1313121,
+      uid: "442422141",
       channelRef: "a00c3e26-aa9b-11ed-afa1-0242ac120002",
+      timestamp: new Date(),
       duration: 500,
-      subscribers: 1222000,
       description:
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
       url: "https://www.youtube.com/watch?v=XIrOM9oP3pA",
       type: "programming",
-      channelImage:
-        "https://yt3.ggpht.com/ytc/AL5GRJXoWnTXp_oljCbsD07kYmc6Vktj3J0Vs64ALooxgA=s68-c-k-c0x00ffffff-no-rj",
-      uid: "802618681ff2",
-      comments: [],
+      comments: [
+        {
+          timestamp: new Date(),
+          comment: "This is an awesome video 🙂",
+          uid: 325532252,
+          channelRef: "a00c3e26-aa9b-11fa-afa1-0242ac120003",
+          gotHeart: true,
+          likes: ["a00c3e26-aa9b-11fa-afa1-0242ac120003"],
+          replies: [
+            {
+              channelRef: "a00c3e26-aa9b-11fa-afa1-0242ac120003",
+              reply: "This is my reply 🙂",
+              timestamp: new Date(),
+              likes: ["a00c3e26-aa9b-11fa-afa1-0242ac120003"],
+              gotHeart: true,
+            },
+          ],
+        },
+
+        {
+          timestamp: new Date(),
+          comment: "Thanks",
+          channelRef: "a00c3e26-aa9b-11ed-afa1-0242ac120002",
+          uid: 32553252,
+          gotHeart: true,
+          likes: ["a00c3e26-aa9b-11fa-afa1-0242ac120003"],
+          replies: [],
+        },
+      ],
     },
   ]);
 
-  const Categories = [
+  const Cataegories = [
     "All",
     "Programming",
     "Development",
@@ -341,9 +349,9 @@ export const StateProvider = ({ children }) => {
         subscriptions,
         activeSubscription,
         setActiveSubscription,
-        Categories,
-        activeCategory,
-        setActiveCategory,
+        Cataegories,
+        activeCataegory,
+        setActiveCataegory,
         videos,
         setVideos,
         VideoOptions,

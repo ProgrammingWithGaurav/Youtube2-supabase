@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { useStateContext } from "../context/StateContext";
-import CategoriesBar from "./CategoriesBar";
+import CataegoriesBar from "./CataegoriesBar";
 import Masonry from "react-masonry-css";
 import Video from "./Video";
 
 const Home = () => {
   const {
-    Categories,
-    activeCategory,
+    Cataegories,
+    activeCataegory,
     videos,
     searchString,
     setVideos,
-    setActiveCategory,
+    setActiveCataegory,
     setLoading,
     setLoadingProgress,
   } = useStateContext();
@@ -39,29 +39,29 @@ const Home = () => {
   // }, [searchString]);
 
   // useEffect(() => {
-  //   if(activeCategory === 'All') setVideos(videos); 
+  //   if(activeCataegory === 'All') setVideos(videos); 
   //   setLoadingProgress(70);
   //   setLoading(true);
   //   setTimeout(() => {
   //     const newVideos = videos?.filter((video) =>
-  //       video?.type?.includes(activeCategory.toLowerCase())
+  //       video?.type?.includes(activeCataegory.toLowerCase())
   //     );
   //     setLoadingProgress(90);
   //     setNewVideos(newVideos);
   //     setLoading(false);
   //     setLoadingProgress(100);
   //   }, [1000]);
-  // }, [activeCategory])
+  // }, [activeCataegory])
 
   // useEffect(() => {setNewVideos(videos)}, [])
 
   return (
     <div className="flex-1">
       <div className="flex-1 pl-20 h-full flex flex-col mt-20">
-        <CategoriesBar
-          categories={Categories}
-          activeCategory={activeCategory}
-          setActiveCategory={setActiveCategory}
+        <CataegoriesBar
+          cataegories={Cataegories}
+          activeCataegory={activeCataegory}
+          setActiveCataegory={setActiveCataegory}
         />
         <Masonry
           breakpointCols={breakpointColumnsObj}
