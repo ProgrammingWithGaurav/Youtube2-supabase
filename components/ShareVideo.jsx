@@ -1,97 +1,135 @@
 import { Dialog, Transition } from "@headlessui/react";
+import { ClipboardIcon, CodeBracketIcon } from "@heroicons/react/24/outline";
 import { Fragment, useState } from "react";
-
-const ShareIcons = [
-  {
-    name: "Embed",
-    image: "https://cdn-icons-png.flaticon.com/128/711/711284.png",
-  },
-  {
-    name: "Reddit",
-    image: "https://cdn-icons-png.flaticon.com/128/3670/3670226.png",
-  },
-  {
-    name: "WhatsApp",
-    image: "https://cdn-icons-png.flaticon.com/128/2504/2504845.png",
-  },
-  {
-    name: "Facebook",
-    image: "https://cdn-icons-png.flaticon.com/128/3670/3670032.png",
-  },
-  {
-    name: "Twitter",
-    image: "https://cdn-icons-png.flaticon.com/128/3670/3670032.png",
-  },
-
-  {
-    name: "Gmail",
-    image: "https://cdn-icons-png.flaticon.com/128/732/732200.png",
-  },
-  {
-    name: "KakaoTalk",
-    image: "https://cdn-icons-png.flaticon.com/128/3670/3670032.png",
-  },
-  {
-    name: "VK",
-    image: "https://cdn-icons-png.flaticon.com/128/3670/3670032.png",
-  },
-
-  {
-    name: "OK",
-    image: "https://cdn-icons-png.flaticon.com/128/3670/3670032.png",
-  },
-
-  {
-    name: "Pinterest",
-    image: "https://cdn-icons-png.flaticon.com/128/2504/2504932.png",
-  },
-
-  {
-    name: "Blogger",
-    image: "https://cdn-icons-png.flaticon.com/128/3291/3291662.png",
-  },
-
-  {
-    name: "Tumblr",
-    image: "https://cdn-icons-png.flaticon.com/128/3536/3536602.png",
-  },
-
-  {
-    name: "LinkedIn",
-    image: "https://cdn-icons-png.flaticon.com/128/3536/3536505.png",
-  },
-  {
-    name: "Skyrock",
-    image: "https://cdn-icons-png.flaticon.com/128/3670/3670032.png",
-  },
-  {
-    name: "Mix",
-    image: "https://cdn-icons-png.flaticon.com/128/3670/3670032.png",
-  },
-  {
-    name: "goo",
-    image: "https://cdn-icons-png.flaticon.com/128/3670/3670032.png",
-  },
-];
+import { useStateContext } from "../context/StateContext";
 
 export default function ShareVideo() {
-  let [isOpen, setIsOpen] = useState(true);
+  const { shareDialog, setShareDialog, appearance, setToast, toast } =
+    useStateContext();
 
-  function closeModal() {
-    setIsOpen(false);
-  }
+  const ShareIcons = [
+    {
+      name: "Embed",
+      image: "https://cdn-icons-png.flaticon.com/128/711/711284.png",
+      onClick: (videoUrl) => {
+        navigator.clipboard.writeText(
+          `<iframe width="560" height="315" src=${videoUrl} title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`
+        );
+        setToast({
+          text: "Embed copied to cliboard",
+          icon: <CodeBracketIcon />,
+          color: "red",
+          open: true,
+        });
+        setTimeout(() => {
+          setToast({
+            ...toast,
+            open: false,
+          });
+        }, 3000);
+      },
+    },
+    {
+      name: "Reddit",
+      image: "https://cdn-icons-png.flaticon.com/128/3670/3670226.png",
+      onClick: (videoUrl) => {
+        window.open(`
+        https://www.reddit.com/submit?url=https%3A//${
+          videoUrl.split("/")[2]
+        }/watch%${videoUrl.split("/")[4]}&title=Check_Out_This_Video`);
+      },
+    },
+    {
+      name: "WhatsApp",
+      image: "https://cdn-icons-png.flaticon.com/128/2504/2504845.png",
+      onClick: (videoUrl) => {
+        window.open(`
+        https://api.whatsapp.com/send/?text=https%3A%2F%2F${
+          videoUrl.split("/")[2]
+        }%2${videoUrl.split("/")[4]}&app_absent=0
+        
+        `);
+      },
+    },
+    {
+      name: "Facebook",
+      image: "https://cdn-icons-png.flaticon.com/128/3670/3670032.png",
+      onClick: (videoUrl) => {
+        window.open(`
+        https://www.facebook.com/dialog/share?app_id=87741124305&href=https%3A//${
+          videoUrl.split("/")[2]
+        }/watch%3Fv%3D_6Zhfts2iao%26feature%3Dshare&display=popup
+        `);
+      },
+    },
+    {
+      name: "Twitter",
+      image: "https://cdn-icons-png.flaticon.com/128/3670/3670151.png",
+      onClick: (videoUrl) => {
+        window.open(`
+        https://twitter.com/intent/tweet?url=https%3A//${
+          videoUrl.split("/")[2]
+        }/${
+          videoUrl.split("/")[4]
+        }&text=Check_Out_This_Video&via=YouTube&related=YouTube
+        `);
+      },
+    },
 
-  function openModal() {
-    setIsOpen(true);
-  }
+    {
+      name: "Gmail",
+      image: "https://cdn-icons-png.flaticon.com/128/732/732200.png",
+      onClick: (videoUrl) => {
+        window.open(`
+        https://mail.google.com/mail/?view=cm&fs=1&to=someone@example.com&su=example&body=${videoUrl}
+        `);
+      },
+    },
+    {
+      name: "Pinterest",
+      image: "https://cdn-icons-png.flaticon.com/128/2504/2504932.png",
+      onClick: (videoUrl, title, thumbnail) => {
+        window.open(`
+        https://in.pinterest.com/pin/create/button/?description=${title}&is_video=true&media=${thumbnail}&url=${videoUrl}%3Dshare
+        `);
+      },
+    },
+
+    {
+      name: "Blogger",
+      image: "https://cdn-icons-png.flaticon.com/128/3291/3291662.png",
+    },
+
+    {
+      name: "Tumblr",
+      image: "https://cdn-icons-png.flaticon.com/128/3536/3536602.png",
+      onClick: (videoUrl) => {
+        window.open(`
+        https://www.tumblr.com/widgets/share/tool?shareSource=legacy&canonicalUrl=&url=${videoUrl}%3Dshare&posttype=video&content=${videourl}
+        `);
+      },
+    },
+
+    {
+      name: "LinkedIn",
+      image: "https://cdn-icons-png.flaticon.com/128/3536/3536505.png",
+    },
+  ];
 
   return (
     <>
-      <Transition appear show={isOpen} as={Fragment}>
+      <Transition appear show={shareDialog?.open} as={Fragment}>
         <Dialog
           as="div"
           className="absolute z-[100000000000]"
-          onClose={closeModal}
+          onClose={() =>
+            setShareDialog({
+              videoUrl: "",
+              open: false,
+              title: "",
+              thumbnail: "",
+            })
+          }
         >
           <Transition.Child
             as={Fragment}
@@ -116,28 +154,76 @@ export default function ShareVideo() {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                <Dialog.Panel
+                  className={`w-full max-w-md transform overflow-hidden rounded-2xl ${
+                    appearance === "dark"
+                      ? "bg-neutral-900 text-white"
+                      : "bg-white"
+                  } p-6 text-left align-middle shadow-xl transition-all`}
+                >
                   <Dialog.Title
                     as="h3"
-                    className="text-lg font-medium leading-6 text-gray-900"
+                    className={`text-lg font-medium leading-6 ${
+                      appearance === "dark" && "text-white"
+                    }`}
                   >
-                    Payment successful
+                    Share
                   </Dialog.Title>
-                  <div className="mt-2">
-                    <p className="text-sm text-gray-500">
-                      Your payment has been successfully submitted. We’ve sent
-                      you an email with all of the details of your order.
-                    </p>
-                  </div>
+                  <div className="flex flex-col">
+                    <div className="mt-2 flex items-center scrollbar space-x-4">
+                      {ShareIcons?.map((icon) => (
+                        <div
+                          key={icon.name}
+                          className="flex flex-col "
+                          onClick={() => {
+                            icon.onClick(
+                              shareDialog?.videoUrl,
+                              shareDialog?.title,
+                              shareDialog?.thumbnail
+                            );
+                          }}
+                        >
+                          <a href={"#hi"} rel="">
+                            <img
+                              src={icon.image}
+                              alt={`Social Icon ${icon.name}`}
+                              className={`p-2 ${
+                                appearance === "dark"
+                                  ? "hover:bg-white/5 active:bg-white/20"
+                                  : "hover:bg-gray-100 active:bg-gray-200"
+                              } active:scale-105 transform cursor-pointer rounded-full w-16 h-16 object-contain text-xs`}
+                            />
+                          </a>
+                          <span className="dark:text-white text-xs text-center">
+                            {icon.name}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
 
-                  <div className="mt-4">
-                    <button
-                      type="button"
-                      className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                      onClick={closeModal}
-                    >
-                      Got it, thanks!
-                    </button>
+                    <div className="p-2  rounded-xl flex items-center dark:bg-black my-4 ring-1 ring-gray-500 dark:ring-gray-400">
+                      <span className="truncate">{shareDialog?.videoUrl}</span>
+                      <button
+                        onClick={() => {
+                          navigator.clipboard.writeText(shareDialog?.videoUrl);
+                          setToast({
+                            text: "Text copied to cliboard",
+                            icon: <ClipboardIcon />,
+                            color: "blue",
+                            open: true,
+                          });
+                          setTimeout(() => {
+                            setToast({
+                              ...toast,
+                              open: false,
+                            });
+                          }, 3000);
+                        }}
+                        className="p-2 rounded-full cursor-pointer hover:opacity-90 px-4 text-sm active:opacity-100 bg-blue-500 dark:text-blue-900"
+                      >
+                        Copy
+                      </button>
+                    </div>
                   </div>
                 </Dialog.Panel>
               </Transition.Child>

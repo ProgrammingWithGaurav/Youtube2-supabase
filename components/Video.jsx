@@ -72,7 +72,9 @@ export default function Video({
             </span>
           </div>
           <EllipsisVerticalIcon
-            onClick={() => videoOption === uid ? setVideoOption('') : setVideoOption(uid)}
+            onClick={() =>
+              videoOption === uid ? setVideoOption("") : setVideoOption(uid)
+            }
             className="clickable-icon w-8 h-8 p-1 dark:text-white text-gray-600 rounded-lg mt-4 opacity-0 group-hover:opacity-100"
           />
         </div>
@@ -81,8 +83,8 @@ export default function Video({
             {VideoOptions.map((option) => (
               <div
                 onClick={() => {
-                  option.onClick();
                   setVideoOption("");
+                  option.onClick(uid, title, thumbnail);
                 }}
                 className={`flex rounded-xl dark:hover:bg-white/20 items-center cursor-pointer transition my-2 hover:bg-gray-100 active:bg-gray-200`}
                 key={option.name}

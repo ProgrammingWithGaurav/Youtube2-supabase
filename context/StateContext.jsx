@@ -46,6 +46,13 @@ export const StateProvider = ({ children }) => {
   const [channelTab, setChannelTab] = useState("Home");
   const [videoOption, setVideoOption] = useState("");
   // video option will contain a uid of the video through which we can add that video the user's playlist/library when they save to watch later/playlist
+  const [shareDialog, setShareDialog] = useState({ videoUrl: "", open: false , title: '', thumbnail: ''});
+  const [toast, setToast] = useState({
+    text: "",
+    icon: "",
+    color: "",
+    open: true,
+  });
 
   const [searchString, setSearchString] = useState("");
   const [user, setUser] = useState(true);
@@ -313,8 +320,13 @@ export const StateProvider = ({ children }) => {
     {
       name: "Share",
       icon: <ShareIcon className="icon" />,
-      onClick: () => {
-        console.log("saved video to watch later");
+      onClick: (uid, title, thumbnail) => {
+        setShareDialog({
+          videoUrl: `${process.env.NEXT_PUBLIC_URL}/watch/${uid}`,
+          open: true,
+          title,
+          thumbnail
+        });
       },
     },
   ];
@@ -368,6 +380,10 @@ export const StateProvider = ({ children }) => {
         setActiveVideo,
         videoOption,
         setVideoOption,
+        shareDialog,
+        setShareDialog,
+        toast,
+        setToast,
       }}
     >
       {children}

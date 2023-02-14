@@ -8,9 +8,11 @@ import { useRouter } from "next/router";
 import VideoScreen from "../../components/Watch/VideoScreen";
 import SuggestedVideos from "../../components/Watch/SuggestedVideos";
 import ShareVideo from "../../components/ShareVideo";
+import Toast from "../../components/Toast";
 
 export default function Watch({ uid }) {
   const {
+    shareDialog,
     appearance,
     user,
     loading,
@@ -21,6 +23,7 @@ export default function Watch({ uid }) {
     activeVideo,
     setLoading,
     setLoadingProgress,
+    toast,
   } = useStateContext();
   const router = useRouter();
 
@@ -76,7 +79,9 @@ export default function Watch({ uid }) {
           </div>
         </div>
       )}
-      <ShareVideo />
+      {shareDialog?.videoUrl !== "" && shareDialog?.open && <ShareVideo />}
+
+      {toast?.open && <Toast />}
     </>
   );
 }

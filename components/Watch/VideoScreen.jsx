@@ -24,6 +24,7 @@ const VideoScreen = () => {
   const {
     activeVideo: {
       url,
+      thumbnail,
       views,
       title,
       type,
@@ -36,6 +37,7 @@ const VideoScreen = () => {
     videoOption,
     VideoOptions,
     setVideoOption,
+    setShareDialog,
   } = useStateContext();
   const { Subscribe, UnSubscribe, Like, Dislike, fetchChannelDetails } =
     useChannelState();
@@ -53,6 +55,7 @@ const VideoScreen = () => {
       <video
         className="w-full lg:h-[75vh] sm:h-[550px] object-cover rounded-xl"
         controls
+        autoPlay
       >
         <source
           src={
@@ -129,7 +132,17 @@ const VideoScreen = () => {
               />
             )}
           </div>
-          <ShareIcon className="clickable-icon video-control" />
+          <ShareIcon
+            className="clickable-icon video-control"
+            onClick={() =>
+              setShareDialog({
+                videoUrl: `${process.env.NEXT_PUBLIC_URL}/watch/${uid}`,
+                open: true,
+                title,
+                thumbnail,
+              })
+            }
+          />
           <CurrencyDollarIcon className="clickable-icon video-control" />
           <EllipsisHorizontalIcon
             onClick={() =>
