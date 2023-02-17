@@ -1,4 +1,5 @@
 import { useContext, createContext, useState } from "react";
+import UIDGenerator from "uid-generator";
 export const ChannelState = createContext();
 
 export const ChannelStateProvider = ({ children }) => {
@@ -8,7 +9,7 @@ export const ChannelStateProvider = ({ children }) => {
     channelBannerImage:
       "https://cdn.pixabay.com/photo/2017/10/31/19/05/web-design-2906159__480.jpg",
     subscribers: 1301310301,
-    uid: "a00c3930-aa9b-11ed-afa1-0242ac120002",
+    uid: "a00c3e26-aa9b-11fa-afa1-0242ac120003",
     channelDisplayName: "Gaurav",
     socialLinks: [
       {
@@ -40,6 +41,7 @@ export const ChannelStateProvider = ({ children }) => {
 
   const [channelSearch, setChannelSearch] = useState("");
   const [commentOption, setCommentOption] = useState("");
+  const [likedVideos, setLikedVideos] = useState([]);
 
   const [channels, setChannels] = useState([
     {
@@ -221,6 +223,18 @@ export const ChannelStateProvider = ({ children }) => {
     return channels.filter((channel) => channel?.uid === channelRef)[0];
   };
 
+  const fetchLikedVideos = (videos) => {
+    const data = videos.filter((video) =>
+      video.likes.includes(currentChannel.uid)
+    );
+    setLikedVideos(data);
+  };
+
+  const GetUid = () => {
+    const uidgen = new UIDGenerator();
+    return uidgen.generateSync();
+  };
+
   return (
     <ChannelState.Provider
       value={{
@@ -237,6 +251,9 @@ export const ChannelStateProvider = ({ children }) => {
         commentOption,
         setCommentOption,
         fetchChannelDetails,
+        fetchLikedVideos,
+        likedVideos,
+        GetUid
       }}
     >
       {children}

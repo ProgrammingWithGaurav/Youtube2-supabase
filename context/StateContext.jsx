@@ -29,9 +29,9 @@ import {
   HandThumbUpIcon as ActiveHandThumbUpIcon,
   PlusIcon,
   ShareIcon,
+  FaceSmileIcon,
 } from "@heroicons/react/24/solid";
 import { useRouter } from "next/router";
-import { uid } from "uid";
 
 export const StateContext = createContext();
 
@@ -46,12 +46,17 @@ export const StateProvider = ({ children }) => {
   const [channelTab, setChannelTab] = useState("Home");
   const [videoOption, setVideoOption] = useState("");
   // video option will contain a uid of the video through which we can add that video the user's playlist/library when they save to watch later/playlist
-  const [shareDialog, setShareDialog] = useState({ videoUrl: "", open: false , title: '', thumbnail: ''});
+  const [shareDialog, setShareDialog] = useState({
+    videoUrl: "",
+    open: false,
+    title: "",
+    thumbnail: "",
+  });
   const [toast, setToast] = useState({
     text: "",
-    icon: "",
+    icon: '',
     color: "",
-    open: true,
+    open: false,
   });
 
   const [searchString, setSearchString] = useState("");
@@ -176,7 +181,7 @@ export const StateProvider = ({ children }) => {
       icon: <HandThumbUpIcon className="icon" />,
       activeIcon: <ActiveHandThumbUpIcon className="icon" />,
       onClick: () => {
-        router.push("/");
+        router.push("/playlist/LL");
       },
     },
   ];
@@ -204,49 +209,7 @@ export const StateProvider = ({ children }) => {
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
       url: "https://www.youtube.com/watch?v=XIrOM9oP3pA",
       type: "programming",
-      comments: [
-        {
-          timestamp: new Date(),
-          comment: "This is an awesome video 🙂",
-          uid: 325532252,
-          channelRef: "a00c3e26-aa9b-11fa-afa1-0242ac120003",
-          gotHeart: true,
-          likes: ["a00c3e26-aa9b-11fa-afa1-0242ac120003"],
-          replies: [
-            {
-              channelRef: "a00c3e26-aa9b-11fa-afa1-0242ac120003",
-              reply: "This is my reply 🙂",
-              timestamp: new Date(),
-              likes: ["a00c3e26-aa9b-11fa-afa1-0242ac120003"],
-              gotHeart: true,
-            },
-          ],
-        },
-
-        {
-          timestamp: new Date(),
-          comment: "Thanks",
-          channelRef: "a00c3e26-aa9b-11ed-afa1-0242ac120002",
-          uid: 32553252,
-          gotHeart: true,
-          likes: ["a00c3e26-aa9b-11fa-afa1-0242ac120003"],
-          replies: [],
-        },
-      ],
-    },
-    {
-      thumbnail:
-        "https://i.ytimg.com/vi/XIrOM9oP3pA/hq720.jpg?sqp=-oaymwEcCNAFEJQDSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLDiN7R1akv6_cbfMTpTV_lUm1PgaQ",
-      title: "How to make a Youtube Clone with React JS for Beginners",
-      views: 1313121,
-      uid: "442422141",
-      channelRef: "a00c3e26-aa9b-11ed-afa1-0242ac120002",
-      timestamp: new Date(),
-      duration: 500,
-      description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-      url: "https://www.youtube.com/watch?v=XIrOM9oP3pA",
-      type: "programming",
+      likes: ["a00c3e26-aa9b-11fa-afa1-0242ac120003"],
       comments: [
         {
           timestamp: new Date(),
@@ -325,7 +288,7 @@ export const StateProvider = ({ children }) => {
           videoUrl: `${process.env.NEXT_PUBLIC_URL}/watch/${uid}`,
           open: true,
           title,
-          thumbnail
+          thumbnail,
         });
       },
     },

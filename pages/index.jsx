@@ -8,7 +8,7 @@ import LoadingBar from "react-top-loading-bar";
 import Toast from "../components/Toast";
 
 export default function Page() {
-  const { appearance, user, loading, loadingProgress, shareDialog, toast } =
+  const { appearance, user, loading, loadingProgress, shareDialog } =
     useStateContext();
 
   return (
@@ -33,8 +33,8 @@ export default function Page() {
         <Navbar />
         {user && <Sidebar />}
         <Home />
-        {shareDialog?.videoUrl !== "" && shareDialog?.open && <ShareVideo />}
-        {toast?.open && <Toast />}
+        {shareDialog.open && <ShareVideo />}
+        <Toast />
         {loading && <LoadingBar color="#f11946" progress={loadingProgress} />}
       </div>
     </>

@@ -20,11 +20,13 @@ import CommentInput from "../Comment/CommentInput";
 import Comment from "../Comment/Comment";
 import { useRouter } from "next/router";
 
+
 const VideoScreen = () => {
   const {
     activeVideo: {
       url,
       thumbnail,
+      likes,
       views,
       title,
       type,
@@ -33,7 +35,7 @@ const VideoScreen = () => {
       channelRef,
       timestamp,
       uid,
-    },
+    }, activeVideo,
     videoOption,
     VideoOptions,
     setVideoOption,
@@ -46,6 +48,7 @@ const VideoScreen = () => {
   const { channelImage, channelDisplayName, subscribers, channelName } =
     fetchChannelDetails(channelRef);
   const [showDescription, setShowDescription] = useState(false);
+  console.log(activeVideo)
 
   const timeAgo = new TimeAgo("en-US");
   const router = useRouter();
@@ -117,7 +120,7 @@ const VideoScreen = () => {
               ) : (
                 <HandThumbUpIcon className="icon" />
               )}
-              1.1k
+              {numify(likes?.length)}
             </span>
             <div className="w-[1px] video- h-8 py-2 bg-gray-300 dark:bg-white"></div>
             {like.dislike ? (

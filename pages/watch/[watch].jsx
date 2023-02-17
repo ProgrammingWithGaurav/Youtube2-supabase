@@ -23,7 +23,6 @@ export default function Watch({ uid }) {
     activeVideo,
     setLoading,
     setLoadingProgress,
-    toast,
   } = useStateContext();
   const router = useRouter();
 
@@ -81,7 +80,7 @@ export default function Watch({ uid }) {
       )}
       {shareDialog?.videoUrl !== "" && shareDialog?.open && <ShareVideo />}
 
-      {toast?.open && <Toast />}
+      <Toast />
     </>
   );
 }

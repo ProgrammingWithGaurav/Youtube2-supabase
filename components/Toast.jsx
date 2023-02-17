@@ -3,9 +3,11 @@ import { useStateContext } from "../context/StateContext";
 
 const Toast = () => {
   const {
-    toast: { text, icon, color }, toast, setToast
+    toast: { text, icon, color, open }, toast, setToast
   } = useStateContext();
+  console.log(toast)
   return (
+    open &&
     <div
       id="toast-default"
       className="fixed left-1 z-[10000000000000000] bottom-4 flex items-center w-full max-w-xs p-4 text-gray-500 bg-white rounded-lg shadow dark:text-gray-400 dark:bg-gray-800"
