@@ -54,7 +54,7 @@ export const StateProvider = ({ children }) => {
   });
   const [toast, setToast] = useState({
     text: "",
-    icon: '',
+    icon: "",
     color: "",
     open: false,
   });
@@ -73,15 +73,15 @@ export const StateProvider = ({ children }) => {
     {
       name: "Your Channel",
       icon: <UserCircleIcon className="icon" />,
-      onClick: () => {
-        router.push("/profile");
+      onClick: (channelName) => {
+        router.push(`/${channelName}`);
       },
     },
     {
       name: "Youtube Studio",
       icon: <PlayIcon className="icon" />,
       onClick: () => {
-        router.push("/studio");
+        router.push("/studio?dashboard=true");
       },
     },
     {
@@ -234,6 +234,32 @@ export const StateProvider = ({ children }) => {
           comment: "Thanks",
           channelRef: "a00c3e26-aa9b-11ed-afa1-0242ac120002",
           uid: 32553252,
+          gotHeart: true,
+          likes: ["a00c3e26-aa9b-11fa-afa1-0242ac120003"],
+          replies: [],
+        },
+      ],
+    },
+    {
+      thumbnail:
+        "https://i.ytimg.com/vi/XIrOM9oP3pA/hq720.jpg?sqp=-oaymwEcCNAFEJQDSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLDiN7R1akv6_cbfMTpTV_lUm1PgaQ",
+      title: "My First Videos",
+      views: 134343313121,
+      uid: "449112141",
+      channelRef: "a00c3e26-aa9b-11fa-afa1-0242ac120003",
+      timestamp: new Date(),
+      duration: 800,
+      description:
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+      url: "https://www.youtube.com/watch?v=XIrOM9oP3pA",
+      type: "hobbies",
+      likes: ["a00c3e26-aa9b-11ed-afa1-0242ac120002"],
+      comments: [
+        {
+          timestamp: new Date(),
+          comment: "This is an awesome video 🙂",
+          uid: 325532252,
+          channelRef: "a00c3e26-aa9b-11fa-afa1-0242ac120003",
           gotHeart: true,
           likes: ["a00c3e26-aa9b-11fa-afa1-0242ac120003"],
           replies: [],

@@ -17,18 +17,17 @@ import SpeechRecognition, {
 import { useEffect } from "react";
 import AutoComplete from "./AutoComplete";
 import { useRouter } from "next/router";
+import { useChannelState } from "../context/ChannelState";
 
 const Header = () => {
   const { isSidebar, setIsSidebar, user, searchString, setSearchString } =
     useStateContext();
+  const { channelSearches } = useChannelState();
   const [hasFocused, setHasFocused] = useState(false);
   const [input, setInput] = useState(searchString);
   const router = useRouter();
 
-  const {
-    transcript,
-    listening,
-  } = useSpeechRecognition();
+  const { transcript, listening } = useSpeechRecognition();
 
   useEffect(() => {
     setSearchString(transcript);
@@ -37,11 +36,13 @@ const Header = () => {
 
   const handleSearch = () => {
     setSearchString(input);
-    router.push('/')
-  }
+    router.push("/");
+  };
 
   return (
-    <div className={`flex items-center justify-between w-full h-[10vh] fixed top-0 z-[10000] bg-white dark:bg-neutral-900 p-2`}>
+    <div
+      className={`flex items-center justify-between w-full h-[10vh] fixed top-0 z-[10000] bg-white dark:bg-neutral-900 p-2`}
+    >
       <div className="flex items-center">
         {isSidebar ? (
           <XMarkIcon className="icon" onClick={() => setIsSidebar(false)} />
@@ -83,6 +84,7 @@ const Header = () => {
           <div>
             {hasFocused && (
               <AutoComplete
+                searches={channelSearches}
                 searchString={input}
                 setSearchString={setSearchString}
                 setInput={setInput}

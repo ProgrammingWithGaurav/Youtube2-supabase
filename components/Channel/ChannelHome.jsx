@@ -8,7 +8,7 @@ const ChannelHome = () => {
   const {
     videos,
     setVideos,
-    activeChannel: { channelName },
+    activeChannel: { channelName, uid },
   } = useStateContext();
   const { channelSearch, setChannelSearch } = useChannelState();
   const [videoFilter, setVideoFilter] = useState("Recently Uploaded");
@@ -31,10 +31,11 @@ const ChannelHome = () => {
   };
 
   const [channelVideos, setChannelVideos] = useState([]);
+  const {fetchChannelDetails} = useChannelState();
 
   const handlePopularVideos = () => {
     const channelVideos = videos.filter(
-      (video) => video?.channelName === channelName
+      (video) => video?.channelRef === uid
     );
     setChannelVideos(
       channelVideos.sort(
@@ -47,6 +48,7 @@ const ChannelHome = () => {
     const channelVideos = videos.filter(
       (video) => video?.channelName === channelName
     );
+    channelVideos.length > 1 &&
     setChannelVideos(
       channelVideos.sort(
         (video1, video2) =>
@@ -58,7 +60,7 @@ const ChannelHome = () => {
   const searchChannelVideos = () => {
     if(channelSearch?.trim() === '') return;
     const channelVideos = videos.filter(
-      (video) => video?.channelName === channelName
+      (video) => video?.channelRef === uid
     );
     setChannelVideos(
       channelVideos.filter((video) => video.title.toLowerCase().includes(channelSearch.toLowerCase()))
@@ -67,7 +69,7 @@ const ChannelHome = () => {
 
   const fetchChannelVideos = () => {
     setChannelVideos(
-      videos.filter((video) => video?.channelName === channelName)
+      videos.filter((video) => video?.channelRef === uid)
       );
   }
 

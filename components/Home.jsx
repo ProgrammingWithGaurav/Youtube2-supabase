@@ -23,23 +23,23 @@ const Home = () => {
     500: 1,
   };
 
-  // useEffect(() => {
-  //   if(searchString === '') return;
-  //   setLoadingProgress(70);
-  //   setLoading(true);
-  //   setTimeout(() => {
-  //     const newVideos = videos?.filter((video) =>
-  //       video?.title?.toLowerCase().includes(searchString.toLowerCase())
-  //     );
-  //     setLoadingProgress(90);
-  //     setNewVideos(newVideos);
-  //     setLoading(false);
-  //     setLoadingProgress(100);
-  //   }, [1000]);
-  // }, [searchString]);
+  useEffect(() => {
+    if (searchString === "") setNewVideos(videos);
+    setLoadingProgress(70);
+    setLoading(true);
+    setTimeout(() => {
+      const newVideos = videos?.filter((video) =>
+        video?.title?.toLowerCase().includes(searchString.toLowerCase())
+      );
+      setLoadingProgress(90);
+      setNewVideos(newVideos);
+      setLoading(false);
+      setLoadingProgress(100);
+    }, [1000]);
+  }, [searchString]);
 
   // useEffect(() => {
-  //   if(activeCataegory === 'All') setVideos(videos); 
+  //   if(activeCataegory === 'All') setVideos(videos);
   //   setLoadingProgress(70);
   //   setLoading(true);
   //   setTimeout(() => {

@@ -8,7 +8,7 @@ const ChannelVideos = () => {
   const {
     videos,
     setVideos,
-    activeChannel: { channelName },
+    activeChannel: { channelName, uid },
   } = useStateContext();
   const { channelSearch, setChannelSearch } = useChannelState();
   const [videoFilter, setVideoFilter] = useState("Recently Uploaded");
@@ -33,9 +33,7 @@ const ChannelVideos = () => {
   const [channelVideos, setChannelVideos] = useState([]);
 
   const handlePopularVideos = () => {
-    const channelVideos = videos.filter(
-      (video) => video?.channelName === channelName
-    );
+    const channelVideos = videos.filter((video) => video?.channelRef === uid);
     setChannelVideos(
       channelVideos.sort(
         (video1, video2) => parseFloat(video2.views) - parseFloat(video1.views)
@@ -47,6 +45,7 @@ const ChannelVideos = () => {
     const channelVideos = videos.filter(
       (video) => video?.channelName === channelName
     );
+    channelVideos.length > 1 &&
     setChannelVideos(
       channelVideos.sort(
         (video1, video2) =>
@@ -56,23 +55,20 @@ const ChannelVideos = () => {
   };
 
   const searchChannelVideos = () => {
-    if(channelSearch?.trim() === '') return;
-    const channelVideos = videos.filter(
-      (video) => video?.channelName === channelName
-    );
+    if (channelSearch?.trim() === "") return;
+    const channelVideos = videos.filter((video) => video?.channelRef === uid);
     setChannelVideos(
-      channelVideos.filter((video) => video.title.toLowerCase().includes(channelSearch.toLowerCase()))
+      channelVideos.filter((video) =>
+        video.title.toLowerCase().includes(channelSearch.toLowerCase())
+      )
     );
   };
 
   const fetchChannelVideos = () => {
-    setChannelVideos(
-      videos.filter((video) => video?.channelName === channelName)
-      );
-  }
-
+    setChannelVideos(videos.filter((video) => video?.channelRef === uid));
+  };
   useEffect(() => {
-    channelSearch.trim() === '' ? fetchChannelVideos() : searchChannelVideos();
+    channelSearch.trim() === "" ? fetchChannelVideos() : searchChannelVideos();
   }, [videos, channelSearch]);
 
   return (

@@ -175,6 +175,18 @@ export const ChannelStateProvider = ({ children }) => {
     },
   ]);
 
+  const fetchChannelVideos = (videos) => {
+    return videos.filter(video => currentChannel?.uid === video?.channelRef)
+  }
+
+  const channelSearches = [
+    "hello world",
+    "programming",
+    "coding",
+    "learning javascript",
+    "ReactJs",
+  ];
+
   const UnSubscribe = (setSubscribed) => {
     setTimeout(() => {
       setSubscribed(false);
@@ -253,7 +265,9 @@ export const ChannelStateProvider = ({ children }) => {
         fetchChannelDetails,
         fetchLikedVideos,
         likedVideos,
-        GetUid
+        GetUid,
+        channelSearches,
+        fetchChannelVideos
       }}
     >
       {children}

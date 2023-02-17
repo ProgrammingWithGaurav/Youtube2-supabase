@@ -6,7 +6,7 @@ import { useChannelState } from "../context/ChannelState";
 
 export default function ProfileMenu() {
   const {ProfileMenuIcons} = useStateContext();
-  const {currentChannel: {channelImage}}  = useChannelState();
+  const {currentChannel: {channelImage, channelName}}  = useChannelState();
 
   return (
     <div>
@@ -53,7 +53,7 @@ export default function ProfileMenu() {
                 <Menu.Item key={icon.name}>
                   {({ active }) => (
                     <button
-                      onClick={icon.onClick}
+                      onClick={() => icon.onClick(channelName)}
                       className={`${
                         active ? "bg-gray-100 dark:bg-white/10" : "text-gray-900"
                       } group flex dark:text-white w-full items-center rounded-md transition text-sm`}

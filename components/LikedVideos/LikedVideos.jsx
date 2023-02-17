@@ -34,7 +34,7 @@ const Video = ({
   const { channelDisplayName, channelName } = fetchChannelDetails(channelRef);
 
   return (
-    <div className="flex gap-2 p-2 px-4 cursor-pointer h-30 hover:bg-gray-200 rounded-2xl dark:transparent hover:bg-white/10">
+    <div className="flex gap-2 p-2 px-4 cursor-pointer h-30 hover:bg-gray-50 rounded-2xl dark:transparent dark:hover:bg-white/10">
       <span className="my-10 text-lg font-semibold text-gray-700 dark:text-gray-400">
         {index}
       </span>

@@ -78,7 +78,7 @@ const Sidebar = () => {
                     setActiveSubscription(subscription.channelDisplayName);
                     router.push(`/${subscription.channelName}`);
                   }, 500);
-                  
+
                   setTimeout(() => {
                     setLoading(false);
                   }, 800);

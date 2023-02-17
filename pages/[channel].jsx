@@ -20,7 +20,7 @@ import ChannelStore from "../components/Channel/ChannelStore";
 import { useChannelState } from "../context/ChannelState";
 
 const Channel = ({ channel }) => {
-  const { query } = useRouter();
+  const { query  } = useRouter();
   const router = useRouter();
   const {
     appearance,
