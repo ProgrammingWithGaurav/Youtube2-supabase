@@ -8,7 +8,7 @@ const LikedVideosDetails = () => {
   const router = useRouter();
 
   return (
-    <div className="flex flex-row gap-4 p-4 mt-12 sm:items-center lg:items-start bg-gradient-to-b group filter from-red-200 to-blue-200 dark:from-red-400 dark:to-blue-400 rounded-2xl lg:w-80 lg:flex-col">
+    <div className="flex flex-row gap-4 p-4 mt-12 sm:tems-center lg:items-start bg-gradient-to-b group filter from-red-200 to-blue-200 dark:from-red-400 dark:to-blue-400 rounded-2xl lg:w-80 lg:flex-col">
       <div className="relative h-40 mx-auto cursor-pointer w-38 ">
         <span className="absolute w-full h-full my-4 mt-16 text-2xl font-semibold text-center text-white">
           Play All
@@ -17,10 +17,10 @@ const LikedVideosDetails = () => {
           src={likedVideos[0]?.thumbnail}
           onClick={() => router.push(`/watch/${likedVideos[0]?.uid}`)}
           alt="first liked video "
-          className="object-contain rounded-2xl staurate-50 group-hover:saturate-150 filter "
+          className="sm:rounded-md rounded-2xl staurate-50 group-hover:saturate-150 filter "
         />
       </div>
-      <p className="text-2xl leading-10 text-bold">Liked Videos</p>
+      <p className="text-2xl leading-10 text-bold sm:tex-sm">Liked Videos</p>
 
       <p className="text-bold">{currentChannel?.channelName}</p>
       <p className="text-xs text-gray-700 cursor-pointer hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-200">

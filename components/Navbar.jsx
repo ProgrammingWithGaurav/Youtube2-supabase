@@ -121,7 +121,7 @@ const Header = () => {
       </div>
       <div className="flex items-center">
         <Tooltip
-          element={<VideoCameraIcon className="clickable-icon" />}
+          element={<VideoCameraIcon onClick={() => router.push('/studio?create=true')} className="clickable-icon" />}
           hoverText="Create"
         />
         <Tooltip

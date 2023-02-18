@@ -19,7 +19,7 @@ const Video = ({
   const router = useRouter();
   const { fetchChannelDetails } = useChannelState();
   const { VideoOptions, videoOption, setVideoOption } = useStateContext();
-  const newOptions = () => [
+  const newOptions = [
     ...VideoOptions,
     {
       name: "Remove from Liked Videos",
@@ -34,7 +34,7 @@ const Video = ({
   const { channelDisplayName, channelName } = fetchChannelDetails(channelRef);
 
   return (
-    <div className="flex gap-2 p-2 px-4 cursor-pointer h-30 hover:bg-gray-50 rounded-2xl dark:transparent dark:hover:bg-white/10">
+    <div className="flex gap-2 relative p-2 px-4 cursor-pointer h-30 hover:bg-gray-50 group rounded-2xl dark:transparent dark:hover:bg-white/10">
       <span className="my-10 text-lg font-semibold text-gray-700 dark:text-gray-400">
         {index}
       </span>
@@ -46,7 +46,7 @@ const Video = ({
           className="object-cover rounded-2xl"
         />
       </div>
-      <div className="flex flex-col my-2 mt-2 space-y-2">
+      <div className="flex flex-col my-2 mt-2 space-y-2 w-8/12 pr-10">
         <p className="leading-4 text-bold">{title}</p>
         <p className="flex items-center gap-1 text-gray-400 dark:text-gray-300">
           <span
@@ -55,17 +55,19 @@ const Video = ({
           >
             {channelDisplayName} •
           </span>{" "}
-          <span>{numify(views)} </span>
+          <span>{numify(views)} views </span>
           <span> • {timeAgo.format(timestamp)}</span>
         </p>
       </div>
 
       
+      <div className="absolute -right-16 my-auto mx-4 w-2/12">
       <EllipsisVerticalIcon
             onClick={() =>
               videoOption === uid ? setVideoOption("") : setVideoOption(uid)
             }
-            className="w-8 h-8 p-1 mt-4 text-gray-600 rounded-lg opacity-0 clickable-icon dark:text-white group-hover:opacity-100"
+            className="clickable-icon w-8 h-8 p-1 dark:text-white text-gray-600 rounded-lg mt-4 opacity-0 group-hover:opacity-100"
+
           />
           {videoOption === uid && (
           <div className="bg-white shadow p-2 rounded-xl dark:bg-neutral-900 w-[300px] h-auto top-16 right-6 z-[1000000000] absolute">
@@ -86,6 +88,7 @@ const Video = ({
             ))}
           </div>
         )}
+        </div>
     </div>
   );
 };

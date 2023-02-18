@@ -205,8 +205,7 @@ export const StateProvider = ({ children }) => {
       channelRef: "a00c3e26-aa9b-11ed-afa1-0242ac120002",
       timestamp: new Date(),
       duration: 500,
-      description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
       url: "https://www.youtube.com/watch?v=XIrOM9oP3pA",
       type: "programming",
       likes: ["a00c3e26-aa9b-11fa-afa1-0242ac120003"],
@@ -249,11 +248,10 @@ export const StateProvider = ({ children }) => {
       channelRef: "a00c3e26-aa9b-11fa-afa1-0242ac120003",
       timestamp: new Date(),
       duration: 800,
-      description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
       url: "https://www.youtube.com/watch?v=XIrOM9oP3pA",
       type: "hobbies",
-      likes: ["a00c3e26-aa9b-11ed-afa1-0242ac120002"],
+      likes: ["a00c3e26-aa9b-11ed-afa1-0242ac120002", "a00c3e26-aa9b-11fa-afa1-0242ac120003"],
       comments: [
         {
           timestamp: new Date(),

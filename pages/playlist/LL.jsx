@@ -50,7 +50,7 @@ export default function LL() {
       >
         <Navbar />
         {user && <Sidebar />}
-        <div className="flex-1 h-auto scrollbar sm:h-[4000px] p-2 pl-16 gap-4 mt-4 flex lg:flex-row sm:flex-col">
+        <div className="flex-1 h-auto scrollbar sm:h-[4000px] overflow-x-hidden p-2 pl-16 gap-4 mt-4 flex lg:flex-row flex-col ">
           <LikedVideosDetails />
           <LikedVideos />
         </div>

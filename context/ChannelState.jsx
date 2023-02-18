@@ -175,6 +175,8 @@ export const ChannelStateProvider = ({ children }) => {
     },
   ]);
 
+  const [showUpload, setShowUpload] = useState(false);
+
   const fetchChannelVideos = (videos) => {
     return videos.filter(video => currentChannel?.uid === video?.channelRef)
   }
@@ -267,7 +269,9 @@ export const ChannelStateProvider = ({ children }) => {
         likedVideos,
         GetUid,
         channelSearches,
-        fetchChannelVideos
+        fetchChannelVideos,
+        showUpload,
+        setShowUpload
       }}
     >
       {children}

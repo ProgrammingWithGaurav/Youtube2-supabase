@@ -1,16 +1,24 @@
-import Navbar from "../../components/Navbar";
 import Head from "next/head";
 import { useStateContext } from "../../context/StateContext";
-import Home from "../../components/Home";
 import Sidebar from "../../components/Studio/Sidebar";
 import ShareVideo from "../../components/ShareVideo";
 import LoadingBar from "react-top-loading-bar";
 import Toast from "../../components/Toast";
 import Header from "../../components/Studio/Header";
+import UploadVideo from "../../components/Studio/UploadVideo";
+import { useChannelState } from "../../context/ChannelState";
+import { useEffect } from "react";
 
-export default function Studio({query}) {
+export default function Studio({ query }) {
   const { appearance, user, loading, loadingProgress, shareDialog } =
     useStateContext();
+  const {showUpload, setShowUpload} = useChannelState();
+
+  useEffect(() => {
+    if(!query) return;
+    query?.create && setShowUpload(true);
+  },[query])
+
   console.log(query);
   return (
     <>
@@ -33,9 +41,7 @@ export default function Studio({query}) {
       >
         <Header />
         <Sidebar />
-        <div>
-          
-        </div>
+        <div>{showUpload && <UploadVideo />}</div>
         {shareDialog.open && <ShareVideo />}
         <Toast />
         {loading && <LoadingBar color="#f11946" progress={loadingProgress} />}
@@ -44,10 +50,8 @@ export default function Studio({query}) {
   );
 }
 
-
 export async function getServerSideProps(context) {
   return {
     props: { query: context.query }, // will be passed to the page component as props
   };
 }
-
