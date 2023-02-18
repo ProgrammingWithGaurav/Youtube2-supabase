@@ -10,6 +10,10 @@
   .icon {
     @apply text-gray-900 w-10 h-10 p-2 transition rounded-full cursor-pointer dark:text-white;
   }
+  
+  .studio-sidebar-icon {
+    @apply w-6 h-6;
+  }
 
   body {
     @apply overflow-x-hidden scroll-smooth;

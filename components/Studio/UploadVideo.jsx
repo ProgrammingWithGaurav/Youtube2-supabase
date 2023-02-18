@@ -61,8 +61,7 @@ const UploadVideo = () => {
             Select Files
           </button>
           <span className="text-gray-600/50 dark:text-gray-200/50 text-xs mt-10">
-            Please be sure not to violate others' copyright or privacy rights.
-            Learn more
+            Please be sure not to violate others copyright or privacy rights. <span className='text-blue-400'>Learn more</span>
           </span>
         </div>
       </div>

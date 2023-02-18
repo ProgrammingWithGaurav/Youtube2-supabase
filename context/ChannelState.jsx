@@ -176,10 +176,11 @@ export const ChannelStateProvider = ({ children }) => {
   ]);
 
   const [showUpload, setShowUpload] = useState(false);
+  const [activeSidebar, setActiveSidebar] = useState('Dashboard');
 
   const fetchChannelVideos = (videos) => {
-    return videos.filter(video => currentChannel?.uid === video?.channelRef)
-  }
+    return videos.filter((video) => currentChannel?.uid === video?.channelRef);
+  };
 
   const channelSearches = [
     "hello world",
@@ -271,7 +272,9 @@ export const ChannelStateProvider = ({ children }) => {
         channelSearches,
         fetchChannelVideos,
         showUpload,
-        setShowUpload
+        setShowUpload,
+        activeSidebar,
+        setActiveSidebar
       }}
     >
       {children}
