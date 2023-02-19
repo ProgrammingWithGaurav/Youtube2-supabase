@@ -9,17 +9,29 @@ import UploadVideo from "../../components/Studio/UploadVideo";
 import { useChannelState } from "../../context/ChannelState";
 import { useEffect } from "react";
 
-export default function Studio({ query }) {
+// Right Side components
+import Dashboard from "../../components/Studio/Dashboard";
+import Content from "../../components/Studio/Content";
+import Analytics from "../../components/Studio/Analytics";
+import Comments from "../../components/Studio/Comments";
+import Copyright from "../../components/Studio/Copyright";
+import Earn from "../../components/Studio/Earn";
+import Customization from "../../components/Studio/Customization";
+import AudioLibrary from "../../components/Studio/AudioLibrary";
+import Settings from "../../components/Studio/Settings";
+import SendFeedback from "../../components/Studio/SendFeedback";
+import { useRouter } from "next/router";
+
+export default function Studio() {
   const { appearance, user, loading, loadingProgress, shareDialog } =
     useStateContext();
-  const {showUpload, setShowUpload} = useChannelState();
+  const { showUpload, setShowUpload } = useChannelState();
+  const { query } = useRouter();
 
   useEffect(() => {
-    if(!query) return;
+    if (query === undefined) return;
     query?.create && setShowUpload(true);
-  },[query])
-
-  console.log(query);
+  }, [query]);
   return (
     <>
       <Head>
@@ -41,17 +53,21 @@ export default function Studio({ query }) {
       >
         <Header />
         <Sidebar />
-        <div>{showUpload && <UploadVideo />}</div>
+        {showUpload && <UploadVideo />}
         {shareDialog.open && <ShareVideo />}
+        {query?.dashboard && <Dashboard />}
+        {query?.content && <Content />}
+        {query?.anaylytics && <Analytics />}
+        {query?.comments && <Comments />}
+        {query?.copyright && <Copyright />}
+        {query?.earn && <Earn />}
+        {query?.customization && <Customization />}
+        {query?.audiolibrary && <AudioLibrary />}
+        {query?.settings && <Settings />}
+        {query?.sendfeedback && <SendFeedback />}
         <Toast />
         {loading && <LoadingBar color="#f11946" progress={loadingProgress} />}
       </div>
     </>
   );
-}
-
-export async function getServerSideProps(context) {
-  return {
-    props: { query: context.query }, // will be passed to the page component as props
-  };
 }

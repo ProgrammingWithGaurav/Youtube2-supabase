@@ -4,23 +4,28 @@ import {
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 import { useRouter } from "next/router";
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { useChannelState } from "../../context/ChannelState";
 import Tooltip from "../Tooltip";
 
-const UploadVideo = () => {
+const Settings = () => {
   const videoRef = useRef(null);
   const router = useRouter();
+  const { query } = router;
   const handleUpload = () => {
     videoRef.current.click();
   };
 
-  const { setShowUpload } = useChannelState();
+  useEffect(() => {
+    query?.settings && setActiveSidebar("Settings");
+  }, query);
+
+  const { setShowUpload, setActiveSidebar } = useChannelState();
   return (
     <div className="w-screen lg:h-screen lg:top-2 top-16 flex items-center fixed justify-center z-[10000000000000000000]">
       <div className="shadow-lg bg-white dark:bg-[#282828] p-2 px-4 rounded-xl lg:w-[60vw] lg:h-[80vh] w-[400px] h-[400px]">
         <div className="flex items-center justify-between dark:border-b-gray-200/20 border-b-gray-600 border-b ">
-          <h2 className="text-bold text-lg">Upload Videos</h2>
+          <h2 className="text-bold text-lg">Settings</h2>
 
           <div className="flex item-scenter gap-1">
             <Tooltip
@@ -34,8 +39,8 @@ const UploadVideo = () => {
               element={
                 <XMarkIcon
                   onClick={() => {
-                    router.push("?dashboard=true");
-                    setShowUpload(false);
+                    router.push("/studio?dashboard=true");
+                    setActiveSidebar("Dashboard");
                   }}
                   className="clickable-icon"
                 />
@@ -72,4 +77,4 @@ const UploadVideo = () => {
   );
 };
 
-export default UploadVideo;
+export default Settings;

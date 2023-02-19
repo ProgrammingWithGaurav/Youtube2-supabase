@@ -7,13 +7,14 @@
 
 # testing
 /coverage
-
+/.idea
 # next.js
 /.next/
 /out/
 
 # production
 /build
+/.devcontainer
 
 # misc
 .DS_Store
