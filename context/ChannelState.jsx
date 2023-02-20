@@ -250,6 +250,24 @@ export const ChannelStateProvider = ({ children }) => {
     return uidgen.generateSync();
   };
 
+  function addCommas(num) {
+    // Convert the number to a string and split it into an array of characters
+    const numStr = num.toString().split('');
+    
+    // Determine the position of the first comma by taking the length of the string modulo 3
+    const firstCommaPos = numStr.length % 3;
+    
+    // Initialize the result string with the characters before the first comma
+    let result = firstCommaPos > 0 ? numStr.slice(0, firstCommaPos).join('') + ',' : '';
+    
+    // Loop over the remaining characters, adding commas every three characters
+    for (let i = firstCommaPos; i < numStr.length; i += 3) {
+      result += numStr.slice(i, i + 3).join('') + (i + 3 < numStr.length ? ',' : '');
+    }
+    
+    return result;
+  }
+
   return (
     <ChannelState.Provider
       value={{
@@ -274,7 +292,8 @@ export const ChannelStateProvider = ({ children }) => {
         showUpload,
         setShowUpload,
         activeSidebar,
-        setActiveSidebar
+        setActiveSidebar,
+        addCommas
       }}
     >
       {children}
