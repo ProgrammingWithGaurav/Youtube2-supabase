@@ -4,6 +4,8 @@ import { useChannelState } from "../../context/ChannelState";
 import { useStateContext } from "../../context/StateContext";
 import {
   CheckCircleIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
   CloudArrowDownIcon,
   CurrencyDollarIcon,
   EllipsisVerticalIcon,
@@ -188,7 +190,53 @@ const ChannelAnalytics = () => {
 };
 
 const Ideas = () => {
-  return <div>Ideas</div>;
+  const { News } = useChannelState();
+  const [index, setIndex] = useState(1);
+  const [activeNews, setActiveNews] = useState(News[0]);
+  useEffect(() => {
+    setActiveNews(News[index]);
+  }, [index]);
+  return (
+    <div className="flex flex-col justify-center space-y-2">
+      <div className="flex flex-col dark:text-white rounded-md border dark:border-200/40 border-gray-600/40 p-4 dark:bg-neutral-800">
+        <div className="flex items-center justify-between">
+          <h3 className="text-bold text-lg my-2">News</h3>
+          <div className="flex items-center gap-1 text-gray">
+            <ChevronLeftIcon
+              onClick={() => index !== 1 && setIndex(index - 1)}
+              className="clickable-icon video-control click-show"
+            />
+            <span>
+              {index}/{News?.length}
+            </span>
+            <ChevronRightIcon
+              onClick={() => index !== News.length && setIndex(index + 1)}
+              className="clickable-icon video-control click-show"
+            />
+          </div>
+        </div>
+        <div className="flex flex-col justify-center gap-4 my-2">
+          <img
+            src={activeNews?.image}
+            className="w-full h-20 object-contain"
+            alt="congrats image"
+          />
+          <p className="flex flex-col space-y-2 text-sm">
+            <span className="text-bold">{activeNews?.title}</span>
+            <span className="text-gray">{activeNews?.description}</span>
+          </p>
+        </div>
+        <button
+          className="link-btn text-left text-sm"
+          onClick={() => {
+            router.push("/");
+          }}
+        >
+          Discover Now
+        </button>
+      </div>
+    </div>
+  );
 };
 
 const Dashboard = () => {

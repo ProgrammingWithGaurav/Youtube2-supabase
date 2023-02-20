@@ -43,6 +43,35 @@ export const ChannelStateProvider = ({ children }) => {
   const [commentOption, setCommentOption] = useState("");
   const [likedVideos, setLikedVideos] = useState([]);
 
+  const [News, setNews] = useState([
+    {
+      image: "https://avatars.githubusercontent.com/u/88154142?v=4",
+      title: "Make your videos more impressive by this tool",
+      description: `sLorem ipsum dolor sit amet, consectetur adipisicing elit. Beatae animi aliquam est ratione cum ducimus suscipit necessitatibus? Quia, corporis architecto.`,
+      url: "https://yotuube-nextjs.netlify.app/news/helloworld",
+    },
+    {
+      image:
+        "https://cdn.pixabay.com/photo/2023/01/31/05/59/zebra-7757193_640.jpg",
+      title: "Make your videos more ✅",
+      description: `sLorem ipsum dolor sit amet, consectetur adipisicing elit. Beatae animi aliquam est ratione cum ducimus suscipit necessitatibus? Quia, corporis architecto.`,
+      url: "https://yotuube-nextjs.netlify.app/news/helloworld",
+    },
+    {
+      image:
+        "https://cdn.pixabay.com/photo/2023/01/05/22/35/flower-7700011_640.jpg",
+      title: "Make your videos more impressive 🌟🌟🙂",
+      description: `Check out this powerful tool for the Youtube SEO`,
+      url: "https://yotuube-nextjs.netlify.app/news/helloworld",
+    },
+    {
+      image: "https://avatars.githubusercontent.com/u/88154142?v=4",
+      title: "Make your videos more impressive by this tool",
+      description: `sLorem ipsum dolor sit amet, consectetur adipisicing elit. Beatae animi aliquam est ratione cum ducimus suscipit necessitatibus? Quia, corporis architecto.`,
+      url: "https://yotuube-nextjs.netlify.app/news/helloworld",
+    },
+  ]);
+
   const [channels, setChannels] = useState([
     {
       channelName: "CleverProgrammer",
@@ -176,7 +205,7 @@ export const ChannelStateProvider = ({ children }) => {
   ]);
 
   const [showUpload, setShowUpload] = useState(false);
-  const [activeSidebar, setActiveSidebar] = useState('Dashboard');
+  const [activeSidebar, setActiveSidebar] = useState("Dashboard");
 
   const fetchChannelVideos = (videos) => {
     return videos.filter((video) => currentChannel?.uid === video?.channelRef);
@@ -252,19 +281,21 @@ export const ChannelStateProvider = ({ children }) => {
 
   function addCommas(num) {
     // Convert the number to a string and split it into an array of characters
-    const numStr = num.toString().split('');
-    
+    const numStr = num.toString().split("");
+
     // Determine the position of the first comma by taking the length of the string modulo 3
     const firstCommaPos = numStr.length % 3;
-    
+
     // Initialize the result string with the characters before the first comma
-    let result = firstCommaPos > 0 ? numStr.slice(0, firstCommaPos).join('') + ',' : '';
-    
+    let result =
+      firstCommaPos > 0 ? numStr.slice(0, firstCommaPos).join("") + "," : "";
+
     // Loop over the remaining characters, adding commas every three characters
     for (let i = firstCommaPos; i < numStr.length; i += 3) {
-      result += numStr.slice(i, i + 3).join('') + (i + 3 < numStr.length ? ',' : '');
+      result +=
+        numStr.slice(i, i + 3).join("") + (i + 3 < numStr.length ? "," : "");
     }
-    
+
     return result;
   }
 
@@ -293,7 +324,9 @@ export const ChannelStateProvider = ({ children }) => {
         setShowUpload,
         activeSidebar,
         setActiveSidebar,
-        addCommas
+        addCommas,
+        News,
+        setNews,
       }}
     >
       {children}
