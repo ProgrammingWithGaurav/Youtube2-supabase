@@ -117,7 +117,7 @@ const VideoPerformance = () => {
 
 const ChannelAnalytics = () => {
   const router = useRouter();
-  const { addCommas, fetchChannelDetails } = useChannelState();
+  const { addCommas, fetchChannelDetails, GetUid } = useChannelState();
   const timeAgo = new TimeAgo();
 
   const [LatestComments, setLatestComments] = useState([
@@ -210,11 +210,11 @@ const ChannelAnalytics = () => {
         <h3 className="text-bold text-lg my-2">Latest comments</h3>
         <span className="text-gray">
           {" "}
-          Channel comments I haven't responded to
+          Channel comments I haven{`'`}t responded to
         </span>
         <div className="flex px-2 flex-col justify-center">
           {LatestComments?.map((comment) => (
-            <div className="flex flex-col space-y-2">
+            <div className="flex flex-col space-y-2" key={GetUid()}>
               <div className="flex items-center gap-4 my-2 space-y-1">
                 <div className="flex flex-col justify-center">
                   <p
@@ -270,7 +270,7 @@ const ChannelAnalytics = () => {
         <h3 className="text-bold text-lg my-2">Recent subscribers</h3>
         <span className="text-gray">Last 90 days</span>
         {RecentSubscribers.map((subscriber) => (
-          <div className="flex flex-col justify-center px-4">
+          <div className="flex flex-col justify-center px-4" key={GetUid()}>
             <div
               className="group flex items-center gap-2"
               onClick={() => {
