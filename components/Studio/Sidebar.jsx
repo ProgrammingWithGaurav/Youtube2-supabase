@@ -94,7 +94,14 @@ const Sidebar = () => {
     },
   ];
   const { isSidebar, setLoading, setLoadingProgress } = useStateContext();
-  const { activeSidebar, setActiveSidebar, currentChannel } = useChannelState();
+  const {
+    activeSidebar,
+    setActiveSidebar,
+    currentChannel,
+    setBottomActiveSidebar,
+    bottomActiveSidebar,
+    startLoadingBar
+  } = useChannelState();
 
   return (
     <div
@@ -140,20 +147,14 @@ const Sidebar = () => {
           <div
             key={option.name}
             onClick={() => {
-              setLoading(true);
-              setLoadingProgress(90);
-              setTimeout(() => {
-                setLoadingProgress(100);
-              }, 500);
-
-              setTimeout(() => {
-                setLoadingProgress(100);
-                router.push(
+              startLoadingBar(
+                setLoading,
+                setLoadingProgress,
+                () =>router.push(
                   `?${option?.name?.toLowerCase()?.replace(" ", "")}=true`
-                );
-                setActiveSidebar(option.name);
-                setLoading(false);
-              }, 700);
+                ),
+                () =>setActiveSidebar(option.name)
+              );
             }}
             className={`text-xs flex items-center text-gray-600 dark:text-gray-300 gap-2 p-2 cursor-pointer py-2 font-semibold ${
               isSidebar ? "lg:pr-6 pr-4" : "pr-2"
@@ -172,30 +173,21 @@ const Sidebar = () => {
         <div
           key={option.name}
           onClick={() => {
-            setLoading(true);
-            setLoadingProgress(90);
-            setTimeout(() => {
-              setLoadingProgress(100);
-            }, 500);
-
-            setTimeout(() => {
-              setLoadingProgress(100);
-              router.push(
-                `?${option?.name?.toLowerCase()?.replace(" ", "")}=true`
-              );
-              setActiveSidebar(option.name);
-              setLoading(false);
-            }, 700);
+            startLoadingBar(setLoading, setLoadingProgress, () =>
+              setBottomActiveSidebar(option?.name)
+            );
           }}
           className={`text-xs flex items-center text-gray-600 dark:text-gray-300 gap-2 p-2 cursor-pointer py-2 font-semibold ${
             isSidebar ? "lg:pr-6 pr-4" : "pr-2"
           } ${
-            activeSidebar === option.name
-              ? "text-red-500 dark:text-red-500 border-l-4 bg-gray-100 border-red-500 dark:bg-black/50"
+            bottomActiveSidebar === option.name
+              ? "text-indigo-500 dark:text-indigo-500 border-l-4 bg-gray-100 border-indigo-500 dark:bg-black/50"
               : ""
           }`}
         >
-          {activeSidebar === option.name ? option.activeIcon : option.icon}
+          {bottomActiveSidebar === option.name
+            ? option.activeIcon
+            : option.icon}
           {isSidebar && option.name}
         </div>
       ))}

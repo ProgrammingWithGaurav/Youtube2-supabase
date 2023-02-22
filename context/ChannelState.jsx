@@ -58,13 +58,15 @@ export const ChannelStateProvider = ({ children }) => {
       url: "https://yotuube-nextjs.netlify.app/news/helloworld",
     },
     {
-      image: "https://cdn.pixabay.com/photo/2023/01/05/22/35/flower-7700011_640.jpg",
+      image:
+        "https://cdn.pixabay.com/photo/2023/01/05/22/35/flower-7700011_640.jpg",
       title: "Make your videos more impressive 🌟🌟🙂",
       description: `Check out this powerful tool for the Youtube SEO`,
       url: "https://yotuube-nextjs.netlify.app/news/helloworld",
     },
     {
-      image: "https://cdn.pixabay.com/photo/2023/02/13/05/58/doodle-7786568__340.png",
+      image:
+        "https://cdn.pixabay.com/photo/2023/02/13/05/58/doodle-7786568__340.png",
       title: "Make your videos more impressive by this tool",
       description: `sLorem ipsum dolor sit amet, consectetur adipisicing elit. Beatae animi aliquam est ratione cum ducimus suscipit necessitatibus? Quia, corporis architecto.`,
       url: "https://yotuube-nextjs.netlify.app/news/helloworld",
@@ -72,13 +74,13 @@ export const ChannelStateProvider = ({ children }) => {
   ]);
 
   const [Ideas, setIdeas] = useState([
-    
     {
-      image: "https://www.gstatic.com/youtube/img/promos/growth/3dcbeefeab5e82687817c0c8499fee91836836f78d8e5b978790b979a8308b92_160x160.png",
+      image:
+        "https://www.gstatic.com/youtube/img/promos/growth/3dcbeefeab5e82687817c0c8499fee91836836f78d8e5b978790b979a8308b92_160x160.png",
       title: "Make a channel trailer",
       description: `First impressions matter. You can win the hearts of unsubscribed viewers with a captivating trailer`,
       url: "https://yotuube-nextjs.netlify.app/news/helloworld",
-      channelRef: 'a00c3e26-aa9b-11fa-afa1-0242ac120003',
+      channelRef: "a00c3e26-aa9b-11fa-afa1-0242ac120003",
       dismiss: false,
     },
   ]);
@@ -217,6 +219,7 @@ export const ChannelStateProvider = ({ children }) => {
 
   const [showUpload, setShowUpload] = useState(false);
   const [activeSidebar, setActiveSidebar] = useState("Dashboard");
+  const [bottomActiveSidebar, setBottomActiveSidebar] = useState("");
 
   const fetchChannelVideos = (videos) => {
     return videos.filter((video) => currentChannel?.uid === video?.channelRef);
@@ -310,6 +313,29 @@ export const ChannelStateProvider = ({ children }) => {
     return result;
   }
 
+  const startLoadingBar = (
+    setLoading,
+    setLoadingProgress,
+    function1,
+    function2
+  ) => {
+    setLoading(true);
+    setLoadingProgress(90);
+    setTimeout(() => {
+      setLoadingProgress(100);
+    }, 500);
+
+    setTimeout(() => {
+      setLoadingProgress(100);
+      try {
+        function1();
+        function2();
+      } catch (e) {
+        console.log(e);
+      }
+    }, 700);
+  };
+
   return (
     <ChannelState.Provider
       value={{
@@ -339,7 +365,10 @@ export const ChannelStateProvider = ({ children }) => {
         News,
         setNews,
         Ideas,
-        setIdeas
+        setIdeas,
+        bottomActiveSidebar,
+        setBottomActiveSidebar,
+        startLoadingBar,
       }}
     >
       {children}

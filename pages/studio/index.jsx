@@ -25,7 +25,7 @@ import { useRouter } from "next/router";
 export default function Studio() {
   const { appearance, user, loading, loadingProgress, shareDialog } =
     useStateContext();
-  const { showUpload, setShowUpload } = useChannelState();
+  const { showUpload, bottomActiveSidebar } = useChannelState();
   const { query } = useRouter();
 
   useEffect(() => {
@@ -63,8 +63,8 @@ export default function Studio() {
         {query?.earn && <Earn />}
         {query?.customization && <Customization />}
         {query?.audiolibrary && <AudioLibrary />}
-        {query?.settings && <Settings />}
-        {query?.sendfeedback && <SendFeedback />}
+        {bottomActiveSidebar === "Settings" && <Settings />}
+        {bottomActiveSidebar === "Send Feedback" && <SendFeedback />}
         <Toast />
         {loading && <LoadingBar color="#f11946" progress={loadingProgress} />}
       </div>

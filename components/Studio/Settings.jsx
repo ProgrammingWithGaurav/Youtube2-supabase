@@ -16,11 +16,7 @@ const Settings = () => {
     videoRef.current.click();
   };
 
-  useEffect(() => {
-    query?.settings && setActiveSidebar("Settings");
-  }, query);
-
-  const { setShowUpload, setActiveSidebar } = useChannelState();
+  const { setBottomActiveSidebar } = useChannelState();
   return (
     <div className="w-screen lg:h-screen lg:top-2 top-16 flex items-center fixed justify-center z-[10000000000000000000]">
       <div className="shadow-lg bg-white dark:bg-[#282828] p-2 px-4 rounded-xl lg:w-[60vw] lg:h-[80vh] w-[400px] h-[400px]">
@@ -39,8 +35,7 @@ const Settings = () => {
               element={
                 <XMarkIcon
                   onClick={() => {
-                    router.push("/studio?dashboard=true");
-                    setActiveSidebar("Dashboard");
+                    setBottomActiveSidebar("");
                   }}
                   className="clickable-icon"
                 />
