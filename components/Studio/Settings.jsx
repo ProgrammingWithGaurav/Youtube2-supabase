@@ -4,19 +4,52 @@ import {
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 import { useRouter } from "next/router";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useChannelState } from "../../context/ChannelState";
+import { useStateContext } from "../../context/StateContext";
 import Tooltip from "../Tooltip";
+
+const GeneralSetting = () => {
+  return <div className="bg-gray-50 p-4 dark:bg-white/10 rounded ">GeneralSetting</div>;
+};
+
+const ChannelSetting = () => {
+  return <div className="bg-gray-50 p-4 dark:bg-white/10 rounded ">ChannelSetting</div>;
+};
+
+const UploadDefaults = () => {
+  return <div className="bg-gray-50 p-4 dark:bg-white/10 rounded ">UploadDefaults</div>;
+};
+
+const Permissions = () => {
+  return <div className="bg-gray-50 p-4 dark:bg-white/10 rounded ">Permissions</div>;
+};
+
+const Community = () => {
+  return <div className="bg-gray-50 p-4 dark:bg-white/10 rounded ">Community</div>;
+};
+
+const Agreements = () => {
+  return <div className="bg-gray-50 p-4 dark:bg-white/10 rounded ">Agreements</div>;
+};
 
 const Settings = () => {
   const videoRef = useRef(null);
   const router = useRouter();
   const { query } = router;
-  const handleUpload = () => {
-    videoRef.current.click();
-  };
+  const { setLoading, setLoadingProgress } = useStateContext();
+  const [setting, setSetting] = useState("General");
+  const { setBottomActiveSidebar, startLoadingBar, GetUid } = useChannelState();
 
-  const { setBottomActiveSidebar } = useChannelState();
+  const Settings = [
+    "General",
+    "Channel",
+    "Upload Defaults",
+    "Permissions",
+    "Community",
+    "Agreements",
+  ];
+
   return (
     <div className="w-screen lg:h-screen lg:top-2 top-16 flex items-center fixed justify-center z-[10000000000000000000]">
       <div className="shadow-lg bg-white dark:bg-[#282828] p-2 px-4 rounded-xl lg:w-[60vw] lg:h-[80vh] w-[400px] h-[400px]">
@@ -26,7 +59,14 @@ const Settings = () => {
           <div className="flex item-scenter gap-1">
             <Tooltip
               element={
-                <ChatBubbleLeftEllipsisIcon className="clickable-icon" />
+                <ChatBubbleLeftEllipsisIcon
+                  onClick={() =>
+                    startLoadingBar(setLoading, setLoadingProgress, () =>
+                      setBottomActiveSidebar("Send Feedback")
+                    )
+                  }
+                  className="clickable-icon"
+                />
               }
               width={"w-24"}
               hoverText="Send Feedback"
@@ -45,27 +85,30 @@ const Settings = () => {
           </div>
         </div>
 
-        <div className="flex-1 flex-col flex items-center justify-center  h-full py-10">
-          <CloudArrowUpIcon
-            className="icon w-20 h-20 text-gray-700 hover:bg-gray-100 dark:hover:bg-white/5 active:opacity-60  transition"
-            onClick={handleUpload}
-          />
-          <p className="text-bold">Drag and drop video files to upload</p>
-          <span className="text-xs my-2 text-gray-600 dark:text-gray-200/90">
-            Your videos will be private until you publish them.
-          </span>
-          <input type="file" accept="video/*" className="w-0" ref={videoRef} />
-          <button
-            type="button"
-            className="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl active:ring-4 active:outline-none active:ring-blue-300 transition dark:active:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2"
-            onClick={handleUpload}
-          >
-            Select Files
-          </button>
-          <span className="text-gray-600/50 dark:text-gray-200/50 text-xs mt-10">
-            Please be sure not to violate others copyright or privacy rights.{" "}
-            <span className="text-blue-400">Learn more</span>
-          </span>
+        <div className="flex items-center my-1">
+          <div className="flex flex-col justify-center border-r h-full pr-4 dark:border-r-gray-100/10 border-r-gray-600/10 text-neutral-900 dark:text-white">
+            {Settings.map((settingOption) => (
+              <div
+                key={GetUid()}
+                onClick={() => setSetting(settingOption)}
+                className={`click-show cursor-pointer py-3 text-sm font-medium px-2 pr-6 rounded transition ${
+                  setting === settingOption
+                    ? "dark:bg-neutral-900 bg-gray-200"
+                    : "dark:hover:bg-stone-900 hover:bg-gray-100"
+                }`}
+              >
+                {settingOption}
+              </div>
+            ))}
+          </div>
+          <div className="flex-1 h-max p-4 dark:text-white">
+            {setting === "General" && <GeneralSetting />}
+            {setting === "Channel" && <ChannelSetting />}
+            {setting === "Upload Defaults" && <UploadDefaults />}
+            {setting === "Permissions" && <Permissions />}
+            {setting === "Community" && <Community />}
+            {setting === "Agreements" && <Agreements />}
+          </div>
         </div>
       </div>
     </div>

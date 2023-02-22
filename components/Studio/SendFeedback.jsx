@@ -30,24 +30,17 @@ const SendFeedback = () => {
       <div className="flex items-center justify-between dark:border-b-gray-200/20 border-b-gray-600 border-b ">
         <h2 className="text-bold text-lg">Send feedback</h2>
 
-        <div className="flex item-scenter gap-1">
-          <Tooltip
-            element={<ChatBubbleLeftEllipsisIcon className="clickable-icon" />}
-            width={"w-24"}
-            hoverText="Send Feedback"
-          />
-          <Tooltip
-            element={
-              <XMarkIcon
-                onClick={() => {
-                  setBottomActiveSidebar("");
-                }}
-                className="clickable-icon"
-              />
-            }
-            hoverText="Close"
-          />
-        </div>
+        <Tooltip
+          element={
+            <XMarkIcon
+              onClick={() => {
+                setBottomActiveSidebar("");
+              }}
+              className="clickable-icon"
+            />
+          }
+          hoverText="Close"
+        />
       </div>
 
       <div className="flex flex-col justify-center my-4 space-y-2">
