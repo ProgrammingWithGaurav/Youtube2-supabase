@@ -15,6 +15,7 @@ const SubHeader = ({ Options, activeOption, setActiveOption }) => {
       <div className="w-full flex items-center gap-6 my-4 division-bottom">
         {Options?.map((option) => (
           <div
+            key={option}
             onClick={() =>
               startLoadingBar(
                 setLoading,
