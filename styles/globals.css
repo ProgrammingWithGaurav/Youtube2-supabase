@@ -38,6 +38,10 @@
   .video {
     @apply  hover:bg-gray-100 rounded-xl dark:hover:bg-white/10;
   }
+  
+  .division-bottom {
+    @apply border-b border-b-gray-600/20 dark:border-b-gray-200/20;
+  }
 
   .link-btn {
     @apply dark:text-blue-400 text-blue-500 uppercase my-1 hover:active:bg-blue-400/30 transition cursor-pointer p-2 rounded ease-in;
