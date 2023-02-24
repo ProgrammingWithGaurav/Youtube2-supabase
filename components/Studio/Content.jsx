@@ -1,10 +1,16 @@
-import { AdjustmentsHorizontalIcon, ChartBarSquareIcon, ChatBubbleBottomCenterIcon, PencilIcon, PlayIcon } from "@heroicons/react/24/outline";
+import {
+  AdjustmentsHorizontalIcon,
+  ChartBarSquareIcon,
+  ChatBubbleBottomCenterIcon,
+  PencilIcon,
+  PlayIcon,
+} from "@heroicons/react/24/outline";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { useChannelState } from "../../context/ChannelState";
 import { useStateContext } from "../../context/StateContext";
 import { numify } from "numify";
-import Tooltip from '../Tooltip';
+import Tooltip from "../Tooltip";
 
 const SubHeader = ({ Options, activeOption, setActiveOption }) => {
   const { startLoadingBar } = useChannelState();
@@ -43,54 +49,86 @@ const SubHeader = ({ Options, activeOption, setActiveOption }) => {
   );
 };
 
-const Video = ({thumbnail, title, description, timestamp, views, comments, likes, dislikes, uid}) => {
+const Video = ({
+  thumbnail,
+  title,
+  description,
+  timestamp,
+  views,
+  comments,
+  likes,
+  dislikes,
+  uid,
+}) => {
   const router = useRouter();
   return (
     <tbody className="w-full border-b border-b-gray-600/20 dark:border-b-gray-200/20">
       <tr className="bg-transparent divison-bottom">
         <th
-      
           scope="row"
           className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white"
         >
-          <div
-           
-              className="w-72 cursor-pointer flex items-center my-1  border-y-[1] gap-1 border-y-gray-gray-600 dark:border-y-gray-300 hover:bg-gray-100 transition px-4 dark:hover:bg-white/10 py-2 dark:bg-neutral-900 rounded-lg"
-            >
-              <img
-               onClick={() => router.push(`/studio/video/${uid}`)}
-                src={thumbnail}
-                alt="video thumbnail"
-                className="rounded-lg object-contain w-28"
+          <div className="w-72 cursor-pointer flex items-center my-1  border-y-[1] gap-1 border-y-gray-gray-600 dark:border-y-gray-300 hover:bg-gray-100 transition px-4 dark:hover:bg-white/10 py-2 dark:bg-neutral-900 rounded-lg">
+            <img
+              onClick={() => router.push(`/studio/video/${uid}/edit`)}
+              src={thumbnail}
+              alt="video thumbnail"
+              className="rounded-lg object-contain w-28"
+            />
+            <div className="w-7/12 group">
+              <Tooltip
+                element={
+                  <p
+                    className="text-bold font-semibold hover:underline"
+                    onClick={() => router.push(`/studio/video/${uid}?edit=true`)}
+                  >
+                    {title}
+                  </p>
+                }
+                hoverText={title}
               />
-              <div className="w-7/12 group">
-                <Tooltip element={<p className="text-bold font-semibold hover:underline" onClick={() => router.push(`/studio/video/${uid}`)}>{title}</p>} hoverText={title} />
-                <p className="dark:text-gray-300 text-gray-700/80 font-normal text-xs truncate flex-1 group-hover:hidden">
-                  {description}
-                </p>
-                <p className="hidden group-hover:flex items-center mt-2">
-                  <PencilIcon className="clickable-icon w-8 h-8 " />
-                  <ChartBarSquareIcon className="clickable-icon w-8 h-8 " />
-                  <ChatBubbleBottomCenterIcon className="clickable-icon w-8 h-8" />
-                  <PlayIcon className="clickable-icon w-8 h-8" />
-                </p>
-              </div>
+              <p className="dark:text-gray-300 text-gray-700/80 font-normal text-xs truncate flex-1 group-hover:hidden">
+                {description}
+              </p>
+              <p className="hidden group-hover:flex items-center mt-2">
+                <PencilIcon
+                  className="clickable-icon w-8 h-8 "
+                  onClick={() => router.push(`/studio/video/${uid}?edit=true`)}
+                />
+                <ChartBarSquareIcon
+                  className="clickable-icon w-8 h-8 "
+                  onClick={() => router.push(`/studio/video/${uid}/analytics`)}
+                />
+                <ChatBubbleBottomCenterIcon
+                  className="clickable-icon w-8 h-8"
+                  onClick={() => router.push(`/studio/video/${uid}/comments`)}
+                />
+                <PlayIcon
+                  className="clickable-icon w-8 h-8"
+                  onClick={() =>
+                    window.open(
+                      `${process.env.NEXT_PUBLIC_BASE_URL}/watch/${uid}`
+                    )
+                  }
+                />
+              </p>
             </div>
+          </div>
         </th>
         <td className="px-6 py-4">
-          
-        <p className="flex flex-col">
-                <span className="text-bold">
-                  {timestamp?.toDateString()}
-                </span>
-                <span className="text-xs dark:text-gray-300 text-gray-900">
-                  Published
-                </span>
-              </p>
+          <p className="flex flex-col">
+            <span className="text-bold">{timestamp?.toDateString()}</span>
+            <span className="text-xs dark:text-gray-300 text-gray-900">
+              Published
+            </span>
+          </p>
         </td>
         <td className="px-6 py-4">{numify(views)}</td>
         <td className="px-6 py-4">{comments?.length}</td>
-        <td className="px-6 py-4 text-bold">{likes?.length} <span className='text-gray'>vs</span> {dislikes?.length}</td>
+        <td className="px-6 py-4 text-bold">
+          {likes?.length} <span className="text-gray">vs</span>{" "}
+          {dislikes?.length}
+        </td>
       </tr>
     </tbody>
   );

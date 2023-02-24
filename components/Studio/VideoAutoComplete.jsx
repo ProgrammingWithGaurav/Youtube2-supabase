@@ -46,10 +46,30 @@ export default function VideoAutoComplete({
                   {description}
                 </p>
                 <p className="hidden group-hover:flex items-center mt-2">
-                  <PencilIcon className="clickable-icon w-8 h-8 " />
-                  <ChartBarSquareIcon className="clickable-icon w-8 h-8 " />
-                  <ChatBubbleBottomCenterIcon className="clickable-icon w-8 h-8" />
-                  <PlayIcon className="clickable-icon w-8 h-8" />
+                  <PencilIcon
+                    className="clickable-icon w-8 h-8 "
+                    onClick={() =>
+                      router.push(`/studio/video/${uid}?edit=true`)
+                    }
+                  />
+                  <ChartBarSquareIcon
+                    className="clickable-icon w-8 h-8 "
+                    onClick={() =>
+                      router.push(`/studio/video/${uid}/analytics`)
+                    }
+                  />
+                  <ChatBubbleBottomCenterIcon
+                    className="clickable-icon w-8 h-8"
+                    onClick={() => router.push(`/studio/video/${uid}/comments`)}
+                  />
+                  <PlayIcon
+                    className="clickable-icon w-8 h-8"
+                    onClick={() =>
+                      window.open(
+                        `${process.env.NEXT_PUBLIC_BASE_URL}/watch/${uid}`
+                      )
+                    }
+                  />
                 </p>
               </div>
               <p className="flex flex-col">

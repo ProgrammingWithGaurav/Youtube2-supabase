@@ -281,6 +281,11 @@ export const ChannelStateProvider = ({ children }) => {
     return channels.filter((channel) => channel?.uid === channelRef)[0];
   };
 
+const fetchVideoDetails = (videos, uid) => {
+  return videos.filter((video) => video?.uid === uid)[0];
+};
+
+
   const fetchLikedVideos = (videos) => {
     const data = videos.filter((video) =>
       video.likes.includes(currentChannel.uid)
@@ -369,6 +374,7 @@ export const ChannelStateProvider = ({ children }) => {
         bottomActiveSidebar,
         setBottomActiveSidebar,
         startLoadingBar,
+        fetchVideoDetails
       }}
     >
       {children}

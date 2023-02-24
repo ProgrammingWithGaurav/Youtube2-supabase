@@ -45,7 +45,7 @@ const Header = () => {
           <Bars3Icon className="icon" onClick={() => setIsSidebar(true)} />
         )}
         <Link
-          href="studio"
+          href="/studio"
           className="cursor-pointer icon w-12 h-12 items-center flex gap-1"
         >
           <img
@@ -107,7 +107,7 @@ const Header = () => {
       <div className="flex items-center">
         <Tooltip
           element={<VideoCameraIcon onClick={() => {
-            router.push('?create=true')
+            router.push('/studio/?create=true')
           }} className="clickable-icon" />}
           hoverText="Create"
         />
