@@ -1,10 +1,12 @@
 import { useState } from "react";
+import { useStateContext } from "../context/StateContext";
 
-function CheckBox(color) {
-    const [isChecked, setIsChecked] = useState(false);
+function CheckBox() {
+  const [isChecked, setIsChecked] = useState(false);
+  const { appearance } = useStateContext();
 
   return (
-       <div className="flex items-center">
+    <div className="flex items-center">
       <label htmlFor="colorful-checkbox" className="cursor-pointer">
         <div className="relative">
           <input
@@ -14,16 +16,22 @@ function CheckBox(color) {
             checked={isChecked}
             onChange={() => setIsChecked(!isChecked)}
           />
-          <div className={`w-4 h-4 border-2 border-gray-400 rounded-sm bg-gradient-to-br from-white-500 to-${color}-500 absolute top-0 left-0`}></div>
+          <div
+            className={`w-6 h-6 border-2 click-show p-1 border-indigo-600 rounded-md ${
+              appearance === "dark"
+                ? "from-indigo-200 to-rose-300 bg-gradient-to-br"
+                : "from-indigo-500 to-indigo-500"
+            } absolute top-0 left-0`}
+          ></div>
           {isChecked && (
-            <div className="absolute top-0 left-0">
+            <div className="absolute top-0 left-1">
               <svg
-                className={`w-3 h-3 text-${color} fill-current`}
+                className={`w-4 h-4 dark:text-white text-indigo-500 fill-current`}
                 viewBox="0 0 12 9"
               >
                 <path
                   d="M1 5.5L4.5 9L11 1"
-                  stroke="white"
+                  stroke={appearance === "dark" ? "white" : "gray"}
                   strokeWidth="2"
                   fill="none"
                 />

@@ -78,8 +78,7 @@ export const StateProvider = ({ children }) => {
       },
     },
     {
-      name:
-        router.pathname === "/studio" ? "Youtube" : "Youtube Studio",
+      name: router.pathname === "/studio" ? "Youtube" : "Youtube Studio",
       icon: <PlayIcon className="icon" />,
       onClick: () => {
         router.pathname === "/studio"
@@ -220,6 +219,7 @@ export const StateProvider = ({ children }) => {
           uid: 325532252,
           channelRef: "a00c3e26-aa9b-11fa-afa1-0242ac120003",
           gotHeart: true,
+          dislikes: [],
           likes: ["a00c3e26-aa9b-11fa-afa1-0242ac120003"],
           replies: [
             {
@@ -260,6 +260,7 @@ export const StateProvider = ({ children }) => {
         "a00c3e26-aa9b-11ed-afa1-0242ac120002",
         "a00c3e26-aa9b-11fa-afa1-0242ac120003",
       ],
+      dislikes: [],
       comments: [
         {
           timestamp: new Date(),

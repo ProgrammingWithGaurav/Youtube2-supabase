@@ -25,7 +25,7 @@ import { useRouter } from "next/router";
 export default function Studio() {
   const { appearance, user, loading, loadingProgress, shareDialog } =
     useStateContext();
-  const { showUpload, bottomActiveSidebar } = useChannelState();
+  const { showUpload, bottomActiveSidebar, setShowUpload } = useChannelState();
   const { query } = useRouter();
 
   useEffect(() => {
