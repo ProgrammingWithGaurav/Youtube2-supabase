@@ -37,6 +37,12 @@ export const ChannelStateProvider = ({ children }) => {
       "a00c3e26-aa9b-11ed-afa1-0242ac120002",
     ],
     email: "gaurav@gmail.com",
+    playlists: [
+      {
+        name: "MyPlaylist",
+        videos: ["449112141"],
+      },
+    ],
   });
 
   const [channelSearch, setChannelSearch] = useState("");
@@ -128,6 +134,12 @@ export const ChannelStateProvider = ({ children }) => {
         },
       ],
       email: "cleverpgorammer@gmail.com",
+      playlists: [
+        {
+          name: "MyPlaylist",
+          videos: ["449112141"],
+        },
+      ],
     },
 
     {
@@ -171,6 +183,15 @@ export const ChannelStateProvider = ({ children }) => {
         },
       ],
       email: "gaurav@gmail.com",
+      playlists: [
+        {
+          name: "hi",
+          videos: ["449112141"],
+        }, {
+          name: "MyPlaylist",
+          videos: ["449112141"],
+        },
+      ],
     },
 
     {
@@ -220,6 +241,9 @@ export const ChannelStateProvider = ({ children }) => {
   const [showUpload, setShowUpload] = useState(false);
   const [activeSidebar, setActiveSidebar] = useState("Dashboard");
   const [bottomActiveSidebar, setBottomActiveSidebar] = useState("");
+  const [videoDetailSidebar, setVideoDetailSidebar] = useState("Edit");
+  const [editDialog, setEditDialog] = useState(false);
+  const [thumbnailDialog, setThumbnailDialog] = useState(false);
 
   const fetchChannelVideos = (videos) => {
     return videos.filter((video) => currentChannel?.uid === video?.channelRef);
@@ -281,10 +305,9 @@ export const ChannelStateProvider = ({ children }) => {
     return channels.filter((channel) => channel?.uid === channelRef)[0];
   };
 
-const fetchVideoDetails = (videos, uid) => {
-  return videos.filter((video) => video?.uid === uid)[0];
-};
-
+  const fetchVideoDetails = (videos, uid) => {
+    return videos.filter((video) => video?.uid === uid)[0];
+  };
 
   const fetchLikedVideos = (videos) => {
     const data = videos.filter((video) =>
@@ -340,7 +363,6 @@ const fetchVideoDetails = (videos, uid) => {
       }
     }, 700);
   };
-
   return (
     <ChannelState.Provider
       value={{
@@ -374,7 +396,13 @@ const fetchVideoDetails = (videos, uid) => {
         bottomActiveSidebar,
         setBottomActiveSidebar,
         startLoadingBar,
-        fetchVideoDetails
+        fetchVideoDetails,
+        videoDetailSidebar,
+        setVideoDetailSidebar,
+        setEditDialog,
+        editDialog,
+        thumbnailDialog,
+        setThumbnailDialog,
       }}
     >
       {children}

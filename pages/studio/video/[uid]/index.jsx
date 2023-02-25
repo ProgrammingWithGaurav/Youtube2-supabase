@@ -52,7 +52,7 @@ export default function VideoDetail() {
         <Sidebar />
         <Toast />
 
-        {query?.edit || query === undefined && <Edit />}
+        {query?.edit && <Edit />}
         {query?.editor && <Editor />}
         {query?.copyright && <Copyright />}
         {query?.editor && <Editor />}

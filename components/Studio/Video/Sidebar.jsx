@@ -33,7 +33,7 @@ const Sidebar = () => {
 
   const SidebarOptions = [
     {
-      name: "Details",
+      name: "Edit",
       icon: <PencilIcon className="studio-sidebar-icon" />,
       activeIcon: <ActivePencilIcon className="studio-sidebar-icon" />,
     },
@@ -85,10 +85,8 @@ const Sidebar = () => {
   const { isSidebar, setLoading, setLoadingProgress, videos } =
     useStateContext();
   const {
-    activeSidebar,
-    setActiveSidebar,
-    currentChannel,
-    setBottomActiveSidebar,
+    videoDetailSidebar,
+    setVideoDetailSidebar,
     bottomActiveSidebar,
     fetchVideoDetails,
     startLoadingBar,
@@ -150,18 +148,18 @@ const Sidebar = () => {
                       ?.toLowerCase()
                       ?.replace(" ", "")}=true`
                   ),
-                () => setActiveSidebar(option.name)
+                () => setVideoDetailSidebar(option.name)
               );
             }}
             className={`text-xs flex items-center text-gray-600 dark:text-gray-300 gap-2 p-2 cursor-pointer py-2 font-semibold ${
               isSidebar ? "lg:pr-6 pr-4" : "pr-2"
             } ${
-              activeSidebar === option.name
+              videoDetailSidebar === option.name
                 ? "text-red-500 dark:text-red-500 border-l-4 bg-gray-100 border-red-500 dark:bg-black/50"
                 : ""
             }`}
           >
-            {activeSidebar === option.name ? option.activeIcon : option.icon}
+            {videoDetailSidebar === option.name ? option.activeIcon : option.icon}
             {isSidebar && option.name}
           </div>
         ))}

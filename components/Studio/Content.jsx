@@ -70,7 +70,7 @@ const Video = ({
         >
           <div className="w-72 cursor-pointer flex items-center my-1  border-y-[1] gap-1 border-y-gray-gray-600 dark:border-y-gray-300 hover:bg-gray-100 transition px-4 dark:hover:bg-white/10 py-2 dark:bg-neutral-900 rounded-lg">
             <img
-              onClick={() => router.push(`/studio/video/${uid}/edit`)}
+              onClick={() => router.push(`/studio/video/${uid}?edit=true`)}
               src={thumbnail}
               alt="video thumbnail"
               className="rounded-lg object-contain w-28"
