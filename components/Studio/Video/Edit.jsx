@@ -6,7 +6,7 @@ import {
   TrashIcon,
 } from "@heroicons/react/24/outline";
 import { useRouter } from "next/router";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useChannelState } from "../../../context/ChannelState";
 import { useStateContext } from "../../../context/StateContext";
 import Tooltip from "../../Tooltip";
@@ -77,9 +77,19 @@ const Header = (uid) => {
   );
 };
 
-const EditVideo = (uid) => {
+const EditVideo = ({ uid, videoDetails }) => {
   const { thumbnailDialog, setThumbnailDialog } = useChannelState();
+  const thumbnailRef = useRef(null);
+  const [editedDetails, setEditedDetails] = useState(videoDetails);
 
+  const uploadFile = (event) => {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+    reader.onload = () => {
+      setEditedDetails({ ...editedDetails, thumbnail: reader.result });
+    };
+    reader.readAsDataURL(file);
+  };
   return (
     <div className="col-span-2 flex flex-col">
       <div className="mb-6">
@@ -92,6 +102,10 @@ const EditVideo = (uid) => {
         <input
           type="text"
           id="title"
+          value={editedDetails?.title}
+          onChange={(e) =>
+            setEditedDetails({ ...editedDetails, title: e.target.value })
+          }
           className=" ring-1 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full py-3 px-4 bg-transparent  dark:text-white dark:focus:ring-blue-500 outline-none "
           placeholder="Add a Title that describes your video"
           required
@@ -108,6 +122,10 @@ const EditVideo = (uid) => {
         <textarea
           rows={10}
           type="text"
+          value={editedDetails?.description}
+          onChange={(e) =>
+            setEditedDetails({ ...editedDetails, description: e.target.value })
+          }
           id="description"
           className="ring-1 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full py-3 px-4 bg-transparent  dark:text-white dark:focus:ring-blue-500 outline-none"
           placeholder="Tell viewers about your video"
@@ -136,9 +154,7 @@ const EditVideo = (uid) => {
         </p>
         <div className="relative w-80 h-60">
           <img
-            src={
-              "https://i.ytimg.com/vi/XIrOM9oP3pA/hq720.jpg?sqp=-oaymwEcCNAFEJQDSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLDiN7R1akv6_cbfMTpTV_lUm1PgaQ"
-            }
+            src={editedDetails?.thumbnail}
             className="object-contain rounded-xl"
             alt="thumbnail image"
           />
@@ -147,10 +163,20 @@ const EditVideo = (uid) => {
             className="absolute right-2 top-2 clickable-icon click-show video-control"
           />
 
+          <input
+            type="file"
+            accept="image/*"
+            ref={thumbnailRef}
+            onChange={uploadFile}
+            className="w-0 h-0"
+          />
           {thumbnailDialog && (
-            <div className="absolute -right-28 top-2 shadow bg-gray-50 rounded-xl dark:text-white p-2 dark:bg-neutral-900 flex flex-col">
+            <div className="absolute -right-36 top-2 shadow bg-gray-50 rounded-xl dark:text-white p-2 dark:bg-neutral-900 flex flex-col">
               <p
-                onClick={() => setThumbnailDialog(false)}
+                onClick={() => {
+                  setThumbnailDialog(false);
+                  thumbnailRef.current.click();
+                }}
                 className="flex items-center gap-4 click-show cursor-pointer hover:bg-gray-100 rounded-xl px-2 py-1 dark:hover:bg-white/10"
               >
                 <PhotoIcon className="icon" />
@@ -171,6 +197,10 @@ const EditVideo = (uid) => {
         <input
           type="text"
           id="title"
+          value={editedDetails?.type}
+          onChange={(e) =>
+            setEditedDetails({ ...editedDetails, type: e.target.value })
+          }
           className=" ring-1 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full py-3 px-4 bg-transparent  dark:text-white dark:focus:ring-blue-500 outline-none "
           placeholder="Add your video to a category so viewers can find it more easily"
           required
@@ -192,13 +222,14 @@ const Edit = () => {
   const [userPlaylists, setUserPlaylists] = useState([]);
   // Playlist containing video
   const [videoPlaytlist, setVideoPlalist] = useState([]);
+  const [videoDetails, setVideoDetails] = useState();
 
   const getUserPlaylists = async () => {
     const videoDetails = await fetchVideoDetails(videos, query?.uid);
+    setVideoDetails(videoDetails);
     const userUid = await videoDetails?.channelRef;
     const userDetails = await fetchChannelDetails(userUid);
     setUserPlaylists(userDetails?.playlists);
-    console.log(userDetails?.playlists);
   };
 
   function findPlaylistByVideoUid(uid, playlists) {
@@ -230,7 +261,11 @@ const Edit = () => {
     <div className="flex-1 h-screen mt-16 p-4 w-[95vw] ml-[60px] flex flex-col">
       <Header uid={query?.uid} />
       <div className="grid h-screen overflow-y-auto p-3 sm:mr-4 scrollbar lg:grid-cols-3 sm:grid-cols-1">
-        <EditVideo uid={query?.uid} userPlaylists={userPlaylists} />
+        <EditVideo
+          uid={query?.uid}
+          userPlaylists={userPlaylists}
+          videoDetails={videoDetails}
+        />
         <PlayVideo />
       </div>
     </div>
