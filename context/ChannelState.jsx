@@ -40,6 +40,9 @@ export const ChannelStateProvider = ({ children }) => {
     playlists: [
       {
         name: "MyPlaylist",
+        videos: [],
+      },  {
+        name: "My Playlist 2 ",
         videos: ["449112141"],
       },
     ],
@@ -186,10 +189,10 @@ export const ChannelStateProvider = ({ children }) => {
       playlists: [
         {
           name: "hi",
-          videos: ["449112141"],
+          videos: ["44242142"],
         }, {
           name: "MyPlaylist",
-          videos: ["449112141"],
+          videos: ["44242141"],
         },
       ],
     },

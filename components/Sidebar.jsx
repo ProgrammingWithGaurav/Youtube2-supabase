@@ -1,4 +1,6 @@
 import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import { useChannelState } from "../context/ChannelState";
 import { useStateContext } from "../context/StateContext";
 
 const Sidebar = () => {
@@ -9,11 +11,17 @@ const Sidebar = () => {
     setLoadingProgress,
     activeSidebar,
     setActiveSidebar,
-    subscriptions,
     activeSubscription,
     setActiveSubscription,
   } = useStateContext();
   const router = useRouter();
+  const { currentChannel, fetchChannelDetails, GetUid, startLoadingBar } = useChannelState();
+  const [subscriptions, setSubscriptions] = useState();
+
+  useEffect(() => {
+    setSubscriptions(currentChannel?.subscriptions);
+    console.log(currentChannel);
+  }, []);
 
   return (
     <div
@@ -68,32 +76,36 @@ const Sidebar = () => {
             <h2 className="dark:text-white ext-sl m-2">Subscriptions</h2>
           )}
           <div>
-            {subscriptions?.map((subscription) => (
+            {subscriptions?.map((channelRef) => (
               <div
                 onClick={() => {
-                  setLoading(true);
-                  setLoadingProgress(60);
-                  setTimeout(() => {
-                    setLoadingProgress(100);
-                    setActiveSubscription(subscription.channelDisplayName);
-                    router.push(`/${subscription.channelName}`);
-                  }, 500);
-
-                  setTimeout(() => {
-                    setLoading(false);
-                  }, 800);
+                  startLoadingBar(
+                    setLoading,
+                    setLoadingProgress,
+                    () =>
+                      setActiveSubscription(
+                        fetchChannelDetails(channelRef)?.channelDisplayName
+                      )
+                  );
+                  
+                  router.push(
+                    `/${
+                      fetchChannelDetails(channelRef)?.channelDisplayName
+                    }`
+                  )
                 }}
                 className={`${
                   isSidebar ? "rounded-lg" : "rounded-full"
                 } flex dark:hover:bg-white/20 items-center cursor-pointer transition my-2 hover:bg-gray-100 active:bg-gray-200  ${
-                  activeSubscription === subscription.channelName &&
+                  activeSubscription ===
+                    fetchChannelDetails(channelRef)?.channelName &&
                   "bg-gray-100 dark:bg-white/10 dark:active:bg-white/30"
                 }`}
-                key={subscription.channelName}
+                key={GetUid()}
               >
                 <span className="1/3">
                   <img
-                    src={subscription.channelImage}
+                    src={fetchChannelDetails(channelRef)?.channelImage}
                     className="icon"
                     alt="profile picture"
                   />
@@ -101,11 +113,12 @@ const Sidebar = () => {
                 {isSidebar && (
                   <span
                     className={`text-sm text-gray-900 dark:text-white  ${
-                      activeSubscription === subscription.channelName &&
+                      activeSubscription ===
+                        fetchChannelDetails(channelRef)?.channelName &&
                       "font-semibold text-black dark:text-white"
                     }`}
                   >
-                    {subscription.channelDisplayName}
+                    {fetchChannelDetails(channelRef)?.channelDisplayName}
                   </span>
                 )}
               </div>
