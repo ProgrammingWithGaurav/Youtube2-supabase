@@ -5,8 +5,8 @@ import { useStateContext } from "../context/StateContext";
 import { useChannelState } from "../context/ChannelState";
 
 export default function ProfileMenu() {
-  const {ProfileMenuIcons} = useStateContext();
-  const {currentChannel: {channelImage, channelName, channelDisplayName}}  = useChannelState();
+  const { ProfileMenuIcons } = useStateContext();
+  const { currentChannel } = useChannelState();
 
   return (
     <div>
@@ -14,7 +14,7 @@ export default function ProfileMenu() {
         <div>
           <Menu.Button>
             <img
-              src={channelImage}
+              src={currentChannel?.channelImage}
               alt="profile picture"
               className="clickable-icon w-14 h-14"
             />
@@ -35,11 +35,13 @@ export default function ProfileMenu() {
                 <div className="flex items-center justify-center flex-col mb-2">
                   <div className="flex items-center justify-center pr-20">
                     <img
-                      src={channelImage}
+                      src={currentChannel?.channelImage}
                       alt="profile picture"
                       className="icon w-14 h-14 hover:bg-gray-100 dark:hover:bg-white/10"
                     />
-                    <span className="font-semibold text-xl">{channelDisplayName}</span>
+                    <span className="font-semibold text-xl">
+                      {currentChannel?.channelDisplayName}
+                    </span>
                   </div>
                   <Link
                     href={"/"}
@@ -53,16 +55,15 @@ export default function ProfileMenu() {
                 <Menu.Item key={icon.name}>
                   {({ active }) => (
                     <button
-                      onClick={() => icon.onClick(channelName)}
+                      onClick={() => icon.onClick(currentChannel?.channelName)}
                       className={`${
-                        active ? "bg-gray-100 dark:bg-white/10" : "text-gray-900"
+                        active
+                          ? "bg-gray-100 dark:bg-white/10"
+                          : "text-gray-900"
                       } group flex dark:text-white w-full items-center rounded-md transition text-sm`}
                     >
-                        {icon.icon}
-                      <span>
-                        {icon.name}
-
-                      </span>
+                      {icon.icon}
+                      <span>{icon.name}</span>
                     </button>
                   )}
                 </Menu.Item>
