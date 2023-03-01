@@ -15,7 +15,8 @@ const Sidebar = () => {
     setActiveSubscription,
   } = useStateContext();
   const router = useRouter();
-  const { currentChannel, fetchChannelDetails, GetUid, startLoadingBar } = useChannelState();
+  const { currentChannel, fetchChannelDetails, GetUid, startLoadingBar } =
+    useChannelState();
   const [subscriptions, setSubscriptions] = useState();
 
   useEffect(() => {
@@ -79,20 +80,15 @@ const Sidebar = () => {
             {subscriptions?.map((channelRef) => (
               <div
                 onClick={() => {
-                  startLoadingBar(
-                    setLoading,
-                    setLoadingProgress,
-                    () =>
-                      setActiveSubscription(
-                        fetchChannelDetails(channelRef)?.channelDisplayName
-                      )
-                  );
-                  
-                  router.push(
-                    `/${
+                  startLoadingBar(setLoading, setLoadingProgress, () =>
+                    setActiveSubscription(
                       fetchChannelDetails(channelRef)?.channelDisplayName
-                    }`
-                  )
+                    )
+                  );
+
+                  router.push(
+                    `/${fetchChannelDetails(channelRef)?.channelDisplayName}`
+                  );
                 }}
                 className={`${
                   isSidebar ? "rounded-lg" : "rounded-full"

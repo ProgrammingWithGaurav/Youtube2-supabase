@@ -4,7 +4,7 @@ import {
   ChevronRightIcon,
   MagnifyingGlassIcon,
 } from "@heroicons/react/24/outline";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useStateContext } from "../context/StateContext";
 import Tooltip from "./Tooltip";
 import { numify } from "numify";
@@ -37,9 +37,9 @@ const ChannelHeader = () => {
       setLoading(false);
       setChannelTab(tab);
     }, 1000);
-  }
-  const {channelSearch, setChannelSearch} = useChannelState();
-  const {Subscribe, UnSubscribe} = useChannelState();
+  };
+  const { channelSearch, setChannelSearch } = useChannelState();
+  const { Subscribe, UnSubscribe } = useChannelState();
   const inputRef = useRef();
   const [isInput, setIsInput] = useState(false);
 
@@ -157,7 +157,6 @@ const ChannelHeader = () => {
         />
       </div>
       <div className="border-b -mt-4 border-1 border-b-gray-300 dark:border-b-gray-600"></div>
-      
     </div>
   );
 };

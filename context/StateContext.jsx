@@ -32,6 +32,7 @@ import {
   FaceSmileIcon,
 } from "@heroicons/react/24/solid";
 import { useRouter } from "next/router";
+import { supabase } from "../SupabaseClient";
 
 export const StateContext = createContext();
 
@@ -96,8 +97,9 @@ export const StateProvider = ({ children }) => {
     {
       name: "Sign Out",
       icon: <ArrowLeftOnRectangleIcon className="icon" />,
-      onClick: () => {
-        router.push("/login");
+      onClick: async () => {
+        await supabase.auth.signOut();
+        window.location.reload();
       },
     },
     {
@@ -187,15 +189,6 @@ export const StateProvider = ({ children }) => {
       },
     },
   ];
-
-  const [subscriptions, setSubscription] = useState([
-    {
-      channelName: "CleverProgrammer",
-      channelDisplayName: "Clever Programmer",
-      channelImage:
-        "https://yt3.ggpht.com/ytc/AL5GRJXoWnTXp_oljCbsD07kYmc6Vktj3J0Vs64ALooxgA=s68-c-k-c0x00ffffff-no-rj",
-    },
-  ]);
 
   const [videos, setVideos] = useState([
     {
@@ -354,7 +347,6 @@ export const StateProvider = ({ children }) => {
         setUser,
         activeSidebar,
         setActiveSidebar,
-        subscriptions,
         activeSubscription,
         setActiveSubscription,
         Cataegories,

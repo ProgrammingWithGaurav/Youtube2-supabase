@@ -7,6 +7,7 @@ const ChannelAbout = () => {
   const {
     activeChannel: { joinedDate, views, description, location, socialLinks },
   } = useStateContext();
+
   return (
     <div className="w-full flex items-start justify-between p-4 mt-10 dark:text-white h-screen">
       <div className="w-9/12 mr-8 flex flex-col">
@@ -60,7 +61,7 @@ const ChannelAbout = () => {
         <div className="border-b border-1 w-full border-b-gray-300 dark:border-b-gray-600"></div>
 
         <p className="font-semibold text-sm">
-          Joined {joinedDate?.toDateString()?.slice(4, 100000)}
+          Joined {new Date(joinedDate)?.toDateString()?.slice(4, 100000)}
         </p>
         <div className="border-b border-1 w-full border-b-gray-300 dark:border-b-gray-600"></div>
 

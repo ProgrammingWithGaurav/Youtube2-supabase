@@ -1,56 +1,61 @@
 import { useContext, createContext, useState } from "react";
 import UIDGenerator from "uid-generator";
+import { supabase } from "../SupabaseClient";
 export const ChannelState = createContext();
 
 export const ChannelStateProvider = ({ children }) => {
-  const [currentChannel, setCurrentChannel] = useState({
-    channelName: "Gaurav",
-    channelImage: "https://avatars.githubusercontent.com/u/88154142?v=4",
-    channelBannerImage:
-      "https://cdn.pixabay.com/photo/2017/10/31/19/05/web-design-2906159__480.jpg",
-    subscribers: 1301310301,
-    uid: "a00c3e26-aa9b-11fa-afa1-0242ac120003",
-    channelDisplayName: "Gaurav",
-    socialLinks: [
-      {
-        name: "facebook",
-        logo: "https://cdn-icons-png.flaticon.com/128/5968/5968764.png",
-        url: "http://www.facebook.com",
-      },
-      {
-        name: "instagram",
-        logo: "https://cdn-icons-png.flaticon.com/128/174/174855.png",
-        url: "http://www.instagram.com",
-      },
-      {
-        name: "twitter",
-        logo: "https://cdn-icons-png.flaticon.com/128/733/733579.png",
-        url: "http://www.twitter.com",
-      },
-    ],
-    views: 23242323232323,
-    joinedDate: new Date(),
-    description: `This is my brand new Channel`,
-    location: "United States",
-    subscriptions: [
-      "a20c3a26-aa9b-11wa-afa1-0442ac120009",
-      "a00c3e26-aa9b-11ed-afa1-0242ac120002",
-    ],
-    email: "gaurav@gmail.com",
-    playlists: [
-      {
-        name: "MyPlaylist",
-        videos: [],
-      },  {
-        name: "My Playlist 2 ",
-        videos: ["449112141"],
-      },
-    ],
-  });
+  const [currentChannel, setCurrentChannel] = useState();
 
   const [channelSearch, setChannelSearch] = useState("");
   const [commentOption, setCommentOption] = useState("");
   const [likedVideos, setLikedVideos] = useState([]);
+
+  // deffault channel
+  /* 
+    {
+      channelName: "Gaurav",
+      channelImage: "https://avatars.githubusercontent.com/u/88154142?v=4",
+      channelBannerImage:
+        "https://cdn.pixabay.com/photo/2017/10/31/19/05/web-design-2906159__480.jpg",
+      subscribers: 1301310301,
+      uid: "a00c3e26-aa9b-11fa-afa1-0242ac120003",
+      channelDisplayName: "Gaurav",
+      socialLinks: [
+        {
+          name: "facebook",
+          logo: "https://cdn-icons-png.flaticon.com/128/5968/5968764.png",
+          url: "http://www.facebook.com",
+        },
+        {
+          name: "instagram",
+          logo: "https://cdn-icons-png.flaticon.com/128/174/174855.png",
+          url: "http://www.instagram.com",
+        },
+        {
+          name: "twitter",
+          logo: "https://cdn-icons-png.flaticon.com/128/733/733579.png",
+          url: "http://www.twitter.com",
+        },
+      ],
+      views: 23242323232323,
+      joinedDate: new Date(),
+      description: `This is my brand new Channel`,
+      location: "United States",
+      subscriptions: [
+        "a20c3a26-aa9b-11wa-afa1-0442ac120009",
+        "a00c3e26-aa9b-11ed-afa1-0242ac120002",
+      ],
+      email: "gaurav@gmail.com",
+      playlists: [
+        {
+          name: "MyPlaylist",
+          videos: [],
+        },  {
+          name: "My Playlist 2 ",
+          videos: ["449112141"],
+        },
+      ],
+    }*/
 
   const [News, setNews] = useState([
     {
@@ -247,6 +252,12 @@ export const ChannelStateProvider = ({ children }) => {
   const [videoDetailSidebar, setVideoDetailSidebar] = useState("Edit");
   const [editDialog, setEditDialog] = useState(false);
   const [thumbnailDialog, setThumbnailDialog] = useState(false);
+  
+  const handleLogin = async () => {
+    await supabase.auth.signInWithOAuth({
+      provider: 'google'
+    })
+  }
 
   const fetchChannelVideos = (videos) => {
     return videos.filter((video) => currentChannel?.uid === video?.channelRef);
@@ -406,6 +417,7 @@ export const ChannelStateProvider = ({ children }) => {
         editDialog,
         thumbnailDialog,
         setThumbnailDialog,
+        handleLogin
       }}
     >
       {children}

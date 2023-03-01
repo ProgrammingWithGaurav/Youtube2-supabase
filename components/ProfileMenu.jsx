@@ -6,7 +6,7 @@ import { useChannelState } from "../context/ChannelState";
 
 export default function ProfileMenu() {
   const {ProfileMenuIcons} = useStateContext();
-  const {currentChannel: {channelImage, channelName}}  = useChannelState();
+  const {currentChannel: {channelImage, channelName, channelDisplayName}}  = useChannelState();
 
   return (
     <div>
@@ -35,11 +35,11 @@ export default function ProfileMenu() {
                 <div className="flex items-center justify-center flex-col mb-2">
                   <div className="flex items-center justify-center pr-20">
                     <img
-                      src="https://avatars.githubusercontent.com/u/88154142?v=4"
+                      src={channelImage}
                       alt="profile picture"
                       className="icon w-14 h-14 hover:bg-gray-100 dark:hover:bg-white/10"
                     />
-                    <span className="font-semibold text-xl">Gaurav</span>
+                    <span className="font-semibold text-xl">{channelDisplayName}</span>
                   </div>
                   <Link
                     href={"/"}

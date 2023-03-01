@@ -20,9 +20,9 @@ import { useRouter } from "next/router";
 import { useChannelState } from "../context/ChannelState";
 
 const Header = () => {
-  const { isSidebar, setIsSidebar, user, searchString, setSearchString } =
+  const { isSidebar, setIsSidebar, searchString, setSearchString, setLoading, setLoadingProgress } =
     useStateContext();
-  const { channelSearches } = useChannelState();
+  const { channelSearches, currentChannel, handleLogin , startLoadingBar} = useChannelState();
   const [hasFocused, setHasFocused] = useState(false);
   const [input, setInput] = useState(searchString);
   const router = useRouter();
@@ -44,11 +44,12 @@ const Header = () => {
       className={`flex items-center justify-between w-full h-[10vh] fixed top-0 z-[10000] bg-white dark:bg-neutral-900 p-2`}
     >
       <div className="flex items-center">
-        {isSidebar ? (
-          <XMarkIcon className="icon" onClick={() => setIsSidebar(false)} />
-        ) : (
-          <Bars3Icon className="icon" onClick={() => setIsSidebar(true)} />
-        )}
+        {currentChannel &&
+          (isSidebar ? (
+            <XMarkIcon className="icon" onClick={() => setIsSidebar(false)} />
+          ) : (
+            <Bars3Icon className="icon" onClick={() => setIsSidebar(true)} />
+          ))}
         <Link
           href="/"
           className="cursor-pointer icon w-12 h-12 items-center flex gap-1"
@@ -121,18 +122,24 @@ const Header = () => {
       </div>
       <div className="flex items-center">
         <Tooltip
-          element={<VideoCameraIcon onClick={() => router.push('/studio?create=true')} className="clickable-icon" />}
+          element={
+            <VideoCameraIcon
+              onClick={() => router.push("/studio?create=true")}
+              className="clickable-icon"
+            />
+          }
           hoverText="Create"
         />
         <Tooltip
           element={<BellIcon className="clickable-icon" />}
           hoverText="Notifications"
         />
-        {user ? (
+        {currentChannel ? (
           <ProfileMenu />
         ) : (
           <button
             type="button"
+            onClick={() => startLoadingBar(setLoading, setLoadingProgress, () => handleLogin())}
             className="text-red-400 hover:text-white border border-red-400 hover:bg-red-400 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-3 py-1.5 text-center mr-2"
           >
             Login

@@ -1,11 +1,13 @@
 import { ClockIcon } from "@heroicons/react/24/outline";
+import { useChannelState } from "../context/ChannelState";
 
 export default function AutoComplete({
   searchString,
   setSearchString,
   setInput,
-  searches,
 }) {
+  const { currentChannel } = useChannelState();
+  const searches = currentChannel?.channelSearches;
   const filteredSearches = searches?.filter((search) =>
     search
       ?.toString()

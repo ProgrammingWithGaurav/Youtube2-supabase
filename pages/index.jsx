@@ -6,11 +6,49 @@ import Sidebar from "../components/Sidebar";
 import ShareVideo from "../components/ShareVideo";
 import LoadingBar from "react-top-loading-bar";
 import Toast from "../components/Toast";
+import { useChannelState } from "../context/ChannelState";
+import { useEffect } from "react";
+import { supabase } from "../SupabaseClient";
 
 export default function Page() {
-  const { appearance, user, loading, loadingProgress, shareDialog } =
+  const { appearance, loading, loadingProgress, shareDialog } =
     useStateContext();
+    const {currentChannel, setCurrentChannel} = useChannelState();
 
+    useEffect(() => {
+      const getData = async () => {
+        const {data} = await supabase.auth.getSession();
+        const user = data?.session?.user;
+        
+        if(data?.session?.user) {
+          const {data} = await supabase.from('channels').upsert(
+            {
+              channelName: user?.user_metadata?.name,
+              channelImage: user?.user_metadata?.avatar_url,
+              channelBannerImage: "",
+              subscribers: 0,
+              uid: user?.id,
+              channelDisplayName: user?.user_metadata?.full_name,
+              socialLinks: [],
+              views: 0,
+              joinedDate: user?.created_at,
+              description: ``,
+              location: "",
+              subscriptions: [],
+              email: user?.user_metadata?.email,
+              playlists: [],
+              channelSearches: [],
+              store: [],
+            }
+          ).select()
+          setCurrentChannel(data[0])
+        } else {
+          setCurrentChannel(null);
+        }
+  
+      }
+      getData()
+    }, )
   return (
     <>
       <Head>
@@ -31,7 +69,7 @@ export default function Page() {
         }`}
       >
         <Navbar />
-        {user && <Sidebar />}
+        {currentChannel && <Sidebar />}
         <Home />
         {shareDialog.open && <ShareVideo />}
         <Toast />

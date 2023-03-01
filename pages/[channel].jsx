@@ -18,9 +18,10 @@ import ChannelAbout from "../components/Channel/ChannelAbout";
 import { useEffect } from "react";
 import ChannelStore from "../components/Channel/ChannelStore";
 import { useChannelState } from "../context/ChannelState";
+import { supabase } from "../SupabaseClient";
 
 const Channel = ({ channel }) => {
-  const { query  } = useRouter();
+  const { query } = useRouter();
   const router = useRouter();
   const {
     appearance,
@@ -36,28 +37,30 @@ const Channel = ({ channel }) => {
   const { channels } = useChannelState();
 
   useEffect(() => {
-    const channelName = channel?.startsWith("@")
-      ? channel?.slice(1, 1000)
-      : channel;
+    const getData = async () => {
+      const channelName = channel?.startsWith("@")
+        ? channel?.slice(1, 1000)
+        : channel;
 
-    const channelDetails = channels.filter(
-      (channel) => channel.channelName === channelName
-    );
-    if (channelDetails.length === 0) router.push("/");
-    else {
-      setLoading(true);
-      setLoadingProgress(70);
-      setTimeout(() => {
-        setLoadingProgress(100);
-      }, 500);
+      const {data: channelDetails} = await supabase.from('channels').select().eq("channelName", channelName);
+      console.log(channelDetails)
+      if (!channelDetails) router.push("/");
+      else {
+        setLoading(true);
+        setLoadingProgress(70);
+        setTimeout(() => {
+          setLoadingProgress(100);
+        }, 500);
 
-      setTimeout(() => {
-        setLoadingProgress(100);
-        setActiveChannel(channelDetails[0]);
+        setTimeout(() => {
+          setLoadingProgress(100);
+          setActiveChannel(channelDetails[0]);
 
-        setLoading(false);
-      }, 700);
-    }
+          setLoading(false);
+        }, 700);
+      }
+    };
+    getData();
   }, []);
 
   useEffect(() => {
