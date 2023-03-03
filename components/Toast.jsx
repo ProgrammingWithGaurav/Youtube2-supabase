@@ -5,7 +5,6 @@ const Toast = () => {
   const {
     toast: { text, icon, color, open }, toast, setToast
   } = useStateContext();
-  console.log(toast)
   return (
     open &&
     <div

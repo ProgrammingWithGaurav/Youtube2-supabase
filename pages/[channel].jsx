@@ -1,6 +1,7 @@
 import Navbar from "../components/Navbar";
 import Head from "next/head";
 import { useStateContext } from "../context/StateContext";
+import { useChannelState } from "../context/ChannelState";
 import { useRouter } from "next/router";
 import Sidebar from "../components/Sidebar";
 import ChannelHeader from "../components/ChannelHeader";
@@ -17,7 +18,6 @@ import ChannelChannels from "../components/Channel/ChannelChannels";
 import ChannelAbout from "../components/Channel/ChannelAbout";
 import { useEffect } from "react";
 import ChannelStore from "../components/Channel/ChannelStore";
-import { useChannelState } from "../context/ChannelState";
 import { supabase } from "../SupabaseClient";
 
 const Channel = ({ channel }) => {
@@ -25,7 +25,6 @@ const Channel = ({ channel }) => {
   const router = useRouter();
   const {
     appearance,
-    user,
     loading,
     loadingProgress,
     channelTab,
@@ -34,7 +33,6 @@ const Channel = ({ channel }) => {
     setLoading,
     setLoadingProgress,
   } = useStateContext();
-  const { channels } = useChannelState();
 
   useEffect(() => {
     const getData = async () => {
@@ -42,8 +40,10 @@ const Channel = ({ channel }) => {
         ? channel?.slice(1, 1000)
         : channel;
 
-      const {data: channelDetails} = await supabase.from('channels').select().eq("channelName", channelName);
-      console.log(channelDetails)
+      const { data: channelDetails } = await supabase
+        .from("channels")
+        .select()
+        .eq("channelName", channelName);
       if (!channelDetails) router.push("/");
       else {
         setLoading(true);
@@ -66,33 +66,60 @@ const Channel = ({ channel }) => {
   useEffect(() => {
     activeChannel === null && router.push("/");
   }, [activeChannel]);
-  return (
-    <div>
-      <Head>
-        <title>
-          {activeChannel?.title?.startsWith("@")
-            ? activeChannel?.title?.channel?.slice(1, 10000)
-            : channel}{" "}
-          - Youtube
-        </title>
-        <meta
-          name="description"
-          content="Youtube 2.0 with Nextjs and Supabase"
-        />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link
-          rel="icon"
-          href="https://cdn-icons-png.flaticon.com/128/1384/1384060.png"
-        />
-      </Head>
 
-      {activeChannel && (
+  const { currentChannel, setCurrentChannel } = useChannelState();
+
+  useEffect(() => {
+    const getData = async () => {
+      const { data } = await supabase.auth.getSession();
+      const user = data?.session?.user;
+
+      if (data?.session?.user) {
+        const { data: getUserDoc } = await supabase
+          .from("channels")
+          .select()
+          .eq("uid", user?.id)
+
+        if (getUserDoc.length > 0) {
+          setCurrentChannel(getUserDoc[0]);
+        } else {
+          await supabase.from("channels").insert({
+            uid: user?.id,
+            timestamp: new Date(),
+            channelName: user?.user_metadata?.name,
+            channelDisplayName: user?.user_metadata?.full_name,
+            channelImage: user?.user_metadata?.avatar_url,
+          });
+          window.location.reload();
+        }
+      } else {
+        setCurrentChannel(null);
+      }
+    };
+    getData();
+  }, []);
+  return (
+    activeChannel && (
+      <div>
+        <Head>
+          <title>{activeChannel?.channelDisplayName} - Youtube</title>
+          <meta
+            name="description"
+            content="Youtube 2.0 with Nextjs and Supabase"
+          />
+          <meta name="viewport" content="width=device-width, initial-scale=1" />
+          <link
+            rel="icon"
+            href="https://cdn-icons-png.flaticon.com/128/1384/1384060.png"
+          />
+        </Head>
+
         <div
           className={`flex w-full h-auto pb-40 scrollbar flex-col ${
             appearance === "dark" && "dark"
           }`}
         >
-          {user && <Sidebar />}
+          {currentChannel && <Sidebar />}
           <Navbar />
           <ChannelHeader />
           {loading && <LoadingBar color="#f11946" progress={loadingProgress} />}
@@ -109,8 +136,8 @@ const Channel = ({ channel }) => {
             {channelTab === "About" && <ChannelAbout />}
           </div>
         </div>
-      )}
-    </div>
+      </div>
+    )
   );
 };
 

@@ -18,6 +18,7 @@ import { useEffect } from "react";
 import AutoComplete from "./AutoComplete";
 import { useRouter } from "next/router";
 import { useChannelState } from "../context/ChannelState";
+import { supabase } from "../SupabaseClient";
 
 const Header = () => {
   const { isSidebar, setIsSidebar, searchString, setSearchString, setLoading, setLoadingProgress } =
@@ -34,9 +35,19 @@ const Header = () => {
     SpeechRecognition.stopListening();
   }, [transcript]);
 
-  const handleSearch = () => {
+  const handleSearch = async () => {
     setSearchString(input);
-    router.push("/");
+    const {data} =await supabase.from('searches').select()
+    const searches = data[0].searches
+    const matchSearches = searches.filter(search => search.toLowerCase() === searchString?.toLowerCase())
+    console.log(matchSearches)
+    if(matchSearches.length > 0 ){ 
+
+    } else {
+      const newSearches = [...searches, input]
+      console.log(newSearches)
+      await supabase.from('searches').update({searches: [...searches]}).eq('channelRef', currentChannel?.uid)
+    }
   };
 
   return (

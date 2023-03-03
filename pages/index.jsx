@@ -13,42 +13,37 @@ import { supabase } from "../SupabaseClient";
 export default function Page() {
   const { appearance, loading, loadingProgress, shareDialog } =
     useStateContext();
-    const {currentChannel, setCurrentChannel} = useChannelState();
+  const { currentChannel, setCurrentChannel } = useChannelState();
 
-    useEffect(() => {
-      const getData = async () => {
-        const {data} = await supabase.auth.getSession();
-        const user = data?.session?.user;
-        
-        if(data?.session?.user) {
-          const {data} = await supabase.from('channels').upsert(
-            {
-              channelName: user?.user_metadata?.name,
-              channelImage: user?.user_metadata?.avatar_url,
-              channelBannerImage: "",
-              subscribers: 0,
-              uid: user?.id,
-              channelDisplayName: user?.user_metadata?.full_name,
-              socialLinks: [],
-              views: 0,
-              joinedDate: user?.created_at,
-              description: ``,
-              location: "",
-              subscriptions: [],
-              email: user?.user_metadata?.email,
-              playlists: [],
-              channelSearches: [],
-              store: [],
-            }
-          ).select()
-          setCurrentChannel(data[0])
+  useEffect(() => {
+    const getData = async () => {
+      const { data } = await supabase.auth.getSession();
+      const user = data?.session?.user;
+
+      if (data?.session?.user) {
+        const { data: getUserDoc } = await supabase
+          .from("channels")
+          .select()
+          .eq("uid", user?.id)
+
+        if (getUserDoc.length > 0) {
+          setCurrentChannel(getUserDoc[0]);
         } else {
-          setCurrentChannel(null);
+          const { data: newUserDoc } = await supabase.from("channels").insert({
+            uid: user?.id,
+            timestamp: new Date(),
+            channelName: user?.user_metadata?.name,
+            channelDisplayName: user?.user_metadata?.full_name,
+            channelImage: user?.user_metadata?.avatar_url,
+          });
+          window.location.reload();
         }
-  
+      } else {
+        setCurrentChannel(null);
       }
-      getData()
-    }, )
+    };
+    getData();
+  } , []);
   return (
     <>
       <Head>

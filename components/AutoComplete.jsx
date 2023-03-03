@@ -1,5 +1,7 @@
 import { ClockIcon } from "@heroicons/react/24/outline";
+import { useEffect, useState } from "react";
 import { useChannelState } from "../context/ChannelState";
+import { supabase } from "../SupabaseClient";
 
 export default function AutoComplete({
   searchString,
@@ -7,13 +9,35 @@ export default function AutoComplete({
   setInput,
 }) {
   const { currentChannel } = useChannelState();
-  const searches = currentChannel?.channelSearches;
-  const filteredSearches = searches?.filter((search) =>
-    search
-      ?.toString()
-      .toLocaleLowerCase()
-      .includes(searchString.toLocaleLowerCase())
-  );
+  const [searches, setSearches] = useState([]);
+
+  useEffect(() => {
+    const runFunction = async () => {
+      const { data } = await supabase
+        .from("searches")
+        .select()
+        .eq("channelRef", currentChannel?.uid);
+      if (data.length > 0) {
+        setSearches(data[0].searches)
+      } else {
+        await supabase.from("searches").upsert({
+          channelRef: currentChannel?.uid,
+          searches: [],
+        });
+      }
+    };
+    runFunction();
+  }, []);
+
+
+  const filteredSearches =
+    searches.length > 0 &&
+    searches?.filter((search) =>
+      search
+        ?.toString()
+        .toLocaleLowerCase()
+        .includes(searchString.toLocaleLowerCase())
+    );
   return (
     <div className="flex flex-col max-h-[45vh] scrollbar overflow-x-hidden overflow-y-scroll sm:left-[15vw] lg:left-[31vw] fixed top-[10vh] cursor-default rounded-lg w-[33vw] min-w-[400px] h-auto bg-white z-[1000]">
       {filteredSearches.length >= 1 ? (

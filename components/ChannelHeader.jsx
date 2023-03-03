@@ -9,16 +9,18 @@ import { useStateContext } from "../context/StateContext";
 import Tooltip from "./Tooltip";
 import { numify } from "numify";
 import { useChannelState } from "../context/ChannelState";
+import { supabase } from "../SupabaseClient";
 
 const ChannelHeader = () => {
+  const [channelInfo, setChannelInfo] = useState({subscribers: 0, socialLinks: []});
   const {
     activeChannel: {
+      timestamp,
+      uid,
       channelImage,
       channelBannerImage,
       channelName,
-      socialLinks,
       channelDisplayName,
-      subscribers,
     },
     setLoading,
     setLoadingProgress,
@@ -28,6 +30,35 @@ const ChannelHeader = () => {
   } = useStateContext();
   const [subscribed, setSubscribed] = useState(false);
   const scrollRef = useRef();
+
+  useEffect(() => {
+    const getData = async () => {
+      const { data: userData } = await supabase.auth.getSession();
+      const { data } = await supabase
+        .from("channelInfo")
+        .select()
+        .eq("channelRef", uid);
+
+        if (data?.length > 0) {
+          setChannelInfo(data[0]);
+        } else {
+          const { data: newChannelInfo } = await supabase
+          .from("channelInfo")
+          .upsert({
+            joinedDate: timestamp,
+            email: userData?.session?.user?.user_metadata?.email,
+            channelRef: uid,
+            socialLinks: [{"links": []}]
+          })
+          .select();
+          setChannelInfo(newChannelInfo);
+        }
+    };
+
+    getData();
+  }, []);
+
+  useEffect(() => {console.table((channelInfo))}, [channelInfo])
 
   const changeChannelTab = (tab) => {
     setLoading(true);
@@ -63,7 +94,7 @@ const ChannelHeader = () => {
             </p>
           </div>
           <div className="flex items-center gap-2">
-            {socialLinks?.map((link) => (
+            {channelInfo?.socialLinks?.map((link) => (
               <Tooltip
                 key={link.name}
                 element={
@@ -92,10 +123,11 @@ const ChannelHeader = () => {
             {channelDisplayName}
           </span>
           <span className="text-sm dark:text-gray-400">@{channelName}</span>
-          <span className="text-sm dark:text-gray-400">
-            {numify(subscribers)}{" "}
-            {subscribers <= 1 ? "Subscriber" : "Subscribers"}
-          </span>
+
+            <span className="text-sm dark:text-gray-400">
+              {numify(channelInfo?.subscribers)}{" "}
+              {channelInfo?.subscribers <= 1 ? "Subscriber" : "Subscribers"}
+            </span>
         </div>
         <div>
           {subscribed ? (
