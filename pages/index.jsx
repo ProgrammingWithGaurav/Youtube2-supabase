@@ -11,7 +11,7 @@ import { useEffect } from "react";
 import { supabase } from "../SupabaseClient";
 
 export default function Page() {
-  const { appearance, loading, loadingProgress, shareDialog } =
+  const { appearance, loading, loadingProgress, shareDialog, setVideos, videos } =
     useStateContext();
   const { currentChannel, setCurrentChannel } = useChannelState();
 
@@ -24,7 +24,7 @@ export default function Page() {
         const { data: getUserDoc } = await supabase
           .from("channels")
           .select()
-          .eq("uid", user?.id)
+          .eq("uid", user?.id);
 
         if (getUserDoc.length > 0) {
           setCurrentChannel(getUserDoc[0]);
@@ -43,7 +43,17 @@ export default function Page() {
       }
     };
     getData();
-  } , []);
+  }, []);
+
+  useEffect(() => {
+    const GetVideos = async () => {
+      const { data } = await supabase.from("videos").select();
+      setVideos(data)
+      console.log(data)
+    };
+    GetVideos();
+    console.log(videos, 'loaded ')
+  }, []);
   return (
     <>
       <Head>

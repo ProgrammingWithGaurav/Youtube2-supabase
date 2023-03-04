@@ -56,7 +56,12 @@ export default function AutoComplete({
             >
               {search}
             </span>
-            <span onClick={() => {}} className="text-blue-400 text-sm">
+            <span onClick={async() => {
+              const newSearches = searches;
+              newSearches.splice(index,1 );
+              await supabase.from('searches').update({searches: newSearches}).eq('channelRef', currentChannel?.uid)
+              
+            }} className="text-blue-400 text-sm">
               Remove
             </span>
           </div>

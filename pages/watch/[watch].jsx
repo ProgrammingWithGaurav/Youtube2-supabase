@@ -9,6 +9,8 @@ import VideoScreen from "../../components/Watch/VideoScreen";
 import SuggestedVideos from "../../components/Watch/SuggestedVideos";
 import ShareVideo from "../../components/ShareVideo";
 import Toast from "../../components/Toast";
+import { supabase } from "../../SupabaseClient";
+import { useChannelState } from "../../context/ChannelState";
 
 export default function Watch({ uid }) {
   const {
@@ -25,10 +27,43 @@ export default function Watch({ uid }) {
     setLoadingProgress,
   } = useStateContext();
   const router = useRouter();
+  const {setCurrentChannel} = useChannelState();
+
+  
+  useEffect(() => {
+    const getData = async () => {
+      const { data } = await supabase.auth.getSession();
+      const user = data?.session?.user;
+
+      if (data?.session?.user) {
+        const { data: getUserDoc } = await supabase
+          .from("channels")
+          .select()
+          .eq("uid", user?.id);
+
+        if (getUserDoc.length > 0) {
+          setCurrentChannel(getUserDoc[0]);
+        } else {
+          const { data: newUserDoc } = await supabase.from("channels").insert({
+            uid: user?.id,
+            timestamp: new Date(),
+            channelName: user?.user_metadata?.name,
+            channelDisplayName: user?.user_metadata?.full_name,
+            channelImage: user?.user_metadata?.avatar_url,
+          });
+          window.location.reload();
+        }
+      } else {
+        setCurrentChannel(null);
+      }
+    };
+    getData();
+  }, []);
 
   useEffect(() => {
     setIsSidebar(false);
-    const videoDetails = videos.filter((video) => video.uid === uid);
+    const myFunction = async () => {
+    const {data: videoDetails} = await supabase.from('videos').select().eq('uid', uid)
     if (videoDetails.length === 0) router.push("/");
     else {
       setLoading(true);
@@ -43,6 +78,8 @@ export default function Watch({ uid }) {
         setLoading(false);
       }, 700);
     }
+  }
+  myFunction();
   }, []);
   useEffect(() => {
     activeVideo === null && router.push("/");

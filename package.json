@@ -33,6 +33,7 @@
     "regenerator-runtime": "^0.13.11",
     "tailwind-scrollbar": "^2.1.0",
     "typescript": "4.9.4",
+    "uid": "^2.0.1",
     "uid-generator": "^2.0.0",
     "youtube-duration": "^1.0.0"
   },

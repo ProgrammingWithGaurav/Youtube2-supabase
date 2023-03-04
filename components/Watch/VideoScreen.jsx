@@ -8,7 +8,7 @@ import {
   ShareIcon,
 } from "@heroicons/react/24/outline";
 import { numify } from "numify";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useChannelState } from "../../context/ChannelState";
 import { useStateContext } from "../../context/StateContext";
 import {
@@ -19,7 +19,7 @@ import TimeAgo from "javascript-time-ago";
 import CommentInput from "../Comment/CommentInput";
 import Comment from "../Comment/Comment";
 import { useRouter } from "next/router";
-
+import { supabase } from "../../SupabaseClient";
 
 const VideoScreen = () => {
   const {
@@ -35,54 +35,71 @@ const VideoScreen = () => {
       channelRef,
       timestamp,
       uid,
-    }, activeVideo,
+    },
+    activeVideo,
     videoOption,
     VideoOptions,
     setVideoOption,
     setShareDialog,
   } = useStateContext();
-  const { Subscribe, UnSubscribe, Like, Dislike, fetchChannelDetails } =
-    useChannelState();
+
+  const {
+    Subscribe,
+    UnSubscribe,
+    Like,
+    Dislike,
+    fetchChannelDetails,
+    currentChannel,
+  } = useChannelState();
+
   const [like, setLike] = useState({ like: true, dislike: false });
+  const [channelDetails, setChannelDetails] = useState();
+  const [subscribers, setSubscribers] = useState(0);
   const [subscribed, setSubscribed] = useState(false);
-  const { channelImage, channelDisplayName, subscribers, channelName } =
-    fetchChannelDetails(channelRef);
+  fetchChannelDetails(channelRef).then((data) => {
+    setChannelDetails(data);
+  });
   const [showDescription, setShowDescription] = useState(false);
-  console.log(activeVideo)
+
+  useEffect(() => {
+    const myFunction = async () => {
+      const { data } = await supabase
+        .from("channelInfo")
+        .select()
+        .eq("channelRef", channelRef);
+      setSubscribers(data[0]?.subscribers);
+    };
+    myFunction();
+  }, []);
 
   const timeAgo = new TimeAgo("en-US");
   const router = useRouter();
 
   return (
-    <div className="lg:w-8/12 w-screen flex flex-col p-2">
+    <div className="w-screen flex flex-col p-2">
       <video
-        className="w-full lg:h-[75vh] sm:h-[550px] object-cover rounded-xl"
+        className="lg:h-[75vh] sm:h-[550px] min-w-full object-cover rounded-xl"
         controls
         autoPlay
       >
-        <source
-          src={
-            "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
-          }
-          type="video/mp4"
-        />
+        <source src={url} type="video/mp4" />
       </video>
       <p className="text-xl my-1 font-bold leading-6">{title}</p>
 
       <div className="flex items-center justify-between my-2 relative">
         <div className="flex gap-2 items-center">
           <img
-            src={channelImage}
+            src={channelDetails?.channelImage}
             alt="channel picture"
-            onClick={() => router.push(`/@${channelName}`)}
+            onClick={() => router.push(`/@${channelDetails?.channelName}`)}
             className="clickable-icon w-10 h-10 p-0"
           />
           <div className="flex flex-col">
             <span
               className="font-semibold dark:text-white text-sm cursor-pointer"
-              onClick={() => router.push(`/@${channelName}`)}
+              onClick={() => router.push(`/@${channelDetails?.channelName}`)}
             >
-              {channelDisplayName}
+              {channelDetails?.channelDisplayName}
             </span>
             <span className="dark:text-gray-400 text-xs">
               {numify(subscribers)}{" "}
@@ -90,23 +107,24 @@ const VideoScreen = () => {
             </span>
           </div>
 
-          {subscribed ? (
-            <div
-              onClick={() => UnSubscribe(setSubscribed)}
-              className="space-x-2 dark:hover:bg-neutral-700 mr-8 text-neutral-900 dark:text-white dark:bg-neutral-800 flex items-center py-2 px-4 bg-gray-100 text-xs rounded-full cursor-pointer font-semibold hover:bg-gray-200"
-            >
-              <BellIcon className="icon p-0 w-4 h-4" />
-              <span>Unsubscribe</span>
-              <ChevronDownIcon className="icon p-0 w-2 h-2" />
-            </div>
-          ) : (
-            <button
-              onClick={() => Subscribe(setSubscribed)}
-              className="subscribe"
-            >
-              Subscribe
-            </button>
-          )}
+          {currentChannel?.uid !== channelRef &&
+            (subscribed ? (
+              <div
+                onClick={() => UnSubscribe(setSubscribed)}
+                className="space-x-2 dark:hover:bg-neutral-700 mr-8 text-neutral-900 dark:text-white dark:bg-neutral-800 flex items-center py-2 px-4 bg-gray-100 text-xs rounded-full cursor-pointer font-semibold hover:bg-gray-200"
+              >
+                <BellIcon className="icon p-0 w-4 h-4" />
+                <span>Unsubscribe</span>
+                <ChevronDownIcon className="icon p-0 w-2 h-2" />
+              </div>
+            ) : (
+              <button
+                onClick={() => Subscribe(setSubscribed)}
+                className="subscribe"
+              >
+                Subscribe
+              </button>
+            ))}
         </div>
 
         <div className="flex gap-2 items-center">
@@ -183,7 +201,7 @@ const VideoScreen = () => {
           <span>
             {numify(views)} {views > 1 ? "views" : "view"}{" "}
           </span>
-          <span>{timeAgo?.format(timestamp)} </span>
+          <span>{timeAgo?.format(new Date(timestamp))} </span>
           <span className="text-blue-500 dark:text-blue-400">#{type}</span>
         </p>
 
@@ -207,17 +225,16 @@ const VideoScreen = () => {
         </p>
       </div>
 
-      <div className="py-4 ">
+      <div className="py-4 my-4 ">
         <p className="text-lg">Comments</p>
         <CommentInput />
         {comments?.map((comment) => (
           <Comment
-            channelCommented={channelDisplayName}
+            channelCommented={channelDetails?.channelDisplayName}
             key={comment?.timestamp}
             {...comment}
           />
         ))}
-        <div></div>
       </div>
     </div>
   );

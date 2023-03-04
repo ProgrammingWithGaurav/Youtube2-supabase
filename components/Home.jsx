@@ -15,7 +15,6 @@ const Home = () => {
     setLoading,
     setLoadingProgress,
   } = useStateContext();
-  const [newVideos, setNewVideos] = useState(videos);
   const breakpointColumnsObj = {
     default: 4,
     1100: 3,
@@ -24,7 +23,7 @@ const Home = () => {
   };
 
   useEffect(() => {
-    if (searchString === "") setNewVideos(videos);
+    if (searchString === "") setVideos(videos);
     setLoadingProgress(70);
     setLoading(true);
     setTimeout(() => {
@@ -32,7 +31,6 @@ const Home = () => {
         video?.title?.toLowerCase().includes(searchString.toLowerCase())
       );
       setLoadingProgress(90);
-      setNewVideos(newVideos);
       setLoading(false);
       setLoadingProgress(100);
     }, [1000]);
@@ -55,6 +53,8 @@ const Home = () => {
 
   // useEffect(() => {setNewVideos(videos)}, [])
 
+  
+
   return (
     <div className="flex-1">
       <div className="flex-1 pl-20 h-full flex flex-col mt-20">
@@ -68,8 +68,8 @@ const Home = () => {
           className="flex gap-4 flex-wrap"
           columnClassName="my-masonry-grid_column"
         >
-          {newVideos?.map((video) => (
-            <Video key={video.uid} {...video} />
+          {videos?.map((video) => (
+            <Video key={video?.uid} {...video} />
           ))}
         </Masonry>
       </div>

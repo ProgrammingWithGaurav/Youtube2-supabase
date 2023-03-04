@@ -20,10 +20,12 @@ export default function Video({
   channelRef,
 }) {
   const { VideoOptions, videoOption, setVideoOption } = useStateContext();
+  const [channelDetails, setChannelDetails] = useState();
   const { fetchChannelDetails } = useChannelState();
   const router = useRouter();
-  const { channelImage, channelDisplayName, channelName } =
-    fetchChannelDetails(channelRef);
+  fetchChannelDetails(channelRef).then(data => {
+    setChannelDetails(data);
+  });
   const timeAgo = new TimeAgo("en-US");
 
   return (
@@ -42,8 +44,8 @@ export default function Video({
       <div className="p-1 -mt-2 px-0">
         <div className="text-gray-900 dark:text-white font-bold truncate flex">
           <img
-            onClick={() => router.push(`/${channelName}`)}
-            src={channelImage}
+            onClick={() => router.push(`/${channelDetails?.channelName}`)}
+            src={channelDetails?.channelImage}
             alt="Channel Profile Picture"
             className="w-10 h-10 rounded-full mt-4"
           />
@@ -58,17 +60,17 @@ export default function Video({
             <br />
             <p
               className="flex items-center gap-1 text-gray-600 w-full dark:text-gray-400 text-sm font-normal hover:text-gray-800 dark:hover:text-gray-300 transition"
-              onClick={() => router.push(`/${channelName}`)}
+              onClick={() => router.push(`/${channelDetails?.channelName}`)}
             >
-              {channelDisplayName}{" "}
+              {channelDetails?.channelDisplayName}{" "}
               <CheckCircleIcon className="w-4 h-4 text-gray-500 dark:text-gray-300" />
             </p>
             <span
               className="dark:text-gray-400 text-sm font-normal"
-              onClick={() => router.push(`/${channelName}`)}
+              onClick={() => router.push(`/${channelDetails?.channelName}`)}
             >
-              {numify(views)} {views > 1 ? "views" : "view"} •{" "}
-              {timeAgo.format(timestamp)}
+              {numify(views?.length)} {views?.length > 1 ? "views" : "view"} •{" "}
+              {timeAgo.format(new Date(timestamp))}
             </span>
           </div>
           <EllipsisVerticalIcon

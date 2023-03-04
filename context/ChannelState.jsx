@@ -315,8 +315,9 @@ export const ChannelStateProvider = ({ children }) => {
     }
   };
 
-  const fetchChannelDetails = (channelRef) => {
-    return channels.filter((channel) => channel?.uid === channelRef)[0];
+  const fetchChannelDetails = async (channelRef) => {
+    const {data} = await supabase.from('channels').select().eq('uid', channelRef)
+    return data[0];
   };
 
   const fetchVideoDetails = (videos, uid) => {

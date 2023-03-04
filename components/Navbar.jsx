@@ -21,9 +21,16 @@ import { useChannelState } from "../context/ChannelState";
 import { supabase } from "../SupabaseClient";
 
 const Header = () => {
-  const { isSidebar, setIsSidebar, searchString, setSearchString, setLoading, setLoadingProgress } =
-    useStateContext();
-  const { channelSearches, currentChannel, handleLogin , startLoadingBar} = useChannelState();
+  const {
+    isSidebar,
+    setIsSidebar,
+    searchString,
+    setSearchString,
+    setLoading,
+    setLoadingProgress,
+  } = useStateContext();
+  const { channelSearches, currentChannel, handleLogin, startLoadingBar } =
+    useChannelState();
   const [hasFocused, setHasFocused] = useState(false);
   const [input, setInput] = useState(searchString);
   const router = useRouter();
@@ -37,16 +44,23 @@ const Header = () => {
 
   const handleSearch = async () => {
     setSearchString(input);
-    const {data} =await supabase.from('searches').select()
-    const searches = data[0].searches
-    const matchSearches = searches.filter(search => search.toLowerCase() === searchString?.toLowerCase())
-    console.log(matchSearches)
-    if(matchSearches.length > 0 ){ 
-
-    } else {
-      const newSearches = [...searches, input]
-      console.log(newSearches)
-      await supabase.from('searches').update({searches: [...searches]}).eq('channelRef', currentChannel?.uid)
+    const { data } = await supabase.from("searches").select().eq('channelRef', currentChannel?.uid);
+    const searches = data[0].searches;
+    const matchSearches = searches.filter(
+      (search) => search.toLowerCase() === searchString?.toLowerCase()
+    );
+    console.log(matchSearches);
+    if (matchSearches.length > 0) {
+      console.log('duplicate search')
+    } 
+    else {
+      await searches.push(input);
+      console.log('input is ', input);
+      console.log('new Searches is ', searches);
+      await supabase
+        .from("searches")
+        .update({ searches: searches })
+        .eq("channelRef", currentChannel?.uid);
     }
   };
 
@@ -150,7 +164,11 @@ const Header = () => {
         ) : (
           <button
             type="button"
-            onClick={() => startLoadingBar(setLoading, setLoadingProgress, () => handleLogin())}
+            onClick={() =>
+              startLoadingBar(setLoading, setLoadingProgress, () =>
+                handleLogin()
+              )
+            }
             className="text-red-400 hover:text-white border border-red-400 hover:bg-red-400 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-3 py-1.5 text-center mr-2"
           >
             Login
