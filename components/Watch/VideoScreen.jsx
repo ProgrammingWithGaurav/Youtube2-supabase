@@ -50,15 +50,21 @@ const VideoScreen = () => {
     Dislike,
     fetchChannelDetails,
     currentChannel,
+    GetUid,
   } = useChannelState();
 
-  const [like, setLike] = useState({ like: true, dislike: false });
+  const [like, setLike] = useState({ like: false, dislike: false });
   const [channelDetails, setChannelDetails] = useState();
   const [subscribers, setSubscribers] = useState(0);
   const [subscribed, setSubscribed] = useState(false);
-  fetchChannelDetails(channelRef).then((data) => {
-    setChannelDetails(data);
-  });
+  const [updatedLikes, setUpdatedLikes] = useState(likes?.length);
+
+  useEffect(() => {
+    fetchChannelDetails(channelRef).then((data) => {
+      setChannelDetails(data);
+    });
+  }, []);
+
   const [showDescription, setShowDescription] = useState(false);
 
   useEffect(() => {
@@ -69,7 +75,30 @@ const VideoScreen = () => {
         .eq("channelRef", channelRef);
       setSubscribers(data[0]?.subscribers);
     };
+    const increaseView = async () => {
+      const { data } = await supabase.from("videos").select().eq("uid", uid);
+      const isViewedByUser = data[0]?.views?.includes(currentChannel?.uid);
+      if (isViewedByUser) return;
+      else {
+        await supabase
+          .from("videos")
+          .update({ views: [...data[0]?.views, currentChannel?.uid] })
+          .eq("uid", uid);
+      }
+      setSubscribers(data[0]?.subscribers);
+    };
+    const hasLikedOrDisliked = async () => {
+      const { data } = await supabase.from("videos").select().eq("uid", uid);
+      const hasLiked = data[0]?.likes?.includes(currentChannel?.uid);
+      const hasDisliked = data[0]?.dislikes?.includes(currentChannel?.uid);
+      setLike({
+        like: hasLiked,
+        dislike: hasDisliked,
+      });
+    };
     myFunction();
+    increaseView();
+    hasLikedOrDisliked();
   }, []);
 
   const timeAgo = new TimeAgo("en-US");
@@ -130,7 +159,7 @@ const VideoScreen = () => {
         <div className="flex gap-2 items-center">
           <div className="dark:bg-white/10 bg-gray-100 transition-none flex items-center rounded-full">
             <span
-              onClick={() => Like(like, setLike, "video")}
+              onClick={() => Like(like, setLike, "video", uid, setUpdatedLikes)}
               className="video-control rounded-full rounded-r-none text-sm cursor-pointer pr-2 flex items-center"
             >
               {like?.like ? (
@@ -138,18 +167,18 @@ const VideoScreen = () => {
               ) : (
                 <HandThumbUpIcon className="icon" />
               )}
-              {numify(likes?.length)}
+              {numify(updatedLikes)}
             </span>
             <div className="w-[1px] video- h-8 py-2 bg-gray-300 dark:bg-white"></div>
             {like.dislike ? (
               <ActiveHandThumbDownIcon
                 className="icon rounded-l-none video-control"
-                onClick={() => Dislike(like, setLike, "video")}
+                onClick={() => Dislike(like, setLike, "video", uid, setUpdatedLikes)}
               />
             ) : (
               <HandThumbDownIcon
                 className="icon rounded-l-none video-control"
-                onClick={() => Dislike(like, setLike, "video")}
+                onClick={() => Dislike(like, setLike, "video", uid, setUpdatedLikes)}
               />
             )}
           </div>
@@ -199,7 +228,7 @@ const VideoScreen = () => {
       >
         <p className="font-semibold text-sm my-1">
           <span>
-            {numify(views)} {views > 1 ? "views" : "view"}{" "}
+            {numify(views?.length)} {views?.length > 1 ? "views" : "view"}{" "}
           </span>
           <span>{timeAgo?.format(new Date(timestamp))} </span>
           <span className="text-blue-500 dark:text-blue-400">#{type}</span>
@@ -231,7 +260,7 @@ const VideoScreen = () => {
         {comments?.map((comment) => (
           <Comment
             channelCommented={channelDetails?.channelDisplayName}
-            key={comment?.timestamp}
+            key={GetUid()}
             {...comment}
           />
         ))}

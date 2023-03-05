@@ -8,7 +8,8 @@ import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
 const Video = ({ channelRef, thumbnail, title, timestamp, views, uid }) => {
   const { fetchChannelDetails } = useChannelState();
   const { videoOption, setVideoOption, VideoOptions } = useStateContext();
-  const { channelDisplayName } = fetchChannelDetails(channelRef);
+  const [channelDetails, setChannelDetails] = useState();
+  fetchChannelDetails(channelRef).then(data => setChannelDetails(data));
   const timeAgo = new TimeAgo("en-US");
 
   return (

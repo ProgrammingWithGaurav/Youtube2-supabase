@@ -195,7 +195,8 @@ export const ChannelStateProvider = ({ children }) => {
         {
           name: "hi",
           videos: ["44242142"],
-        }, {
+        },
+        {
           name: "MyPlaylist",
           videos: ["44242141"],
         },
@@ -252,12 +253,12 @@ export const ChannelStateProvider = ({ children }) => {
   const [videoDetailSidebar, setVideoDetailSidebar] = useState("Edit");
   const [editDialog, setEditDialog] = useState(false);
   const [thumbnailDialog, setThumbnailDialog] = useState(false);
-  
+
   const handleLogin = async () => {
     await supabase.auth.signInWithOAuth({
-      provider: 'google'
-    })
-  }
+      provider: "google",
+    });
+  };
 
   const fetchChannelVideos = (videos) => {
     return videos.filter((video) => currentChannel?.uid === video?.channelRef);
@@ -283,11 +284,38 @@ export const ChannelStateProvider = ({ children }) => {
     }, 500);
   };
 
-  const Like = (like, setLike, type) => {
+  const Like = async (like, setLike, type, uid, setUpdatedLikes) => {
     if (type === "video") {
-      like.like
-        ? setLike({ like: false, dislike: false })
-        : setLike({ like: true, dislike: false });
+      if (like.like) {
+        const videoDetails = await fetchVideoDetails(uid);
+        let likes = videoDetails?.likes;
+        const userLikeIndex = videoDetails?.likes.indexOf(currentChannel?.uid);
+        likes.splice(userLikeIndex, 1);
+        await supabase.from("videos").update({ likes: likes }).eq("uid", uid);
+        setUpdatedLikes((likes) => --likes);
+        setLike({ like: false, dislike: false });
+      } else {
+        // add a like
+        const videoDetails = await fetchVideoDetails(uid);
+        let dislikes = videoDetails?.dislikes;
+
+        const removeDislike = () => {
+          const userLikeIndex = dislikes?.indexOf(currentChannel?.uid);
+          dislikes.splice(userLikeIndex, 1);
+        };
+        // remove the uid of the user from the dislike array if existed
+        videoDetails?.dislikes?.includes(currentChannel?.uid) &&
+          removeDislike();
+        await supabase
+          .from("videos")
+          .update({
+            likes: [...videoDetails?.likes, currentChannel?.uid],
+            dislikes: dislikes,
+          })
+          .eq("uid", uid);
+        setLike({ like: true, dislike: false });
+        setUpdatedLikes((likes) => ++likes);
+      }
     } else if (type === "comment") {
       like.like
         ? setLike({ like: false, dislike: false })
@@ -299,11 +327,37 @@ export const ChannelStateProvider = ({ children }) => {
     }
   };
 
-  const Dislike = (like, setLike, type) => {
+  const Dislike = async (like, setLike, type, uid, setUpdatedLikes) => {
     if (type === "video") {
-      like.dislike
-        ? setLike({ like: false, dislike: false })
-        : setLike({ like: false, dislike: true });
+      if (like.dislike) {
+        const videoDetails = await fetchVideoDetails(uid);
+        let dislikes = videoDetails?.dislikes;
+        const userDislikeIndex = videoDetails?.dislikes.indexOf(currentChannel?.uid);
+        dislikes.splice(userDislikeIndex, 1);
+        await supabase.from("videos").update({ dislikes: dislikes }).eq("uid", uid);
+        setLike({ like: false, dislike: false });
+      } else {
+         // add a like
+         const videoDetails = await fetchVideoDetails(uid);
+         let likes = videoDetails?.likes;
+ 
+         const removeLike = () => {
+           const userDisLikeIndex = likes?.indexOf(currentChannel?.uid);
+           likes.splice(userDisLikeIndex, 1);
+         };
+         // remove the uid of the user from the dislike array if existed
+         videoDetails?.likes?.includes(currentChannel?.uid) &&
+           removeLike();
+         await supabase
+           .from("videos")
+           .update({
+             dislikes: [...videoDetails?.dislikes, currentChannel?.uid],
+             likes: likes,
+           })
+           .eq("uid", uid);
+        setLike({ like: false, dislike: true });
+        setUpdatedLikes(likes => --likes)
+      }
     } else if (type === "comment") {
       like.dislike
         ? setLike({ like: false, dislike: false })
@@ -316,12 +370,19 @@ export const ChannelStateProvider = ({ children }) => {
   };
 
   const fetchChannelDetails = async (channelRef) => {
-    const {data} = await supabase.from('channels').select().eq('uid', channelRef)
+    const { data } = await supabase
+      .from("channels")
+      .select()
+      .eq("uid", channelRef);
     return data[0];
   };
 
-  const fetchVideoDetails = (videos, uid) => {
-    return videos.filter((video) => video?.uid === uid)[0];
+  const fetchVideoDetails = async (uid) => {
+    const { data: videoDetails } = await supabase
+      .from("videos")
+      .select()
+      .eq("uid", uid);
+    return videoDetails[0];
   };
 
   const fetchLikedVideos = (videos) => {
@@ -418,7 +479,7 @@ export const ChannelStateProvider = ({ children }) => {
         editDialog,
         thumbnailDialog,
         setThumbnailDialog,
-        handleLogin
+        handleLogin,
       }}
     >
       {children}
