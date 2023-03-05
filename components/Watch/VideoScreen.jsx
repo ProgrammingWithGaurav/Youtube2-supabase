@@ -31,7 +31,6 @@ const VideoScreen = () => {
       title,
       type,
       description,
-      comments,
       channelRef,
       timestamp,
       uid,
@@ -58,6 +57,15 @@ const VideoScreen = () => {
   const [subscribers, setSubscribers] = useState(0);
   const [subscribed, setSubscribed] = useState(false);
   const [updatedLikes, setUpdatedLikes] = useState(likes?.length);
+  const [comments, setComments] = useState([]);
+
+  useEffect(() => {
+    const myFunction = async() => {
+      const {data: comments} = await supabase.from('comments').select().eq('videoUid', uid);
+      setComments(comments);
+    }
+    myFunction();
+  }, [])
 
   useEffect(() => {
     fetchChannelDetails(channelRef).then((data) => {
@@ -186,7 +194,7 @@ const VideoScreen = () => {
             className="clickable-icon video-control"
             onClick={() =>
               setShareDialog({
-                videoUrl: `${process.env.NEXT_PUBLIC_URL}/watch/${uid}`,
+                videoUrl: `${process.env.NEXT_PUBLIC_BASE_URL}/watch/${uid}`,
                 open: true,
                 title,
                 thumbnail,
@@ -256,7 +264,7 @@ const VideoScreen = () => {
 
       <div className="py-4 my-4 ">
         <p className="text-lg">Comments</p>
-        <CommentInput />
+        <CommentInput setComments={setComments} />
         {comments?.map((comment) => (
           <Comment
             channelCommented={channelDetails?.channelDisplayName}

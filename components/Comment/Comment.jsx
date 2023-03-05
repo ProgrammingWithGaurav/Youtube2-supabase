@@ -8,7 +8,7 @@ import {
   EyeSlashIcon,
 } from "@heroicons/react/24/outline";
 import TimeAgo from "javascript-time-ago";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   HandThumbDownIcon as ActiveHandThumbDownIcon,
   HandThumbUpIcon as ActiveHandThumbUpIcon,
@@ -42,11 +42,18 @@ const Comment = ({
     fetchChannelDetails,
   } = useChannelState();
   const [like, setLike] = useState({ like: true, dislike: false });
+  const [channelDetails, setChannelDetails] = useState();
   const [showReply, setShowReply] = useState(true);
-  const { channelImage, channelDisplayName, channelName } =
-    fetchChannelDetails(channelRef);
+
+  useEffect(() => {
+    fetchChannelDetails(channelRef).then(data => setChannelDetails(data))
+  }, [])
   const [loading, setLoading] = useState(false);
   const [replyInput, setReplyInput] = useState(false);
+
+  const removeComment = () => {
+
+  }
 
   return (
     <div
@@ -55,8 +62,8 @@ const Comment = ({
     >
       <div className="flex items-center relative w-full">
         <img
-          onClick={() => router.push(`/${channelName}`)}
-          src={channelImage}
+          onClick={() => router.push(`/${channelDetails?.channelName}`)}
+          src={channelDetails?.channelImage}
           alt="user image"
           className="clickable-icon w-16 h-16"
         />
@@ -65,11 +72,11 @@ const Comment = ({
           <p className="flex items-center gap-2">
             <span
               className="text-bold cursor-pointer"
-              onClick={() => router.push(`/${channelName}`)}
+              onClick={() => router.push(`/${channelDetails?.channelName}`)}
             >
-              {channelDisplayName}
+              {channelDetails?.channelDisplayName}
             </span>
-            <span className="text-gray">{timeAgo.format(timestamp)}</span>
+            <span className="text-gray">{timeAgo?.format(new Date(timestamp))}</span>
           </p>
           <p className="text-sm flex-1">{comment}</p>
         </div>
@@ -84,7 +91,7 @@ const Comment = ({
             <span className="flex items-center cursor-pointer hover:bg-gray-100 dark:hover:bg-white/10 rounded-xl px-2">
               <FlagIcon className="icon w-8 h-8" /> Report
             </span>
-            <span className="flex items-center cursor-pointer hover:bg-gray-100 dark:hover:bg-white/10 rounded-xl px-2">
+            <span onClick={() => removeComment()} className="flex items-center cursor-pointer hover:bg-gray-100 dark:hover:bg-white/10 rounded-xl px-2">
               <EyeSlashIcon className="icon w-8 h-8" /> Remove
             </span>
           </div>
@@ -122,7 +129,7 @@ const Comment = ({
               element={
                 <span className="relative ml-8 cursor-pointer">
                   <img
-                    src={channelImage}
+                    src={channelDetails?.channelImage}
                     className="w-6 h-6 rounded-full cursor-pointer p-1"
                     alt="channel heart"
                   />
@@ -145,7 +152,7 @@ const Comment = ({
           <ReplyInput setLoading={setLoading} setReplyInput={setReplyInput} />
         )}
 
-        <div className="flex flex-col px-16 my-4 ">
+        {/* <div className="flex flex-col px-16 my-4 ">
           {replies.length > 0 && (
             <span
               className="flex items-center text-sm gap-2 w-28 px-4 py-2 text-blue-500 cursor-pointer hover:bg-blue-500/20 rounded-full"
@@ -182,7 +189,7 @@ const Comment = ({
               ))}
             </div>
           )}
-        </div>
+        </div> */}
       </div>
     </div>
   );

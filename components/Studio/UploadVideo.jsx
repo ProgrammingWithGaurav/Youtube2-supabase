@@ -4,8 +4,10 @@ import {
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 import { useRouter } from "next/router";
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
+import { uid } from "uid";
 import { useChannelState } from "../../context/ChannelState";
+import { supabase } from "../../SupabaseClient";
 import Tooltip from "../Tooltip";
 
 const UploadVideo = () => {
@@ -14,6 +16,19 @@ const UploadVideo = () => {
   const handleUpload = () => {
     videoRef.current.click();
   };
+
+  const uploadVideo = async (e) => {
+    console.log('uploading...', uid());
+    const file = e.target.files[0];
+    const { data, error } = await supabase
+    .storage
+    .from('avatars')
+    .upload('public/avatar1.png', file, {
+      cacheControl: '3600',
+      upsert: false
+    })
+    console.log(error)
+  }
 
   const { setShowUpload } = useChannelState();
   return (
@@ -54,7 +69,7 @@ const UploadVideo = () => {
           <span className="text-xs my-2 text-gray-600 dark:text-gray-200/90">
             Your videos will be private until you publish them.
           </span>
-          <input type="file" accept="video/*" className="w-0" ref={videoRef} />
+          <input type="file" accept="video/*" onChange={(e) => uploadVideo(e)} className="w-0" ref={videoRef} />
           <button
             type="button"
             className="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl active:ring-4 active:outline-none active:ring-blue-300 transition dark:active:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2"

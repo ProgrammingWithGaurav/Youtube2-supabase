@@ -6,9 +6,9 @@ import { useStateContext } from "../../context/StateContext";
 import { PacmanLoader } from "react-spinners";
 import { supabase } from "../../SupabaseClient";
 
-const CommentInput = () => {
+const CommentInput = ({setComments}) => {
   const [comment, setComment] = useState("");
-  const { currentChannel } = useChannelState();
+  const { currentChannel, GetUid } = useChannelState();
   const { appearance , activeVideo} = useStateContext();
   const { channelImage } = currentChannel;
   const [loading, setLoading] = useState(false);
@@ -21,8 +21,9 @@ const CommentInput = () => {
       channelRef: currentChannel?.uid,
       timestamp: new Date(),
       videoUid : activeVideo?.uid,
-      comment: comment
+      comment: comment,
     }).select();
+    setComments(comments => [...comments, data[0]])
     setTimeout(() => {
       setComment('');
       setLoading(false);
