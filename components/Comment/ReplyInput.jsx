@@ -3,14 +3,36 @@ import EmojiPicker from "emoji-picker-react";
 import { useChannelState } from "../../context/ChannelState";
 import { FaceSmileIcon } from "@heroicons/react/24/outline";
 import { useStateContext } from "../../context/StateContext";
+import { supabase } from "../../SupabaseClient";
+import { PacmanLoader } from "react-spinners";
 
-const ReplyInput = ({ setReplyInput, setLoading, input }) => {
+const ReplyInput = ({ setReplyInput, setLoading, input, commentRef , setReplies}) => {
   const [reply, setReply] = useState(input ? input : "");
   const { currentChannel } = useChannelState();
   const { appearance } = useStateContext();
   const { channelImage } = currentChannel;
-
+  
   const [emojiPicker, setEmojiPicker] = useState(false);
+
+  
+  const sendReply = async () => {
+    setLoading(true);
+    const {data, error} = await supabase.from('replies').insert({
+      channelRef: currentChannel?.uid,
+      timestamp: new Date(),
+      reply: reply,
+      commentRef: commentRef
+    }).select();
+    
+    try {
+    setReplies(replies => [...replies, data[0]])
+    } catch {err => console.log(err)}
+    setTimeout(() => {
+      setReply('');
+      setLoading(false);
+      setReplyInput(false)
+    }, [500])
+  };
 
   return (
     <div className="flex my-2 p-2 ml-10 items-center transform">
@@ -49,14 +71,8 @@ const ReplyInput = ({ setReplyInput, setLoading, input }) => {
                 ? "text-blue-50 bg-blue-400  dark:text-white active:bg-blue-400 hover:bg-blue-500"
                 : "bg-gray-300 text-gray-500"
             }`}
-            onClick={() => {
-              setReply("");
-              setReplyInput(false);
-              setLoading(true);
-              setTimeout(() => {
-                setLoading(false);
-              }, 800);
-            }}
+            disabled={reply.trim().length === 0}
+            onClick={() => sendReply()}
           >
             Reply
           </button>

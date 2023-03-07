@@ -20,14 +20,28 @@ const UploadVideo = () => {
   const uploadVideo = async (e) => {
     console.log('uploading...', uid());
     const file = e.target.files[0];
-    const { data, error } = await supabase
-    .storage
-    .from('avatars')
-    .upload('public/avatar1.png', file, {
-      cacheControl: '3600',
-      upsert: false
-    })
-    console.log(error)
+    console.log(file)
+    // const { data, error } = await supabase
+    // .storage
+    // .from('avatars')
+    // .upload('public/avatar1.png', file, {
+    //   cacheControl: '3600',
+    //   upsert: false
+    // })
+    // console.log(error)
+    const getVideoDuration = file =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const media = new Audio(reader.result);
+      media.onloadedmetadata = () => console.log(resolve(media.duration));
+    };
+    reader.readAsDataURL(file);
+    reader.onerror = error => reject(error);
+  });
+ const duration = await getVideoDuration(file);
+ console.log(duration)
+    e.target.value = '';
   }
 
   const { setShowUpload } = useChannelState();

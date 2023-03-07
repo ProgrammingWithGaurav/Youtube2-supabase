@@ -8,7 +8,7 @@ import {
   EyeSlashIcon,
 } from "@heroicons/react/24/outline";
 import TimeAgo from "javascript-time-ago";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   HandThumbDownIcon as ActiveHandThumbDownIcon,
   HandThumbUpIcon as ActiveHandThumbUpIcon,
@@ -30,6 +30,9 @@ const Reply = ({
   replies,
   channelReplied,
   uid,
+  commentRef,
+  setReplies
+  
 }) => {
   const timeAgo = new TimeAgo("en-US");
   const router = useRouter();
@@ -40,7 +43,14 @@ const Reply = ({
     commentOption,
     fetchChannelDetails,
   } = useChannelState();
-  const { channelImage, channelDisplayName, channelName } = fetchChannelDetails(channelRef);
+
+  const [channelDetails, setChannelDetails] = useState();
+
+  useEffect(() => {
+    try{
+    fetchChannelDetails(channelRef).then(data => setChannelDetails(data))
+    } catch {err => console.log(err)}
+  }, [])
   const [like, setLike] = useState({ like: true, dislike: false });
   const [loading, setLoading] = useState(false);
   const [replyInput, setReplyInput] = useState(false);
@@ -52,8 +62,8 @@ const Reply = ({
     >
       <div className="flex items-center relative lg:w-[53vw] w-[90vw] ">
         <img
-          onClick={() => router.push(`/${channelName}`)}
-          src={channelImage}
+          onClick={() => router.push(`/${channelDetails?.channelName}`)}
+          src={channelDetails?.channelImage}
           alt="user image"
           className="clickable-icon w-16 h-16"
         />
@@ -62,11 +72,11 @@ const Reply = ({
           <p className="flex items-center gap-2">
             <span
               className="text-bold cursor-pointer"
-              onClick={() => router.push(`/${channelName}`)}
+              onClick={() => router.push(`/${channelDetails?.channelName}`)}
             >
-              {channelDisplayName}
+              {channelDetails?.channelDisplayName}
             </span>
-            <span className="text-gray">{timeAgo.format(timestamp)}</span>
+            <span className="text-gray">{timeAgo.format(new Date(timestamp))}</span>
           </p>
           <p className="text-sm flex-1">{comment}</p>
         </div>
@@ -119,7 +129,7 @@ const Reply = ({
               element={
                 <span className="relative ml-8 cursor-pointer">
                   <img
-                    src={channelImage}
+                    src={channelDetails?.channelImage}
                     className="w-6 h-6 rounded-full cursor-pointer p-1"
                     alt="channel heart"
                   />
@@ -140,9 +150,11 @@ const Reply = ({
         </p>
         {replyInput && (
           <ReplyInput
-            input={`@${channelName} `}
+            input={`@${channelDetails?.channelName} `}
             setLoading={setLoading}
             setReplyInput={setReplyInput}
+            commentRef={commentRef}
+            setReplies={setReplies}
           />
         )}
       </div>

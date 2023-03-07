@@ -21,13 +21,13 @@ import { numify } from "numify";
 import { PacmanLoader } from "react-spinners";
 import ReplyInput from "./ReplyInput";
 import Reply from "./Reply";
+import { supabase } from "../../SupabaseClient";
 
 const Comment = ({
   timestamp,
   comment,
   likes,
   gotHeart,
-  replies,
   channelCommented,
   channelRef,
   uid,
@@ -43,18 +43,32 @@ const Comment = ({
   } = useChannelState();
   const [like, setLike] = useState({ like: true, dislike: false });
   const [channelDetails, setChannelDetails] = useState();
-  const [showReply, setShowReply] = useState(true);
+  const [showReply, setShowReply] = useState(false);
+  const [Replies, setReplies] = useState([]);
 
   useEffect(() => {
-    fetchChannelDetails(channelRef).then(data => setChannelDetails(data))
-  }, [])
+    const myFunction = async () => {
+      const { data: replies } = await supabase
+        .from("replies")
+        .select()
+        .eq("commentRef", uid);
+      setReplies(replies);
+    };
+    myFunction();
+    console.log(Replies);
+  }, []);
+
+  useEffect(() => {
+    fetchChannelDetails(channelRef).then((data) => setChannelDetails(data));
+  }, []);
   const [loading, setLoading] = useState(false);
   const [replyInput, setReplyInput] = useState(false);
 
-  const removeComment = () => {
+  const [updatedLikes, setUpdatedLikes] = useState(likes?.length);
 
-  }
+  const removeComment = () => {};
 
+  console.log(uid);
   return (
     <div
       className="flex flex-col dark:text-white"
@@ -76,7 +90,9 @@ const Comment = ({
             >
               {channelDetails?.channelDisplayName}
             </span>
-            <span className="text-gray">{timeAgo?.format(new Date(timestamp))}</span>
+            <span className="text-gray">
+              {timeAgo?.format(new Date(timestamp))}
+            </span>
           </p>
           <p className="text-sm flex-1">{comment}</p>
         </div>
@@ -91,7 +107,10 @@ const Comment = ({
             <span className="flex items-center cursor-pointer hover:bg-gray-100 dark:hover:bg-white/10 rounded-xl px-2">
               <FlagIcon className="icon w-8 h-8" /> Report
             </span>
-            <span onClick={() => removeComment()} className="flex items-center cursor-pointer hover:bg-gray-100 dark:hover:bg-white/10 rounded-xl px-2">
+            <span
+              onClick={() => removeComment()}
+              className="flex items-center cursor-pointer hover:bg-gray-100 dark:hover:bg-white/10 rounded-xl px-2"
+            >
               <EyeSlashIcon className="icon w-8 h-8" /> Remove
             </span>
           </div>
@@ -103,12 +122,16 @@ const Comment = ({
             {like?.like ? (
               <ActiveHandThumbUpIcon
                 className="clickable-icon"
-                onClick={() => Like(like, setLike, "comment")}
+                onClick={() =>
+                  Like(like, setLike, "comment", uid, setUpdatedLikes)
+                }
               />
             ) : (
               <HandThumbUpIcon
                 className="clickable-icon"
-                onClick={() => Like(like, setLike, "comment")}
+                onClick={() =>
+                  Like(like, setLike, "comment", uid, setUpdatedLikes)
+                }
               />
             )}
             <span className="text-xs">{numify(likes.length)}</span>
@@ -116,12 +139,16 @@ const Comment = ({
           {like.dislike ? (
             <ActiveHandThumbDownIcon
               className="clickable-icon "
-              onClick={() => Dislike(like, setLike, "comment")}
+              onClick={() =>
+                Dislike(like, setLike, "comment", uid, setUpdatedLikes)
+              }
             />
           ) : (
             <HandThumbDownIcon
               className="clickable-icon"
-              onClick={() => Dislike(like, setLike, "comment")}
+              onClick={() =>
+                Dislike(like, setLike, "comment", uid, setUpdatedLikes)
+              }
             />
           )}
           {gotHeart && (
@@ -149,11 +176,16 @@ const Comment = ({
           </button>
         </p>
         {replyInput && (
-          <ReplyInput setLoading={setLoading} setReplyInput={setReplyInput} />
+          <ReplyInput
+            setReplies={setReplies}
+            commentRef={uid}
+            setLoading={setLoading}
+            setReplyInput={setReplyInput}
+          />
         )}
 
-        {/* <div className="flex flex-col px-16 my-4 ">
-          {replies.length > 0 && (
+        <div className="flex flex-col px-16 my-4 ">
+          {Replies.length > 0 && (
             <span
               className="flex items-center text-sm gap-2 w-28 px-4 py-2 text-blue-500 cursor-pointer hover:bg-blue-500/20 rounded-full"
               onClick={() => {
@@ -173,23 +205,25 @@ const Comment = ({
               ) : (
                 <ChevronDownIcon className="w-4 h-4 text-blue-500" />
               )}
-              <span>{replies.length}</span>
-              <span>{replies.length > 1 ? "replies" : "reply"}</span>
+              <span>{Replies.length}</span>
+              <span>{Replies.length > 1 ? "replies" : "reply"}</span>
             </span>
           )}
           {loading && <PacmanLoader className="my-4 mx-auto" size={10} />}
-          {showReply && !loading && replies.length > 0 && (
-            <div className="flex">
-              {replies?.map((reply) => (
+          {showReply && !loading && Replies.length > 0 && (
+            <div className="flex flex-col space-y-2">
+              {Replies?.map((reply) => (
                 <Reply
                   channelReplied={channelCommented}
                   {...reply}
                   key={reply?.uid}
+                  commentRef={uid}
+                  setRepiles={setReplies}
                 />
               ))}
             </div>
           )}
-        </div> */}
+        </div>
       </div>
     </div>
   );
