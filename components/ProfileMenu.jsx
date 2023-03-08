@@ -14,7 +14,7 @@ export default function ProfileMenu() {
         <div>
           <Menu.Button>
             <img
-              src={currentChannel?.channelImage}
+              src={currentChannel?.channelImage || process.env.NEXT_PUBLIC_NO_IMAGE_URL}
               alt="profile picture"
               className="clickable-icon w-14 h-14"
             />

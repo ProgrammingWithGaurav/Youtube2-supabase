@@ -20,6 +20,7 @@ import Tooltip from "../Tooltip";
 import { numify } from "numify";
 import { PacmanLoader } from "react-spinners";
 import ReplyInput from "./ReplyInput";
+import { supabase } from "../../SupabaseClient";
 
 const Reply = ({
   timestamp,
@@ -27,12 +28,10 @@ const Reply = ({
   likes,
   channelRef,
   gotHeart,
-  replies,
   channelReplied,
   uid,
   commentRef,
-  setReplies
-  
+  setReplies,
 }) => {
   const timeAgo = new TimeAgo("en-US");
   const router = useRouter();
@@ -42,19 +41,35 @@ const Reply = ({
     setCommentOption,
     commentOption,
     fetchChannelDetails,
+    currentChannel
   } = useChannelState();
 
   const [channelDetails, setChannelDetails] = useState();
 
   useEffect(() => {
-    try{
-    fetchChannelDetails(channelRef).then(data => setChannelDetails(data))
-    } catch {err => console.log(err)}
-  }, [])
+    try {
+      fetchChannelDetails(channelRef).then((data) => setChannelDetails(data));
+    } catch {
+      (err) => console.log(err);
+    }
+  }, []);
   const [like, setLike] = useState({ like: true, dislike: false });
   const [loading, setLoading] = useState(false);
+  const [updatedLikes, setUpdatedLikes] = useState(likes?.length);
   const [replyInput, setReplyInput] = useState(false);
 
+  useEffect(() => {
+    const hasLikedOrDisliked = async () => {
+      const { data } = await supabase.from("replies").select().eq("uid", uid);
+      const hasLiked = data[0]?.likes?.includes(currentChannel?.uid);
+      const hasDisliked = data[0]?.dislikes?.includes(currentChannel?.uid);
+      setLike({
+        like: hasLiked,
+        dislike: hasDisliked,
+      });
+    };
+    hasLikedOrDisliked();
+  }, []);
   return (
     <div
       className="flex flex-col dark:text-white"
@@ -63,7 +78,9 @@ const Reply = ({
       <div className="flex items-center relative lg:w-[53vw] w-[90vw] ">
         <img
           onClick={() => router.push(`/${channelDetails?.channelName}`)}
-          src={channelDetails?.channelImage}
+          src={
+            channelDetails?.channelImage || process.env.NEXT_PUBLIC_NO_IMAGE_URL
+          }
           alt="user image"
           className="clickable-icon w-16 h-16"
         />
@@ -76,7 +93,9 @@ const Reply = ({
             >
               {channelDetails?.channelDisplayName}
             </span>
-            <span className="text-gray">{timeAgo.format(new Date(timestamp))}</span>
+            <span className="text-gray">
+              {timeAgo.format(new Date(timestamp))}
+            </span>
           </p>
           <p className="text-sm flex-1">{comment}</p>
         </div>
@@ -103,25 +122,33 @@ const Reply = ({
             {like?.like ? (
               <ActiveHandThumbUpIcon
                 className="clickable-icon"
-                onClick={() => Like(like, setLike, "comment")}
+                onClick={() =>
+                  Like(like, setLike, "reply", uid, setUpdatedLikes)
+                }
               />
             ) : (
               <HandThumbUpIcon
                 className="clickable-icon"
-                onClick={() => Like(like, setLike, "comment")}
+                onClick={() =>
+                  Like(like, setLike, "reply", uid, setUpdatedLikes)
+                }
               />
             )}
-            <span className="text-xs">{numify(likes.length)}</span>
+            <span className="text-xs">{numify(updatedLikes)}</span>
           </span>
           {like.dislike ? (
             <ActiveHandThumbDownIcon
               className="clickable-icon "
-              onClick={() => Dislike(like, setLike, "comment")}
+              onClick={() =>
+                Dislike(like, setLike, "reply", uid, setUpdatedLikes)
+              }
             />
           ) : (
             <HandThumbDownIcon
               className="clickable-icon"
-              onClick={() => Dislike(like, setLike, "comment")}
+              onClick={() =>
+                Dislike(like, setLike, "reply", uid, setUpdatedLikes)
+              }
             />
           )}
           {gotHeart && (

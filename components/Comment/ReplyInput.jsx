@@ -37,7 +37,7 @@ const ReplyInput = ({ setReplyInput, setLoading, input, commentRef , setReplies}
   return (
     <div className="flex my-2 p-2 ml-10 items-center transform">
       <img
-        src={channelImage}
+        src={channelImage || process.env.NEXT_PUBLIC_NO_IMAGE_URL}
         alt="channel Image"
         className="clickable-icon w-16 h-16"
       />

@@ -126,7 +126,7 @@ const VideoScreen = () => {
       <div className="flex items-center justify-between my-2 relative">
         <div className="flex gap-2 items-center">
           <img
-            src={channelDetails?.channelImage}
+            src={channelDetails?.channelImage || process.env.NEXT_PUBLIC_NO_IMAGE_URL}
             alt="channel picture"
             onClick={() => router.push(`/@${channelDetails?.channelName}`)}
             className="clickable-icon w-10 h-10 p-0"

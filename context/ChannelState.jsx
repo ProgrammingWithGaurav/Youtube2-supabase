@@ -285,162 +285,148 @@ export const ChannelStateProvider = ({ children }) => {
   };
 
   const fetchCommentDetails = async (uid) => {
-    const { data } = await supabase
-      .from("comments")
-      .select()
-      .eq("uid", uid);
+    const { data } = await supabase.from("comments").select().eq("uid", uid);
     return data[0];
-  }
+  };
+
+  const fetchReplyDetails = async (uid) => {
+    const { data } = await supabase.from("replies").select().eq("uid", uid);
+    return data[0];
+  };
 
   const Like = async (like, setLike, type, uid, setUpdatedLikes) => {
     if (!currentChannel) return;
-    if (type === "video") {
-      if (like.like) {
-        const videoDetails = await fetchVideoDetails(uid);
-        let likes = videoDetails?.likes;
-        const userLikeIndex = videoDetails?.likes.indexOf(currentChannel?.uid);
-        likes.splice(userLikeIndex, 1);
-        await supabase.from("videos").update({ likes: likes }).eq("uid", uid);
-        setUpdatedLikes((likes) => --likes);
-        setLike({ like: false, dislike: false });
-      } else {
-        // add a like
-        const videoDetails = await fetchVideoDetails(uid);
-        let dislikes = videoDetails?.dislikes;
+    if (like.like) {
+      const details =
+        type === "video"
+          ? await fetchVideoDetails(uid)
+          : type === "comment"
+          ? await fetchCommentDetails(uid)
+          : type === "reply"
+          ? await fetchReplyDetails(uid)
+          : null;
+      console.log(details);
+      let likes = details?.likes;
+      const userLikeIndex = details?.likes.indexOf(currentChannel?.uid);
+      likes.splice(userLikeIndex, 1);
+      await supabase
+        .from(
+          type === "video"
+            ? "videos"
+            : type === "comment"
+            ? "comments"
+            : type === "reply"
+            ? "replies"
+            : null
+        )
+        .update({ likes: likes })
+        .eq("uid", uid);
+      setUpdatedLikes((likes) => --likes);
+      setLike({ like: false, dislike: false });
+    } else {
+      // add a like
+      const details =
+        type === "video"
+          ? await fetchVideoDetails(uid)
+          : type === "comment"
+          ? await fetchCommentDetails(uid)
+          : type === "reply"
+          ? await fetchReplyDetails(uid)
+          : null;
 
-        const removeDislike = () => {
-          const userLikeIndex = dislikes?.indexOf(currentChannel?.uid);
-          dislikes.splice(userLikeIndex, 1);
-        };
-        // remove the uid of the user from the dislike array if existed
-        videoDetails?.dislikes?.includes(currentChannel?.uid) &&
-          removeDislike();
-        await supabase
-          .from("videos")
-          .update({
-            likes: [...videoDetails?.likes, currentChannel?.uid],
-            dislikes: dislikes,
-          })
-          .eq("uid", uid);
-        setLike({ like: true, dislike: false });
-        setUpdatedLikes((likes) => ++likes);
-      }
-    } 
-    
-    
-    else if (type === "comment") {
-      if (like.like) {
-        const commentDetails = await fetchCommentDetails(uid);
-        console.log(commentDetails)
-        let likes = commentDetails?.likes;
-        const userLikeIndex = commentDetails?.likes.indexOf(currentChannel?.uid);
-        likes.splice(userLikeIndex, 1);
-        await supabase.from("videos").update({ likes: likes }).eq("uid", uid);
-        setUpdatedLikes((likes) => --likes);
-        setLike({ like: false, dislike: false });
-      } else {
-        // add a like
-        const commentDetails = await fetchVideoDetails(uid);
-        let dislikes = commentDetails?.dislikes;
+      console.log(details);
+      let dislikes = details?.dislikes;
 
-        const removeDislike = () => {
-          const userLikeIndex = dislikes?.indexOf(currentChannel?.uid);
-          dislikes.splice(userLikeIndex, 1);
-        };
-        // remove the uid of the user from the dislike array if existed
-        commentDetails?.dislikes?.includes(currentChannel?.uid) &&
-          removeDislike();
-        await supabase
-          .from("videos")
-          .update({
-            likes: [...commentDetails?.likes, currentChannel?.uid],
-            dislikes: dislikes,
-          })
-          .eq("uid", uid);
-        setLike({ like: true, dislike: false });
-        setUpdatedLikes((likes) => ++likes);
-      }
-    } else if (type === "reply") {
-      like.like
-        ? setLike({ like: false, dislike: false })
-        : setLike({ like: true, dislike: false });
+      const removeDislike = () => {
+        const userLikeIndex = dislikes?.indexOf(currentChannel?.uid);
+        dislikes.splice(userLikeIndex, 1);
+      };
+      // remove the uid of the user from the dislike array if existed
+      details?.dislikes?.includes(currentChannel?.uid) && removeDislike();
+      await supabase
+        .from(
+          type === "video"
+            ? "videos"
+            : type === "comment"
+            ? "comments"
+            : type === "reply"
+            ? "replies"
+            : null
+        )
+        .update({
+          likes: [...details?.likes, currentChannel?.uid],
+          dislikes: dislikes,
+        })
+        .eq("uid", uid);
+      setLike({ like: true, dislike: false });
+      setUpdatedLikes((likes) => ++likes);
     }
   };
 
   const Dislike = async (like, setLike, type, uid, setUpdatedLikes) => {
     if (!currentChannel) return;
-    if (type === "video") {
-      if (like.dislike) {
-        const videoDetails = await fetchVideoDetails(uid);
-        let dislikes = videoDetails?.dislikes;
-        const userDislikeIndex = videoDetails?.dislikes.indexOf(
-          currentChannel?.uid
-        );
-        dislikes.splice(userDislikeIndex, 1);
-        await supabase
-          .from("videos")
-          .update({ dislikes: dislikes })
-          .eq("uid", uid);
-        setLike({ like: false, dislike: false });
-      } else {
-        // add a like
-        const videoDetails = await fetchVideoDetails(uid);
-        let likes = videoDetails?.likes;
+    if (like.dislike) {
+      const details =
+        type === "video"
+          ? await fetchVideoDetails(uid)
+          : type === "comment"
+          ? await fetchCommentDetails(uid)
+          : type === "reply"
+          ? await fetchReplyDetails(uid)
+          : null;
+      console.log(details);
+      let dislikes = details?.dislikes;
+      const userDislikeIndex = details?.dislikes.indexOf(currentChannel?.uid);
+      dislikes.splice(userDislikeIndex, 1);
+      await supabase
+        .from(
+          type === "video"
+            ? "videos"
+            : type === "comment"
+            ? "comments"
+            : type === "reply"
+            ? "replies"
+            : null
+        )
+        .update({ dislikes: dislikes })
+        .eq("uid", uid);
+      setLike({ like: false, dislike: false });
+    } else {
+      // add a like
+      const details =
+        type === "video"
+          ? await fetchVideoDetails(uid)
+          : type === "comment"
+          ? await fetchCommentDetails(uid)
+          : type === "reply"
+          ? await fetchReplyDetails(uid)
+          : null;
+      console.log(details);
+      let likes = details?.likes;
 
-        const removeLike = () => {
-          const userDisLikeIndex = likes?.indexOf(currentChannel?.uid);
-          likes.splice(userDisLikeIndex, 1);
-        };
-        // remove the uid of the user from the dislike array if existed
-        videoDetails?.likes?.includes(currentChannel?.uid) && removeLike();
-        await supabase
-          .from("videos")
-          .update({
-            dislikes: [...videoDetails?.dislikes, currentChannel?.uid],
-            likes: likes,
-          })
-          .eq("uid", uid);
-        setLike({ like: false, dislike: true });
-        setUpdatedLikes((likes) => likes >= 1 && likes - 1);
-      }
-    } else if (type === "comment") {
-      if (like.dislike) {
-        const videoDetails = await fetchVideoDetails(uid);
-        let dislikes = videoDetails?.dislikes;
-        const userDislikeIndex = videoDetails?.dislikes.indexOf(
-          currentChannel?.uid
-        );
-        dislikes.splice(userDislikeIndex, 1);
-        await supabase
-          .from("videos")
-          .update({ dislikes: dislikes })
-          .eq("uid", uid);
-        setLike({ like: false, dislike: false });
-      } else {
-        // add a like
-        const videoDetails = await fetchVideoDetails(uid);
-        let likes = videoDetails?.likes;
-
-        const removeLike = () => {
-          const userDisLikeIndex = likes?.indexOf(currentChannel?.uid);
-          likes.splice(userDisLikeIndex, 1);
-        };
-        // remove the uid of the user from the dislike array if existed
-        videoDetails?.likes?.includes(currentChannel?.uid) && removeLike();
-        await supabase
-          .from("videos")
-          .update({
-            dislikes: [...videoDetails?.dislikes, currentChannel?.uid],
-            likes: likes,
-          })
-          .eq("uid", uid);
-        setLike({ like: false, dislike: true });
-        setUpdatedLikes((likes) => likes >= 1 && likes - 1);
-      }
-    } else if (type === "reply") {
-      like.dislike
-        ? setLike({ like: false, dislike: false })
-        : setLike({ like: false, dislike: true });
+      const removeLike = () => {
+        const userDisLikeIndex = likes?.indexOf(currentChannel?.uid);
+        likes.splice(userDisLikeIndex, 1);
+      };
+      // remove the uid of the user from the dislike array if existed
+      details?.likes?.includes(currentChannel?.uid) && removeLike();
+      await supabase
+        .from(
+          type === "video"
+            ? "videos"
+            : type === "comment"
+            ? "comments"
+            : type === "reply"
+            ? "replies"
+            : null
+        )
+        .update({
+          dislikes: [...details?.dislikes, currentChannel?.uid],
+          likes: likes,
+        })
+        .eq("uid", uid);
+      setLike({ like: false, dislike: true });
+      setUpdatedLikes((likes) => likes >= 1 && likes - 1);
     }
   };
 

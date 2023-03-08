@@ -35,7 +35,7 @@ const CommentInput = ({setComments}) => {
   ) : (
     <div className="flex my-2 p-2 w-full items-center">
       <img
-        src={channelImage}
+        src={channelImage || process.env.NEXT_PUBLIC_NO_IMAGE_URL}
         alt="channel Image"
         className="clickable-icon w-16 h-16"
       />

@@ -40,11 +40,14 @@ const Comment = ({
     setCommentOption,
     commentOption,
     fetchChannelDetails,
+    currentChannel
   } = useChannelState();
   const [like, setLike] = useState({ like: true, dislike: false });
   const [channelDetails, setChannelDetails] = useState();
+  const [updatedLikes, setUpdatedLikes] = useState(likes?.length);
   const [showReply, setShowReply] = useState(false);
   const [Replies, setReplies] = useState([]);
+  
 
   useEffect(() => {
     const myFunction = async () => {
@@ -55,20 +58,29 @@ const Comment = ({
       setReplies(replies);
     };
     myFunction();
-    console.log(Replies);
   }, []);
 
   useEffect(() => {
     fetchChannelDetails(channelRef).then((data) => setChannelDetails(data));
+
+    const hasLikedOrDisliked = async () => {
+      const { data } = await supabase.from("comments").select().eq("uid", uid);
+      const hasLiked = data[0]?.likes?.includes(currentChannel?.uid);
+      const hasDisliked = data[0]?.dislikes?.includes(currentChannel?.uid);
+      setLike({
+        like: hasLiked,
+        dislike: hasDisliked,
+      });
+    };
+    hasLikedOrDisliked();
   }, []);
   const [loading, setLoading] = useState(false);
   const [replyInput, setReplyInput] = useState(false);
 
-  const [updatedLikes, setUpdatedLikes] = useState(likes?.length);
 
   const removeComment = () => {};
 
-  console.log(uid);
+
   return (
     <div
       className="flex flex-col dark:text-white"
@@ -77,7 +89,7 @@ const Comment = ({
       <div className="flex items-center relative w-full">
         <img
           onClick={() => router.push(`/${channelDetails?.channelName}`)}
-          src={channelDetails?.channelImage}
+          src={channelDetails?.channelImage || process.env.NEXT_PUBLIC_NO_IMAGE_URL}
           alt="user image"
           className="clickable-icon w-16 h-16"
         />
@@ -134,7 +146,7 @@ const Comment = ({
                 }
               />
             )}
-            <span className="text-xs">{numify(likes.length)}</span>
+            <span className="text-xs">{numify(updatedLikes)}</span>
           </span>
           {like.dislike ? (
             <ActiveHandThumbDownIcon
@@ -156,7 +168,7 @@ const Comment = ({
               element={
                 <span className="relative ml-8 cursor-pointer">
                   <img
-                    src={channelDetails?.channelImage}
+                    src={channelDetails?.channelImage || process.env.NEXT_PUBLIC_NO_IMAGE_URL} 
                     className="w-6 h-6 rounded-full cursor-pointer p-1"
                     alt="channel heart"
                   />
