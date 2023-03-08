@@ -21,17 +21,51 @@ import AudioLibrary from "../../components/Studio/AudioLibrary";
 import Settings from "../../components/Studio/Settings";
 import SendFeedback from "../../components/Studio/SendFeedback";
 import { useRouter } from "next/router";
+import { supabase } from "../../SupabaseClient";
 
 export default function Studio() {
   const { appearance, user, loading, loadingProgress, shareDialog } =
     useStateContext();
-  const { showUpload, bottomActiveSidebar, setShowUpload } = useChannelState();
+  const { showUpload, bottomActiveSidebar, setShowUpload, setCurrentChannel } = useChannelState();
   const { query } = useRouter();
 
   useEffect(() => {
     if (query === undefined) return;
     query?.create && setShowUpload(true);
   }, [query]);
+
+  
+  useEffect(() => {
+    const getData = async () => {
+      const { data } = await supabase.auth.getSession();
+      const user = data?.session?.user;
+
+      if (data?.session?.user) {
+        const { data: getUserDoc } = await supabase
+          .from("channels")
+          .select()
+          .eq("uid", user?.id);
+
+        if (getUserDoc.length > 0) {
+          setCurrentChannel(getUserDoc[0]);
+        } else {
+          const { data: newUserDoc } = await supabase.from("channels").insert({
+            uid: user?.id,
+            timestamp: new Date(),
+            channelName: user?.user_metadata?.name,
+            channelDisplayName: user?.user_metadata?.full_name,
+            channelImage: user?.user_metadata?.avatar_url,
+          });
+          window.location.reload();
+        }
+      } else {
+        setCurrentChannel(null);
+        router.push('/')
+      }
+    };
+    getData();
+  }, []);
+
   return (
     <>
       <Head>

@@ -6,7 +6,7 @@ import {
 } from "@heroicons/react/24/solid";
 import ytDuration from "youtube-duration";
 import { useStateContext } from "../context/StateContext";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { numify } from "numify";
 import { useChannelState } from "../context/ChannelState";
 
@@ -22,17 +22,55 @@ export default function Video({
   const { VideoOptions, videoOption, setVideoOption } = useStateContext();
   const [channelDetails, setChannelDetails] = useState();
   const { fetchChannelDetails } = useChannelState();
+  const [newThumbnail, setNewThumbnail] = useState(thumbnail);
   const router = useRouter();
-  fetchChannelDetails(channelRef).then(data => {
-    setChannelDetails(data);
-  });
+
+  useEffect(() => {
+    fetchChannelDetails(channelRef).then((data) => {
+      setChannelDetails(data);
+    });
+  }, []);
+  
+  useEffect(() => {
+    if(thumbnail != ""){
+      const myFunction = async (url, callback) =>  {
+        var video = document.createElement('video');
+        video.addEventListener('loadeddata', function() {
+          var canvas = document.createElement('canvas');
+          canvas.width = this.videoWidth;
+          canvas.height = this.videoHeight;
+          canvas.getContext('2d').drawImage(this, 0, 0, canvas.width, canvas.height);
+          var dataURL = canvas.toDataURL();
+          callback(dataURL);
+          URL.revokeObjectURL(this.src);
+        });
+        video.src = url;
+        video.setAttribute('crossorigin', 'anonymous');
+        video.setAttribute('autoplay', 'true');
+        video.setAttribute('loop', 'true');
+        video.setAttribute('muted', 'true');
+      }
+
+      
+      getVideoThumbnail('https://example.com/video.mp4', async function(dataURL) {
+        await supabase.storage
+        .from("thumbnails")
+        .upload('hi.png', dataURL, {
+          cacheControl: "3600",
+          upsert: false,
+        });
+  // thumbnail
+  
+});
+      }
+  }, [thumbnail])
   const timeAgo = new TimeAgo("en-US");
 
   return (
     <div className=" cursor-pointer w-full h-64 my-2 hover:scale-105 transition group">
       <div className="relative">
         <img
-          src={thumbnail}
+          src={newThumbnail}
           onClick={() => router.push(`/watch/${uid}`)}
           className="rounded-xl object-cover"
           alt="video thumbnail"

@@ -122,7 +122,7 @@ const Sidebar = () => {
             className={`rounded-full ${
               isSidebar ? "w-28 h-28" : "w-10 h-10"
             } object-cover p-2`}
-            src={currentChannel?.channelImage}
+            src={currentChannel?.channelImage || process.env.NEXT_PUBLIC_NO_IMAGE_URL}
             alt="channel image"
           />
           <span
