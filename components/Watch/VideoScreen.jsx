@@ -48,17 +48,20 @@ const VideoScreen = () => {
     Like,
     Dislike,
     fetchChannelDetails,
-    currentChannel,
     GetUid,
+    currentChannel
   } = useChannelState();
 
   const [like, setLike] = useState({ like: false, dislike: false });
   const [channelDetails, setChannelDetails] = useState();
-  const [subscribers, setSubscribers] = useState(0);
+  const [subscribers, setSubscribers] = useState([]);
+  const [updatedSubscribers, setUpdatedSubscribers] = useState(0);
   const [subscribed, setSubscribed] = useState(false);
   const [updatedLikes, setUpdatedLikes] = useState(likes?.length);
   const [comments, setComments] = useState([]);
 
+
+  // useEffect(() => {setUpdatedSubscribers(subscribers.length)}, [subscribers])
   useEffect(() => {
     const myFunction = async() => {
       const {data: comments} = await supabase.from('comments').select().eq('videoUid', uid);
@@ -84,6 +87,7 @@ const VideoScreen = () => {
       setSubscribers(data[0]?.subscribers);
     };
     const increaseView = async () => {
+      if(!currentChannel) return;
       const { data } = await supabase.from("videos").select().eq("uid", uid);
       const isViewedByUser = data[0]?.views?.includes(currentChannel?.uid);
       if (isViewedByUser) return;
@@ -139,7 +143,7 @@ const VideoScreen = () => {
               {channelDetails?.channelDisplayName}
             </span>
             <span className="dark:text-gray-400 text-xs">
-              {numify(subscribers)}{" "}
+              {numify(updatedSubscribers)}{" "}
               {subscribers <= 1 ? "Subscriber" : "Subscribers"}
             </span>
           </div>

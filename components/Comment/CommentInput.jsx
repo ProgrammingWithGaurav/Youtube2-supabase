@@ -5,17 +5,34 @@ import { FaceSmileIcon } from "@heroicons/react/24/outline";
 import { useStateContext } from "../../context/StateContext";
 import { PacmanLoader } from "react-spinners";
 import { supabase } from "../../SupabaseClient";
+import {ExclamationMarkIcon} from '@heroicons/react/24/outline';
 
 const CommentInput = ({setComments}) => {
   const [comment, setComment] = useState("");
   const { currentChannel, GetUid } = useChannelState();
-  const { appearance , activeVideo} = useStateContext();
-  const { channelImage } = currentChannel;
+  const { appearance , activeVideo, setToast, toast} = useStateContext();
   const [loading, setLoading] = useState(false);
 
   const [emojiPicker, setEmojiPicker] = useState(false);
 
   const sendComment = async () => {
+    if(!currentChannel) {
+      // setToast({
+      //   text: "Please Login to Comment",
+      //   icon: <ExclamationMarkIcon />,
+      //   color: "red",
+      //   open: true,
+      // })
+      // setTimeout(() => {
+      //   setToast({
+      //     ...toast,
+      //     open: false,
+      //   })
+      // }, 2000)
+      return;
+
+    };
+
     setLoading(true);
     const {data} = await supabase.from('comments').insert({
       channelRef: currentChannel?.uid,
@@ -35,7 +52,7 @@ const CommentInput = ({setComments}) => {
   ) : (
     <div className="flex my-2 p-2 w-full items-center">
       <img
-        src={channelImage || process.env.NEXT_PUBLIC_NO_IMAGE_URL}
+        src={currentChannel?.channelImage || process.env.NEXT_PUBLIC_NO_IMAGE_URL}
         alt="channel Image"
         className="clickable-icon w-16 h-16"
       />

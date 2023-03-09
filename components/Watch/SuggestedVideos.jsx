@@ -1,29 +1,47 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useStateContext } from "../../context/StateContext";
 import { useChannelState } from "../../context/ChannelState";
 import { numify } from "numify";
 import TimeAgo from "javascript-time-ago";
 import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
+import { supabase } from "../../SupabaseClient";
+import { useRouter } from "next/router";
 
-const Video = ({ channelRef, thumbnail, title, timestamp, views, uid }) => {
-  const { fetchChannelDetails } = useChannelState();
+const Video = ({ channelRef, thumbnail, title, timestamp, views, uid , url}) => {
+  const { fetchChannelDetails, getVideoThumbnail } = useChannelState();
   const { videoOption, setVideoOption, VideoOptions } = useStateContext();
   const [channelDetails, setChannelDetails] = useState();
-  fetchChannelDetails(channelRef).then(data => setChannelDetails(data));
+  const router = useRouter();
+  const [newThumbnail, setNewThumbnail] = useState('');
+
+  
+  useEffect(() => {
+    getVideoThumbnail(url, async function (dataURL) {
+      setNewThumbnail(dataURL)
+    })
+  }, [])
+  
+  useEffect(() => {
+    fetchChannelDetails(channelRef).then(data => setChannelDetails(data));
+  }, [])
   const timeAgo = new TimeAgo("en-US");
 
   return (
-    <div className="flex items-center gap-2 relative pr-8 py-2 my-2 group">
+    <div className="flex items-center gap-2 relative pr-8 py-2 my-2 group cursor-pointer">
       <img
-        src={thumbnail}
+        src={thumbnail === '' ? newThumbnail : thumbnail}
         alt="video thumbnail image"
         className="rounded-xl w-40 h-24"
+        onClick={() => {
+          router.push(`/watch/${uid}`);
+          window.location.reload();
+        }}
       />
       <div className="flex flex-col">
         <p className="text-bold text-sm">{title}</p>
-        <p className="text-gray text-xs">{channelDisplayName}</p>
+        <p className="text-gray text-xs">{channelDetails?.channelDisplayName}</p>
         <p className="text-gray text-xs">
-          {numify(views)} • {timeAgo.format(timestamp)}
+          {numify(views.length)} {numify(views.length)  <= 1 ? 'view' : 'views'} • {timeAgo.format(new Date(timestamp))}
         </p>
       </div>
       <EllipsisVerticalIcon
@@ -58,9 +76,16 @@ const Video = ({ channelRef, thumbnail, title, timestamp, views, uid }) => {
 const SuggestedVideos = () => {
   const { videos, activeVideo } = useStateContext();
   const { type: cataegory, uid } = activeVideo;
-  const filteredVideo = videos.filter(
-    (video) => video?.type === cataegory && video?.uid !== uid
-  );
+  const [filteredVideos, setFilteredVideos] = useState();
+
+  useEffect(() => {
+    const myFunction = async () => {
+      const {data} = await supabase.from('videos').select().eq('type', cataegory);
+      setFilteredVideos(data.filter(video => video.uid !== uid));
+    };
+
+    myFunction();
+  }, [])
   return (
     <div className="lg:w-full w-0 p-2 py-4 flex flex-col">
       <span
@@ -70,7 +95,7 @@ const SuggestedVideos = () => {
       >
         {cataegory[0].toUpperCase().concat(cataegory.slice(1, 100000))}
       </span>
-      {filteredVideo?.map((video) => (
+      {filteredVideos?.map((video) => (
         <Video key={video.uid} {...video} />
       ))}
     </div>

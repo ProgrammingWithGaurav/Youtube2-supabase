@@ -15,13 +15,19 @@ import {
 import { useState } from "react";
 import { numify } from "numify";
 import TimeAgo from "javascript-time-ago";
+import { supabase } from "../../SupabaseClient";
 
 const DashboardHeader = () => {
+  const { setShowUpload } = useChannelState();
+
   return (
     <div className="w-full flex  items-center lg:justify-between justify-around">
       <h2 className="text-bold text-xl">Channel dashboard</h2>
       <div className="flex items-center gap-2">
-        <CloudArrowDownIcon className="video-control clickable-icon click-show" />
+        <CloudArrowDownIcon
+          onClick={() => setShowUpload(true)}
+          className="video-control clickable-icon click-show"
+        />
         <SignalIcon className="video-control clickable-icon click-show" />
         <PencilSquareIcon className="video-control clickable-icon click-show" />
       </div>
@@ -31,22 +37,21 @@ const DashboardHeader = () => {
 
 const VideoPerformance = () => {
   const { videos } = useStateContext();
-  const { fetchChannelDetails } = useChannelState();
+  const { fetchChannelDetails, fetchChannelVideos, currentChannel } =
+    useChannelState();
   const [latestVideo, setLatestVideo] = useState();
+  const [channelVideos, setChannelVideos] = useState([]);
   const router = useRouter();
 
-  const handleRecentlyPosted = () => {
-    const channelVideos = videos.filter(
-      (video) => video?.channelName === channelName
-    );
-    channelVideos.length > 1 &&
-      setChannelVideos(
-        channelVideos.sort(
-          (video1, video2) =>
-            parseFloat(video2.timestamp) - parseFloat(video1.timestamp)
-        )
-      );
-  };
+  // useEffect(() => {
+  //   fetchChannelVideos().then((data) => setChannelVideos(data));
+  // }, []);
+
+  useEffect(() => {
+    const myFunction = async () => {
+      const {data} = await supabase.from('videos').select().order('timestamp', {ascending: false})
+    }
+  }, [])
 
   function getDaysAndHoursFromOldTimestamp(oldTimestamp) {
     const currentTimestamp = new Date().getTime();
@@ -118,6 +123,13 @@ const VideoPerformance = () => {
 const ChannelAnalytics = () => {
   const router = useRouter();
   const { addCommas, fetchChannelDetails, GetUid } = useChannelState();
+  const { channelDetails, setChannelDetails } = useState();
+
+  // useEffect(() => {
+  //   fetchChannelDetails(channelRef).then((data) => {
+  //     setChannelDetails(data);
+  //   });
+  // }, []);
   const timeAgo = new TimeAgo();
 
   const [LatestComments, setLatestComments] = useState([
@@ -425,9 +437,9 @@ const Dashboard = () => {
     <div className="flex-1 h-screen mt-16 p-4 w-[95vw] ml-[60px] flex flex-col">
       <DashboardHeader />
       <div className="grid my-3  gap-2 lg:grid-cols-3 md:grid-cols-2 lg:pr-0 pr-10 sm:grid-cols-1">
-        <VideoPerformance /> {/* Latest Video Performance */}
-        <ChannelAnalytics /> {/* Channel Subscriber Analytics */}
-        <Ideas /> {/* Channel Subscriber Analytics */}
+        <VideoPerformance />
+        {/* <ChannelAnalytics /> 
+        <Ideas />  */}
       </div>
     </div>
   );

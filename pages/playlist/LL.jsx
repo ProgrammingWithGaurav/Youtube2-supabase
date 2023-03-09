@@ -10,6 +10,7 @@ import LikedVideosDetails from "../../components/LikedVideos/LikedVideosDetails"
 import LikedVideos from "../../components/LikedVideos/LikedVideos";
 import { useChannelState } from "../../context/ChannelState";
 import { useEffect } from "react";
+import { supabase } from "../../SupabaseClient";
 
 export default function LL() {
   const {
@@ -27,6 +28,37 @@ export default function LL() {
 
   useEffect(() => {
     fetchLikedVideos(videos);
+  }, []);
+
+  
+  useEffect(() => {
+    const getData = async () => {
+      const { data } = await supabase.auth.getSession();
+      const user = data?.session?.user;
+
+      if (data?.session?.user) {
+        const { data: getUserDoc } = await supabase
+          .from("channels")
+          .select()
+          .eq("uid", user?.id);
+
+        if (getUserDoc.length > 0) {
+          setCurrentChannel(getUserDoc[0]);
+        } else {
+          const { data: newUserDoc } = await supabase.from("channels").insert({
+            uid: user?.id,
+            timestamp: new Date(),
+            channelName: user?.user_metadata?.name,
+            channelDisplayName: user?.user_metadata?.full_name,
+            channelImage: user?.user_metadata?.avatar_url,
+          });
+          window.location.reload();
+        }
+      } else {
+        setCurrentChannel(null);
+      }
+    };
+    getData();
   }, []);
 
   return (

@@ -1,4 +1,5 @@
 import { useContext, createContext, useState } from "react";
+import { async } from "regenerator-runtime";
 import UIDGenerator from "uid-generator";
 import { supabase } from "../SupabaseClient";
 export const ChannelState = createContext();
@@ -260,9 +261,29 @@ export const ChannelStateProvider = ({ children }) => {
     });
   };
 
-  const fetchChannelVideos = (videos) => {
-    return videos.filter((video) => currentChannel?.uid === video?.channelRef);
+  const fetchChannelVideos = async (uid) => {
+    const {data} = await supabase.from('videos').select().eq('channelRef', uid ? uid : currentChannel?.uid)
+    return data;
+
   };
+
+  const getVideoThumbnail = async (url, callback) =>  {
+    var video = document.createElement('video');
+    video.addEventListener('loadeddata', function() {
+      var canvas = document.createElement('canvas');
+      canvas.width = this.videoWidth;
+      canvas.height = this.videoHeight;
+      canvas.getContext('2d').drawImage(this, 0, 0, canvas.width, canvas.height);
+      var dataURL = canvas.toDataURL();
+      callback(dataURL);
+      URL.revokeObjectURL(this.src);
+    });
+    video.src = url;
+    video.setAttribute('crossorigin', 'anonymous');
+    video.setAttribute('autoplay', 'true');
+    video.setAttribute('loop', 'true');
+    video.setAttribute('muted', 'true');
+  }
 
   const channelSearches = [
     "hello world",
@@ -541,6 +562,7 @@ export const ChannelStateProvider = ({ children }) => {
         thumbnailDialog,
         setThumbnailDialog,
         handleLogin,
+        getVideoThumbnail,
       }}
     >
       {children}
