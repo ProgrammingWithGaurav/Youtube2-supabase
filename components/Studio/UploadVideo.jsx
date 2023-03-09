@@ -9,7 +9,6 @@ import { uid } from "uid";
 import { useChannelState } from "../../context/ChannelState";
 import { supabase } from "../../SupabaseClient";
 import Tooltip from "../Tooltip";
-import {FileUploadThumbnail} from 'file-upload-thumbnail';
 
 const UploadVideo = () => {
   const videoRef = useRef(null);
@@ -18,7 +17,8 @@ const UploadVideo = () => {
     videoRef.current.click();
   };
 
-  const { setShowUpload, GetUid } = useChannelState();
+
+  const { setShowUpload, GetUid, currentChannel,getVideoThumbnail } = useChannelState();
 
   const uploadVideo = async (e) => {
     console.log("hi");
@@ -63,25 +63,37 @@ const UploadVideo = () => {
           upsert: false,
         });
       const { path } = data;
+      const thumbnailPath = GetUid();
+      const videoUrl =  `https://lumsrpmlumtfpbbafpug.supabase.co/storage/v1/object/public/videos/${path}`;
+      
+      getVideoThumbnail(videoUrl, async function (dataURL) {
+        setNewThumbnail(dataURL)
+        const { data: thumbnailUrl } = await supabase
+        .storage
+        .from('thumbnails')
+        .upload(thumbnailPath + '.png',decode('base64string'), {contentType: 'image/png'})
 
-      await supabase.from("videos").insert({
-        uid: videoPath,
-        url: `https://lumsrpmlumtfpbbafpug.supabase.co/storage/v1/object/public/videos/${path}`,
-        thumbnail: '',
-        timestamp: new Date(),
-        title: name,
-        description: ``,
-        duration: Math.round(duration),
-        type: 'Entertainment',
-        likes: [],
-        dislikes: [],
-        channelRef: currentChannel?.uid,
-        views: []
+        console.log(thumbnailUrl)
+        await supabase.from("videos").insert({
+          uid: videoPath,
+          url: videoUrl,
+          thumbnail: thumbnailUrl,
+          timestamp: new Date(),
+          title: name,
+          description: ``,
+          duration: Math.round(duration),
+          type: 'Entertainment',
+          likes: [],
+          dislikes: [],
+          channelRef: currentChannel?.uid,
+          views: []
+        })
       })
-
     }
 
     e.target.value = "";
+    router.push('/');
+    window.location.reload();
   };
 
   return (
