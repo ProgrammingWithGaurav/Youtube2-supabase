@@ -28,6 +28,7 @@ export default function Studio() {
     useStateContext();
   const { showUpload, bottomActiveSidebar, setShowUpload, setCurrentChannel } = useChannelState();
   const { query } = useRouter();
+  const router = useRouter();
 
   useEffect(() => {
     if (query === undefined) return;

@@ -17,12 +17,10 @@ const UploadVideo = () => {
     videoRef.current.click();
   };
 
-
-  const { setShowUpload, GetUid, currentChannel,getVideoThumbnail } = useChannelState();
+  const { setShowUpload, GetUid, currentChannel, getVideoThumbnail } =
+    useChannelState();
 
   const uploadVideo = async (e) => {
-    console.log("hi");
-
     const file = e.target.files[0];
     // Getting the duration of the video in seconds to insert in the table
     const getVideoDuration = (file) =>
@@ -30,12 +28,11 @@ const UploadVideo = () => {
         const reader = new FileReader();
         reader.onload = () => {
           const media = new Audio(reader.result);
-          media.onloadedmetadata = () => console.log(resolve(media.duration));
+          media.onloadedmetadata = () => resolve(media.duration);
         };
         reader.readAsDataURL(file);
         reader.onerror = (error) => reject(error);
       });
-  
 
     const types = [
       "video/mp4",
@@ -64,35 +61,40 @@ const UploadVideo = () => {
         });
       const { path } = data;
       const thumbnailPath = GetUid();
-      const videoUrl =  `https://lumsrpmlumtfpbbafpug.supabase.co/storage/v1/object/public/videos/${path}`;
-      
-      getVideoThumbnail(videoUrl, async function (dataURL) {
-        setNewThumbnail(dataURL)
-        const { data: thumbnailUrl } = await supabase
-        .storage
-        .from('thumbnails')
-        .upload(thumbnailPath + '.png',decode('base64string'), {contentType: 'image/png'})
+      const videoUrl = `https://lumsrpmlumtfpbbafpug.supabase.co/storage/v1/object/public/videos/${path}`;
+      let thumbnailUrl = "https://lumsrpmlumtfpbbafpug.supabase.co/storage/v1/object/public/thumbnails/";
 
-        console.log(thumbnailUrl)
-        await supabase.from("videos").insert({
-          uid: videoPath,
-          url: videoUrl,
-          thumbnail: thumbnailUrl,
-          timestamp: new Date(),
-          title: name,
-          description: ``,
-          duration: Math.round(duration),
-          type: 'Entertainment',
-          likes: [],
-          dislikes: [],
-          channelRef: currentChannel?.uid,
-          views: []
-        })
-      })
+      getVideoThumbnail(videoUrl, async function (dataURL) {
+        fetch(dataURL)
+          .then((res) => res.blob())
+          .then(async (blob) => {
+            const file = new File([blob], "File name", { type: "image/png" });
+            thumbnailUrl = dataURL;
+            const { data } = await supabase.storage
+              .from("thumbnails")
+              .upload(thumbnailPath + ".png", file);
+            const { path } = data;
+            
+            await supabase.from("videos").insert({
+              uid: videoPath,
+              url: videoUrl,
+              thumbnail: thumbnailUrl + path,
+              timestamp: new Date(),
+              title: name,
+              description: ``,
+              duration: Math.round(duration),
+              type: "Entertainment",
+              likes: [],
+              dislikes: [],
+              channelRef: currentChannel?.uid,
+              views: [],
+            });
+          });
+      });
     }
 
     e.target.value = "";
-    router.push('/');
+    router.push("/");
     window.location.reload();
   };
 
