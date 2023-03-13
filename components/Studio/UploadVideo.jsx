@@ -62,40 +62,43 @@ const UploadVideo = () => {
       const { path } = data;
       const thumbnailPath = GetUid();
       const videoUrl = `https://lumsrpmlumtfpbbafpug.supabase.co/storage/v1/object/public/videos/${path}`;
-      let thumbnailUrl = "https://lumsrpmlumtfpbbafpug.supabase.co/storage/v1/object/public/thumbnails/";
+      let thumbnailUrl =
+        "https://lumsrpmlumtfpbbafpug.supabase.co/storage/v1/object/public/thumbnails/";
 
       getVideoThumbnail(videoUrl, async function (dataURL) {
-        fetch(dataURL)
-          .then((res) => res.blob())
-          .then(async (blob) => {
-            const file = new File([blob], "File name", { type: "image/png" });
-            thumbnailUrl = dataURL;
-            const { data } = await supabase.storage
-              .from("thumbnails")
-              .upload(thumbnailPath + ".png", file);
-            const { path } = data;
-            
-            await supabase.from("videos").insert({
-              uid: videoPath,
-              url: videoUrl,
-              thumbnail: thumbnailUrl + path,
-              timestamp: new Date(),
-              title: name,
-              description: '',
-              duration: Math.round(duration),
-              type: "Entertainment",
-              likes: [],
-              dislikes: [],
-              channelRef: currentChannel?.uid,
-              views: [],
+        fetch(dataURL).then(async (res) => {
+          const blob = await res.blob();
+          const file = new File([blob], "File name", { type: "image/png" });
+          console.log(file);
+          const { data } = await supabase.storage
+            .from("thumbnails")
+            .upload(thumbnailPath + ".png", file, {
+              cacheControl: "3600",
+              upsert: false,
             });
+          const { path } = data;
+
+          await supabase.from("videos").insert({
+            uid: videoPath,
+            url: videoUrl,
+            thumbnail: thumbnailUrl + path,
+            timestamp: new Date(),
+            title: name,
+            description: "",
+            duration: Math.round(duration),
+            type: "Entertainment",
+            likes: [],
+            dislikes: [],
+            channelRef: currentChannel?.uid,
+            views: [],
           });
+
+          e.target.value = "";
+          router.push("/");
+          window.location.reload();
+        });
       });
     }
-
-    e.target.value = "";
-    router.push("/");
-    window.location.reload();
   };
 
   return (

@@ -6,6 +6,7 @@ import { numify } from "numify";
 import React from "react";
 import { useChannelState } from "../../context/ChannelState";
 import { useStateContext } from "../../context/StateContext";
+import { supabase } from "../../SupabaseClient";
 
 const Video = ({
   index,
@@ -17,15 +18,27 @@ const Video = ({
   timestamp,
 }) => {
   const router = useRouter();
-  const { fetchChannelDetails } = useChannelState();
+  const { fetchChannelDetails, currentChannel,fetchLikedVideos } = useChannelState();
   const { VideoOptions, videoOption, setVideoOption } = useStateContext();
   const newOptions = [
     ...VideoOptions,
     {
       name: "Remove from Liked Videos",
       icon: <TrashIcon className="icon" />,
-      onClick: () => {
-        console.log("removed from liked video");
+      onClick: async (videoUid) => {
+        const {data: videoDetails} = await supabase.from('videos').select().eq('uid', uid);
+        const likes = videoDetails[0]?.likes;
+        console.log(likes)
+        const hasLiked = likes?.includes(currentChannel?.uid);
+
+        if(hasLiked){
+          const index = likes.indexOf(currentChannel?.uid);
+          likes.splice(index, 1);
+          console.log(likes)
+          await supabase.from('videos').update({likes: likes}).eq('uid', uid);
+        }
+
+        fetchLikedVideos();
       },
     },
   ];

@@ -1,13 +1,22 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { ArrowTrendingUpIcon, FlagIcon } from "@heroicons/react/24/outline";
 import { NumericFormat } from "react-number-format";
 import { useStateContext } from "../../context/StateContext";
+import { supabase } from "../../SupabaseClient";
 
 const ChannelAbout = () => {
   const {
-    activeChannel: { joinedDate, views, description, location, socialLinks },
+    activeChannel: { timestamp:joinedDate, views, description, location, uid },
   } = useStateContext();
 
+  const [socialLinks, setSocialLinks] = useState([]);
+  useEffect(() => {
+    const myFunction = async () => {
+      const {data} = await supabase.from('socialLinks').select().eq('channelRef', uid);
+      setSocialLinks(data);
+    }
+    myFunction();
+  }, [])
   return (
     <div className="w-full flex items-start justify-between p-4 mt-10 dark:text-white h-screen">
       <div className="w-9/12 mr-8 flex flex-col">
@@ -74,7 +83,7 @@ const ChannelAbout = () => {
             thousandSeparator=","
             disabled={true}
           />
-          <span>views</span>
+          <span>{views?.length <= 1 ? 'view' : 'views'}</span>
         </p>
         <div className="border-b border-1 w-full border-b-gray-300 dark:border-b-gray-600"></div>
 

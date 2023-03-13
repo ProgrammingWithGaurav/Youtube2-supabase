@@ -30,6 +30,8 @@ const ChannelHeader = () => {
     channelTabs,
     channelTab,
     setChannelTab,
+    setActiveChannel,
+    activeChannel
   } = useStateContext();
   const { Subscribe, UnSubscribe, currentChannel } = useChannelState();
   const [updatedSubscribers, setUpdatedSubscribers] = useState(
@@ -45,11 +47,12 @@ const ChannelHeader = () => {
         .from("channelInfo")
         .select()
         .eq("channelRef", uid);
+      setActiveChannel({...activeChannel,views : data[0]?.views })
       const { data: socialLinks } = await supabase
         .from("socialLinks")
         .select()
         .eq("channelRef", uid);
-      console.log(socialLinks, uid);
+
 
       if (data?.length > 0) {
         setChannelInfo({
