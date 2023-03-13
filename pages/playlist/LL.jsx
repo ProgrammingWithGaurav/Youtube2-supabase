@@ -24,10 +24,10 @@ export default function LL() {
   } = useStateContext();
   const router = useRouter();
 
-  const { fetchLikedVideos } = useChannelState();
+  const { fetchLikedVideos, setCurrentChannel } = useChannelState();
 
   useEffect(() => {
-    fetchLikedVideos(videos);
+    fetchLikedVideos();
   }, []);
 
   

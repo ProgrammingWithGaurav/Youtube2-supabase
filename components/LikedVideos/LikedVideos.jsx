@@ -55,8 +55,8 @@ const Video = ({
           >
             {channelDisplayName} •
           </span>{" "}
-          <span>{numify(views)} views </span>
-          <span> • {timeAgo.format(timestamp)}</span>
+          <span>{numify(views?.length)} {views?.length <= 1 ? 'view' : 'views'} </span>
+          <span> • {timeAgo.format(new Date(timestamp))}</span>
         </p>
       </div>
 

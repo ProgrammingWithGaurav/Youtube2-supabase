@@ -12,7 +12,10 @@ import { useChannelState } from "../context/ChannelState";
 import { supabase } from "../SupabaseClient";
 
 const ChannelHeader = () => {
-  const [channelInfo, setChannelInfo] = useState({subscribers: 0, socialLinks: []});
+  const [channelInfo, setChannelInfo] = useState({
+    subscribers: [],
+    socialLinks: [],
+  });
   const {
     activeChannel: {
       timestamp,
@@ -28,7 +31,11 @@ const ChannelHeader = () => {
     channelTab,
     setChannelTab,
   } = useStateContext();
-  const [subscribed, setSubscribed] = useState(false);
+  const { Subscribe, UnSubscribe, currentChannel } = useChannelState();
+  const [updatedSubscribers, setUpdatedSubscribers] = useState(
+    channelInfo?.subscribers?.length
+  );
+  const [isSubscribed, setIsSubscribed] = useState(false);
   const scrollRef = useRef();
 
   useEffect(() => {
@@ -38,27 +45,38 @@ const ChannelHeader = () => {
         .from("channelInfo")
         .select()
         .eq("channelRef", uid);
+      const { data: socialLinks } = await supabase
+        .from("socialLinks")
+        .select()
+        .eq("channelRef", uid);
+      console.log(socialLinks, uid);
 
-        if (data?.length > 0) {
-          setChannelInfo(data[0]);
-        } else {
-          const { data: newChannelInfo } = await supabase
+      if (data?.length > 0) {
+        setChannelInfo({
+          subscribers: data[0]?.subscribers?.length,
+          socialLinks: socialLinks,
+        });
+        data[0]?.subscribers?.includes(currentChannel?.uid) &&
+          setIsSubscribed(true);
+      } else {
+        const { data: newChannelInfo } = await supabase
           .from("channelInfo")
           .upsert({
             joinedDate: timestamp,
             email: userData?.session?.user?.user_metadata?.email,
             channelRef: uid,
-            socialLinks: [{"links": []}]
           })
           .select();
-          setChannelInfo(newChannelInfo);
-        }
+        setChannelInfo(newChannelInfo?.socialLinks);
+      }
     };
 
     getData();
   }, []);
 
-  useEffect(() => {console.table((channelInfo))}, [channelInfo])
+  useEffect(() => {
+    setUpdatedSubscribers(channelInfo?.subscribers);
+  }, [channelInfo]);
 
   const changeChannelTab = (tab) => {
     setLoading(true);
@@ -70,7 +88,6 @@ const ChannelHeader = () => {
     }, 1000);
   };
   const { channelSearch, setChannelSearch } = useChannelState();
-  const { Subscribe, UnSubscribe } = useChannelState();
   const inputRef = useRef();
   const [isInput, setIsInput] = useState(false);
 
@@ -124,15 +141,17 @@ const ChannelHeader = () => {
           </span>
           <span className="text-sm dark:text-gray-400">@{channelName}</span>
 
-            <span className="text-sm dark:text-gray-400">
-              {numify(channelInfo?.subscribers)}{" "}
-              {channelInfo?.subscribers <= 1 ? "Subscriber" : "Subscribers"}
-            </span>
+          <span className="text-sm dark:text-gray-400">
+            {numify(updatedSubscribers)}{" "}
+            {updatedSubscribers <= 1 ? "Subscriber" : "Subscribers"}
+          </span>
         </div>
         <div>
-          {subscribed ? (
+          {isSubscribed ? (
             <div
-              onClick={() => UnSubscribe(setSubscribed)}
+              onClick={() =>
+                UnSubscribe(setUpdatedSubscribers, setIsSubscribed, uid)
+              }
               className="space-x-2 dark:hover:bg-neutral-700 mr-8 text-neutral-900 dark:text-white dark:bg-neutral-800 flex items-center py-2 px-4 bg-gray-100 text-sm rounded-full cursor-pointer font-semibold hover:bg-gray-200"
             >
               <BellIcon className="icon p-0 w-6 h-6" />
@@ -141,7 +160,9 @@ const ChannelHeader = () => {
             </div>
           ) : (
             <button
-              onClick={() => Subscribe(setSubscribed)}
+              onClick={() =>
+                Subscribe(setUpdatedSubscribers, setIsSubscribed, uid)
+              }
               className="subscribe"
             >
               Subscribe

@@ -8,18 +8,10 @@ import { supabase } from "../../SupabaseClient";
 import { useRouter } from "next/router";
 
 const Video = ({ channelRef, thumbnail, title, timestamp, views, uid , url}) => {
-  const { fetchChannelDetails, getVideoThumbnail } = useChannelState();
+  const { fetchChannelDetails } = useChannelState();
   const { videoOption, setVideoOption, VideoOptions } = useStateContext();
   const [channelDetails, setChannelDetails] = useState();
   const router = useRouter();
-  const [newThumbnail, setNewThumbnail] = useState('');
-
-  
-  useEffect(() => {
-    getVideoThumbnail(url, async function (dataURL) {
-      setNewThumbnail(dataURL)
-    })
-  }, [])
   
   useEffect(() => {
     fetchChannelDetails(channelRef).then(data => setChannelDetails(data));
@@ -29,7 +21,7 @@ const Video = ({ channelRef, thumbnail, title, timestamp, views, uid , url}) => 
   return (
     <div className="flex items-center gap-2 relative pr-8 py-2 my-2 group cursor-pointer">
       <img
-        src={thumbnail === '' ? newThumbnail : thumbnail}
+        src={thumbnail}
         alt="video thumbnail image"
         className="rounded-xl w-40 h-24"
         onClick={() => {

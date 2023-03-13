@@ -262,28 +262,32 @@ export const ChannelStateProvider = ({ children }) => {
   };
 
   const fetchChannelVideos = async (uid) => {
-    const {data} = await supabase.from('videos').select().eq('channelRef', uid ? uid : currentChannel?.uid)
+    const { data } = await supabase
+      .from("videos")
+      .select()
+      .eq("channelRef", uid ? uid : currentChannel?.uid);
     return data;
-
   };
 
-  const getVideoThumbnail = async (url, callback) =>  {
-    var video = document.createElement('video');
-    video.addEventListener('loadeddata', function() {
-      var canvas = document.createElement('canvas');
+  const getVideoThumbnail = async (url, callback) => {
+    var video = document.createElement("video");
+    video.addEventListener("loadeddata", function () {
+      var canvas = document.createElement("canvas");
       canvas.width = this.videoWidth;
       canvas.height = this.videoHeight;
-      canvas.getContext('2d').drawImage(this, 0, 0, canvas.width, canvas.height);
+      canvas
+        .getContext("2d")
+        .drawImage(this, 0, 0, canvas.width, canvas.height);
       var dataURL = canvas.toDataURL();
       callback(dataURL);
       URL.revokeObjectURL(this.src);
     });
     video.src = url;
-    video.setAttribute('crossorigin', 'anonymous');
-    video.setAttribute('autoplay', 'true');
-    video.setAttribute('loop', 'true');
-    video.setAttribute('muted', 'true');
-  }
+    video.setAttribute("crossorigin", "anonymous");
+    video.setAttribute("autoplay", "true");
+    video.setAttribute("loop", "true");
+    video.setAttribute("muted", "true");
+  };
 
   const channelSearches = [
     "hello world",
@@ -293,15 +297,39 @@ export const ChannelStateProvider = ({ children }) => {
     "ReactJs",
   ];
 
-  const UnSubscribe = (setSubscribed) => {
-    setTimeout(() => {
-      setSubscribed(false);
+  const UnSubscribe = (setUpdatedSubscribers, setIsSubscribed, uid) => {
+    if (!currentChannel) return;
+    setTimeout(async () => {
+      const { data } = await supabase
+        .from("channelInfo")
+        .select()
+        .eq("channelRef", uid);
+      let newSubscribers = data[0]?.subscribers;
+      const index = newSubscribers.indexOf(currentChannel.uid);
+      newSubscribers.splice(index, 1);
+      await supabase
+        .from("channelInfo")
+        .update({ subscribers: newSubscribers })
+        .eq("channelRef", uid);
+      setUpdatedSubscribers(newSubscribers?.length);
+      setIsSubscribed(false);
     }, 500);
   };
 
-  const Subscribe = (setSubscribed) => {
-    setTimeout(() => {
-      setSubscribed(true);
+  const Subscribe = (setUpdatedSubscribers, setIsSubscribed, uid) => {
+    if (!currentChannel || currentChannel?.uid === uid) return;
+    setTimeout(async () => {
+      const { data } = await supabase
+        .from("channelInfo")
+        .select()
+        .eq("channelRef", uid);
+      const newSubscribers = [...data[0]?.subscribers, currentChannel?.uid];
+      await supabase
+        .from("channelInfo")
+        .update({ subscribers: newSubscribers })
+        .eq("channelRef", uid);
+      setUpdatedSubscribers(newSubscribers?.length);
+      setIsSubscribed(true);
     }, 500);
   };
 
@@ -467,11 +495,13 @@ export const ChannelStateProvider = ({ children }) => {
     return videoDetails[0];
   };
 
-  const fetchLikedVideos = (videos) => {
-    const data = videos.filter((video) =>
-      video.likes.includes(currentChannel.uid)
+  const fetchLikedVideos = async () => {
+    const { data: videos } = await supabase.from("videos").select();
+    console.log(videos);
+    const likedVideos = videos?.filter((video) =>
+      video?.likes?.includes(currentChannel?.uid)
     );
-    setLikedVideos(data);
+    setLikedVideos(likedVideos);
   };
 
   const GetUid = () => {

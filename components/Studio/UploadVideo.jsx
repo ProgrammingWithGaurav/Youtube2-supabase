@@ -81,7 +81,7 @@ const UploadVideo = () => {
               thumbnail: thumbnailUrl + path,
               timestamp: new Date(),
               title: name,
-              description: ``,
+              description: '',
               duration: Math.round(duration),
               type: "Entertainment",
               likes: [],
