@@ -145,7 +145,7 @@ export const StateProvider = ({ children }) => {
       icon: <RectangleStackIcon className="icon" />,
       activeIcon: <ActiveRectangleStackIcon className="icon" />,
       onClick: () => {
-        router.push("/");
+        router.push("/feed/subscriptions");
       },
     },
     {
