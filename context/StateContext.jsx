@@ -76,6 +76,7 @@ export const StateProvider = ({ children }) => {
       icon: <UserCircleIcon className="icon" />,
       onClick: (channelName) => {
         router.push(`/${channelName}`);
+        window.location.reload();
       },
     },
     {

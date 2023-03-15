@@ -3,6 +3,7 @@ import {
   ChevronDownIcon,
   ChevronRightIcon,
   MagnifyingGlassIcon,
+  CameraIcon
 } from "@heroicons/react/24/outline";
 import React, { useEffect, useRef, useState } from "react";
 import { useStateContext } from "../context/StateContext";
@@ -10,6 +11,7 @@ import Tooltip from "./Tooltip";
 import { numify } from "numify";
 import { useChannelState } from "../context/ChannelState";
 import { supabase } from "../SupabaseClient";
+
 
 const ChannelHeader = () => {
   const [channelInfo, setChannelInfo] = useState({
@@ -33,12 +35,13 @@ const ChannelHeader = () => {
     setActiveChannel,
     activeChannel
   } = useStateContext();
-  const { Subscribe, UnSubscribe, currentChannel } = useChannelState();
+  const { Subscribe, UnSubscribe, currentChannel,changeChanneImage } = useChannelState();
   const [updatedSubscribers, setUpdatedSubscribers] = useState(
     channelInfo?.subscribers?.length
   );
   const [isSubscribed, setIsSubscribed] = useState(false);
   const scrollRef = useRef();
+  const channelImageRef = useRef();
 
   useEffect(() => {
     const getData = async () => {
@@ -93,6 +96,8 @@ const ChannelHeader = () => {
   const { channelSearch, setChannelSearch } = useChannelState();
   const inputRef = useRef();
   const [isInput, setIsInput] = useState(false);
+  const [newChannelImage, setNewChannelImage] = useState(channelImage);
+  console.log(channelImage, newChannelImage)
 
   return (
     <div className="scrollbar overflow-x-hidden pl-10">
@@ -105,7 +110,7 @@ const ChannelHeader = () => {
         <div className="absolute right-2 cursor-pointer bottom-2 gap-4 bg-white dark:bg-black/90 p-2 rounded-lg flex justify-between items-center">
           <div className="flex items-center gap-1">
             <img
-              src={channelImage}
+              src={newChannelImage}
               className="w-4 h-4 rounded-full"
               alt="profile picture"
             />
@@ -133,11 +138,19 @@ const ChannelHeader = () => {
         </div>
       </div>
       <div className="flex items-center w-screen px-10 my-4">
+        <div className='w-20 h-20 relative group flex items-center justify-center overflow-hidden rounded-full'>
         <img
-          src={channelImage}
+          src={newChannelImage}
           alt="channel Profile Image"
-          className="w-20 h-20 rounded-full"
+          className="w-20 h-20 rounded-full cursor-pointer group-active:opacity-80"
         />
+        {currentChannel?.uid === uid &&
+        <>
+        <CameraIcon onClick={() => channelImageRef?.current?.click()} className='icon hidden z-[100000] group-hover:block absolute flex-1 p-8 w-24 h-24 bg-neutral-900/30 dark:bg-white/10 text-white'/>
+        <input type='file' accept='images/*' className='w-0' ref={channelImageRef} onChange={(e) => changeChanneImage(setNewChannelImage, e)}/>
+</>
+}
+        </div>
         <div className="lg:w-10/12 flex flex-col w-8/12 ml-4">
           <span className="font-semibold dark:text-white text-2xl">
             {channelDisplayName}

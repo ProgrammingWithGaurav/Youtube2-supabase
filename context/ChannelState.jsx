@@ -289,6 +289,26 @@ export const ChannelStateProvider = ({ children }) => {
     video.setAttribute("muted", "true");
   };
 
+  const changeChanneImage = async (setNewChannelImage,e) => {
+  try {
+    const avatarFile = e.target.files[0]
+    const location = GetUid();
+    const { data, error } = await supabase
+    .storage
+    .from('channel-images')
+    .upload(location, avatarFile, {
+      cacheControl: '3600',
+      upsert: true
+    })
+    const {path} = data;
+    const channelImage = `https://lumsrpmlumtfpbbafpug.supabase.co/storage/v1/object/public/channel-images/${path}`;
+    setNewChannelImage(channelImage);
+    setCurrentChanne({...currentChannel, channelImage: channelImage})
+    await supabase.from('channels').update({channelImage: channelImage}).eq('uid', currentChannel?.uid)
+    e.target.value= '';
+  } catch{err => console.log(err)}
+}
+
   const channelSearches = [
     "hello world",
     "programming",
@@ -593,6 +613,7 @@ export const ChannelStateProvider = ({ children }) => {
         setThumbnailDialog,
         handleLogin,
         getVideoThumbnail,
+        changeChanneImage
       }}
     >
       {children}
