@@ -6,17 +6,28 @@ import { supabase } from "../../SupabaseClient";
 
 const ChannelAbout = () => {
   const {
-    activeChannel: { timestamp:joinedDate, views, description, location, uid },
+    activeChannel: { timestamp:joinedDate, description, location, uid },
   } = useStateContext();
 
   const [socialLinks, setSocialLinks] = useState([]);
+  const [views, setViews] = useState(0);
   useEffect(() => {
     const myFunction = async () => {
       const {data} = await supabase.from('socialLinks').select().eq('channelRef', uid);
       setSocialLinks(data);
     }
+    const fetchViews  = async () => {
+      const {data: videos} = await supabase.from('videos').select().eq('channelRef', uid);
+      const views = [];
+      videos.map(video => {
+        video?.views?.map(view => views.push(view))
+      })
+      setViews(views?.length);
+    }
     myFunction();
+    fetchViews();
   }, [])
+  
   return (
     <div className="w-full flex items-start justify-between p-4 mt-10 dark:text-white h-screen">
       <div className="w-9/12 mr-8 flex flex-col">

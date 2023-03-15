@@ -2,15 +2,15 @@ import React, { useState, useEffect } from "react";
 import Masonry from "react-masonry-css";
 import { useChannelState } from "../../context/ChannelState";
 import { useStateContext } from "../../context/StateContext";
+import {supabase} from '../../SupabaseClient';
 import Video from "../Video";
 
 const ChannelHome = () => {
   const {
-    videos,
     setVideos,
     activeChannel: { channelName, uid },
   } = useStateContext();
-  const { channelSearch, setChannelSearch } = useChannelState();
+  const { channelSearch, setChannelSearch, fetchChannelVideos } = useChannelState();
   const [videoFilter, setVideoFilter] = useState("Recently Uploaded");
   const videoFilters = [
     {
@@ -33,21 +33,20 @@ const ChannelHome = () => {
   const [channelVideos, setChannelVideos] = useState([]);
   const {fetchChannelDetails} = useChannelState();
 
-  const handlePopularVideos = () => {
-    const channelVideos = videos.filter(
-      (video) => video?.channelRef === uid
-    );
+  const handlePopularVideos =async () => {
+    const {data: videos} = await supabase.from('videos').select().eq('channelRef', uid);
     setChannelVideos(
-      channelVideos.sort(
+      videos.sort(
         (video1, video2) => parseFloat(video2.views) - parseFloat(video1.views)
       )
     );
+    console.log( videos.sort(
+      (video1, video2) => parseFloat(video2.views?.length) - parseFloat(video1.views?.length)
+    ))
   };
 
-  const handleRecentlyPosted = () => {
-    const channelVideos = videos.filter(
-      (video) => video?.channelName === channelName
-    );
+  const handleRecentlyPosted = async () => {
+    const {data: channelVideos} = await supabase.from('videos').select().eq('channelRef', uid);
     channelVideos.length > 1 &&
     setChannelVideos(
       channelVideos.sort(
@@ -57,25 +56,26 @@ const ChannelHome = () => {
     );
   };
 
-  const searchChannelVideos = () => {
+  const searchChannelVideos =  async() => {
     if(channelSearch?.trim() === '') return;
-    const channelVideos = videos.filter(
-      (video) => video?.channelRef === uid
+    const myFunction = async () => {
+      const channelVideos = await fetchChannelVideos(uid);
+await    setChannelVideos(
+      channelVideos?.filter((video) => video.title.toLowerCase().includes(channelSearch.toLowerCase()))
     );
-    setChannelVideos(
-      channelVideos.filter((video) => video.title.toLowerCase().includes(channelSearch.toLowerCase()))
-    );
+    }
+    myFunction();
   };
 
-  const fetchChannelVideos = () => {
-    setChannelVideos(
-      videos.filter((video) => video?.channelRef === uid)
-      );
-  }
-
   useEffect(() => {
-    channelSearch.trim() === '' ? fetchChannelVideos() : searchChannelVideos();
-  }, [videos, channelSearch]);
+    console.log(channelSearch, channelSearch?.trim()?.length)
+    const fetchVideos = async () => {
+      const channelVideos =await fetchChannelVideos(uid);
+      console.log(channelVideos)
+      await setChannelVideos(channelVideos);
+    }
+    channelSearch.trim()?.length ===0 ? fetchVideos(): searchChannelVideos();
+  }, [channelSearch]);
 
   return (
     <div className="w-full flex items-start flex-col p-4 mt-4 dark:text-white h-screen">

@@ -56,12 +56,11 @@ const VideoScreen = () => {
   const [channelDetails, setChannelDetails] = useState();
   const [subscribers, setSubscribers] = useState([]);
   const [updatedSubscribers, setUpdatedSubscribers] = useState(0);
-  const [subscribed, setSubscribed] = useState(false);
+  const [isSubscribed, setIsSubscribed] = useState();
   const [updatedLikes, setUpdatedLikes] = useState(likes?.length);
   const [comments, setComments] = useState([]);
 
 
-  // useEffect(() => {setUpdatedSubscribers(subscribers.length)}, [subscribers])
   useEffect(() => {
     const myFunction = async() => {
       const {data: comments} = await supabase.from('comments').select().eq('videoUid', uid);
@@ -77,7 +76,6 @@ const VideoScreen = () => {
   }, []);
 
   const [showDescription, setShowDescription] = useState(false);
-
   useEffect(() => {
     const myFunction = async () => {
       const { data } = await supabase
@@ -113,6 +111,21 @@ const VideoScreen = () => {
     hasLikedOrDisliked();
   }, []);
 
+  
+  useEffect(() => {
+    console.log(uid)
+    const myFunction = async () => {
+      const { data } = await supabase
+        .from("channelInfo")
+        .select()
+        .eq("channelRef", channelRef);
+      const subscribers = data[0]?.subscribers;
+      subscribers?.includes(currentChannel?.uid) && setIsSubscribed(true);
+      setUpdatedSubscribers(subscribers?.length);
+    };
+    myFunction();
+  }, []);
+
   const timeAgo = new TimeAgo("en-US");
   const router = useRouter();
 
@@ -144,14 +157,17 @@ const VideoScreen = () => {
             </span>
             <span className="dark:text-gray-400 text-xs">
               {numify(updatedSubscribers)}{" "}
-              {subscribers <= 1 ? "Subscriber" : "Subscribers"}
+              {updatedSubscribers <= 1 ? "Subscriber" : "Subscribers"}
             </span>
           </div>
 
           {currentChannel?.uid !== channelRef &&
-            (subscribed ? (
+            (isSubscribed ? (
               <div
-                onClick={() => UnSubscribe(setSubscribed)}
+                onClick={() => UnSubscribe(
+                  setUpdatedSubscribers,
+                  setIsSubscribed,
+                  channelRef)}
                 className="space-x-2 dark:hover:bg-neutral-700 mr-8 text-neutral-900 dark:text-white dark:bg-neutral-800 flex items-center py-2 px-4 bg-gray-100 text-xs rounded-full cursor-pointer font-semibold hover:bg-gray-200"
               >
                 <BellIcon className="icon p-0 w-4 h-4" />
@@ -160,7 +176,7 @@ const VideoScreen = () => {
               </div>
             ) : (
               <button
-                onClick={() => Subscribe(setSubscribed)}
+                onClick={() => Subscribe(setUpdatedSubscribers, setIsSubscribed, channelRef)}
                 className="subscribe"
               >
                 Subscribe
