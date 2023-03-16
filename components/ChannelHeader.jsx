@@ -35,13 +35,14 @@ const ChannelHeader = () => {
     setActiveChannel,
     activeChannel
   } = useStateContext();
-  const { Subscribe, UnSubscribe, currentChannel,changeChanneImage } = useChannelState();
+  const { Subscribe, UnSubscribe, currentChannel,changeChannelImage } = useChannelState();
   const [updatedSubscribers, setUpdatedSubscribers] = useState(
     channelInfo?.subscribers?.length
   );
   const [isSubscribed, setIsSubscribed] = useState(false);
   const scrollRef = useRef();
   const channelImageRef = useRef();
+  const bannerImageRef = useRef();
 
   useEffect(() => {
     const getData = async () => {
@@ -93,20 +94,28 @@ const ChannelHeader = () => {
       setChannelTab(tab);
     }, 1000);
   };
-  const { channelSearch, setChannelSearch } = useChannelState();
+  const { channelSearch, setChannelSearch, changeChannelBannerImage } = useChannelState();
   const inputRef = useRef();
   const [isInput, setIsInput] = useState(false);
   const [newChannelImage, setNewChannelImage] = useState(channelImage);
-  console.log(channelImage, newChannelImage)
+  const [newBannerImage, setNewBannerImage] = useState(channelBannerImage);
 
   return (
     <div className="scrollbar overflow-x-hidden pl-10">
-      <div className="w-full h-[35vh] relative">
+      <div className="w-full h-[35vh] relative group">
+
         <img
-          src={channelBannerImage}
+          src={newBannerImage}
           className="w-full h-full object-cover object-left-bottom"
           alt="channel banner"
         />
+        
+        {currentChannel?.uid === uid &&
+        <div className='absolute right-20 top-20'>
+        <CameraIcon onClick={() => bannerImageRef?.current?.click()} className='icon hidden z-[100000] group-hover:block absolute flex-1 p-4 w-16 h-16 bg-neutral-900/30 dark:bg-white/10 text-white'/>
+        <input type='file' accept='image/*' className='w-0' ref={bannerImageRef} onChange={(e) => changeChannelBannerImage(e, setNewBannerImage)}/>
+</div>
+}
         <div className="absolute right-2 cursor-pointer bottom-2 gap-4 bg-white dark:bg-black/90 p-2 rounded-lg flex justify-between items-center">
           <div className="flex items-center gap-1">
             <img
@@ -147,7 +156,7 @@ const ChannelHeader = () => {
         {currentChannel?.uid === uid &&
         <>
         <CameraIcon onClick={() => channelImageRef?.current?.click()} className='icon hidden z-[100000] group-hover:block absolute flex-1 p-8 w-24 h-24 bg-neutral-900/30 dark:bg-white/10 text-white'/>
-        <input type='file' accept='images/*' className='w-0' ref={channelImageRef} onChange={(e) => changeChanneImage(setNewChannelImage, e)}/>
+        <input type='file' accept='image/*' className='w-0' ref={channelImageRef} onChange={(e) => changeChannelImage(e, setNewChannelImage)}/>
 </>
 }
         </div>

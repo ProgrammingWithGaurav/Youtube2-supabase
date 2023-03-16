@@ -1,5 +1,6 @@
 import { useContext, createContext, useState } from "react";
 import { async } from "regenerator-runtime";
+import { uid } from "uid";
 import UIDGenerator from "uid-generator";
 import { supabase } from "../SupabaseClient";
 export const ChannelState = createContext();
@@ -10,53 +11,6 @@ export const ChannelStateProvider = ({ children }) => {
   const [channelSearch, setChannelSearch] = useState("");
   const [commentOption, setCommentOption] = useState("");
   const [likedVideos, setLikedVideos] = useState([]);
-
-  // deffault channel
-  /* 
-    {
-      channelName: "Gaurav",
-      channelImage: "https://avatars.githubusercontent.com/u/88154142?v=4",
-      channelBannerImage:
-        "https://cdn.pixabay.com/photo/2017/10/31/19/05/web-design-2906159__480.jpg",
-      subscribers: 1301310301,
-      uid: "a00c3e26-aa9b-11fa-afa1-0242ac120003",
-      channelDisplayName: "Gaurav",
-      socialLinks: [
-        {
-          name: "facebook",
-          logo: "https://cdn-icons-png.flaticon.com/128/5968/5968764.png",
-          url: "http://www.facebook.com",
-        },
-        {
-          name: "instagram",
-          logo: "https://cdn-icons-png.flaticon.com/128/174/174855.png",
-          url: "http://www.instagram.com",
-        },
-        {
-          name: "twitter",
-          logo: "https://cdn-icons-png.flaticon.com/128/733/733579.png",
-          url: "http://www.twitter.com",
-        },
-      ],
-      views: 23242323232323,
-      joinedDate: new Date(),
-      description: `This is my brand new Channel`,
-      location: "United States",
-      subscriptions: [
-        "a20c3a26-aa9b-11wa-afa1-0442ac120009",
-        "a00c3e26-aa9b-11ed-afa1-0242ac120002",
-      ],
-      email: "gaurav@gmail.com",
-      playlists: [
-        {
-          name: "MyPlaylist",
-          videos: [],
-        },  {
-          name: "My Playlist 2 ",
-          videos: ["449112141"],
-        },
-      ],
-    }*/
 
   const [News, setNews] = useState([
     {
@@ -289,25 +243,48 @@ export const ChannelStateProvider = ({ children }) => {
     video.setAttribute("muted", "true");
   };
 
-  const changeChanneImage = async (setNewChannelImage,e) => {
-  try {
-    const avatarFile = e.target.files[0]
-    const location = GetUid();
-    const { data, error } = await supabase
-    .storage
-    .from('channel-images')
-    .upload(location, avatarFile, {
-      cacheControl: '3600',
-      upsert: true
-    })
-    const {path} = data;
-    const channelImage = `https://lumsrpmlumtfpbbafpug.supabase.co/storage/v1/object/public/channel-images/${path}`;
-    setNewChannelImage(channelImage);
-    setCurrentChanne({...currentChannel, channelImage: channelImage})
-    await supabase.from('channels').update({channelImage: channelImage}).eq('uid', currentChannel?.uid)
-    e.target.value= '';
-  } catch{err => console.log(err)}
-}
+  const changeChannelImage = async (e, setNewChannelImage) => {
+      const avatarImage = e.target.files[0];
+      const location = uid();
+      const { data, error } = await supabase.storage
+        .from("channel-images")
+        .upload(location, avatarImage, {
+          cacheControl: "3600",
+          upsert: false,
+        });
+      const path =  data?.path;
+      const channelImage = `https://lumsrpmlumtfpbbafpug.supabase.co/storage/v1/object/public/channel-images/${path}`;
+      setNewChannelImage(channelImage);
+      await supabase
+        .from("channels")
+        .update({ channelImage: channelImage })
+        .eq('uid', currentChannel?.uid)
+      setCurrentChannel({ ...currentChannel, channelImage: channelImage });
+      e.target.value = "";
+  };
+
+  
+
+  const changeChannelBannerImage = async (e, setNewBannerImage) => {
+    console.log('uploading....')
+    const avatarImage = e.target.files[0];
+    const location = uid();
+    const { data, error } = await supabase.storage
+      .from("channel-banner-images")
+      .upload(location, avatarImage, {
+        cacheControl: "3600",
+        upsert: false,
+      });
+    const path =  data?.path;
+    const bannerImage = `https://lumsrpmlumtfpbbafpug.supabase.co/storage/v1/object/public/channel-banner-images/${path}`;
+    setNewBannerImage(bannerImage);
+    await supabase
+      .from("channels")
+      .update({ channelBannerImage: bannerImage })
+      .eq('uid', currentChannel?.uid)
+    setCurrentChannel({ ...currentChannel, channelBannerImage: bannerImage });
+    e.target.value = "";
+};
 
   const channelSearches = [
     "hello world",
@@ -613,7 +590,8 @@ export const ChannelStateProvider = ({ children }) => {
         setThumbnailDialog,
         handleLogin,
         getVideoThumbnail,
-        changeChanneImage
+        changeChannelImage,
+        changeChannelBannerImage
       }}
     >
       {children}
