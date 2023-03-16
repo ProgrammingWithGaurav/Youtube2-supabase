@@ -11,6 +11,7 @@ import { useChannelState } from "../../context/ChannelState";
 import { useStateContext } from "../../context/StateContext";
 import { numify } from "numify";
 import Tooltip from "../Tooltip";
+import { supabase } from "../../SupabaseClient";
 
 const SubHeader = ({ Options, activeOption, setActiveOption }) => {
   const { startLoadingBar } = useChannelState();
@@ -55,12 +56,21 @@ const Video = ({
   description,
   timestamp,
   views,
-  comments,
   likes,
   dislikes,
   uid,
 }) => {
   const router = useRouter();
+  const [comments, setComments] = useState(0);
+
+  useEffect(() => {
+    
+    const fetchComments = async () => {
+      const {data:comments} = await supabase.from('comments').select().eq('videoUid',uid);
+      setComments(comments?.length);
+    }
+    fetchComments();
+  }, [])
   return (
     <tbody className="w-full border-b border-b-gray-600/20 dark:border-b-gray-200/20">
       <tr className="bg-transparent divison-bottom">
@@ -80,7 +90,9 @@ const Video = ({
                 element={
                   <p
                     className="text-bold font-semibold hover:underline"
-                    onClick={() => router.push(`/studio/video/${uid}?edit=true`)}
+                    onClick={() =>
+                      router.push(`/studio/video/${uid}?edit=true`)
+                    }
                   >
                     {title}
                   </p>
@@ -117,14 +129,14 @@ const Video = ({
         </th>
         <td className="px-6 py-4">
           <p className="flex flex-col">
-            <span className="text-bold">{timestamp?.toDateString()}</span>
+            <span className="text-bold">{new Date(timestamp)?.toDateString()}</span>
             <span className="text-xs dark:text-gray-300 text-gray-900">
               Published
             </span>
           </p>
         </td>
-        <td className="px-6 py-4">{numify(views)}</td>
-        <td className="px-6 py-4">{comments?.length}</td>
+        <td className="px-6 py-4">{numify(views?.length)}</td>
+        <td className="px-6 py-4">{comments}</td>
         <td className="px-6 py-4 text-bold">
           {likes?.length} <span className="text-gray">vs</span>{" "}
           {dislikes?.length}
@@ -136,16 +148,17 @@ const Video = ({
 
 const Videos = () => {
   const { videos } = useStateContext();
-  const { currentChannel, GetUid } = useChannelState();
-  const { uid } = currentChannel;
+  const { currentChannel, GetUid, fetchChannelVideos } = useChannelState();
   const [channelVideos, setChannelVidoes] = useState([]);
 
-  const fetchChannelVideos = () => {
-    setChannelVidoes(videos.filter((video) => video?.channelRef === uid));
+  const fetchVideos = async () => {
+    const videos = await fetchChannelVideos();
+    setChannelVidoes(videos);
+    console.log(videos)
   };
 
   useEffect(() => {
-    fetchChannelVideos();
+    fetchVideos();
   }, []);
   return (
     <div className="relative overflow-x-auto w-full">

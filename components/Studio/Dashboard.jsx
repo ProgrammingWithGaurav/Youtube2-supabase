@@ -16,6 +16,8 @@ import { useState } from "react";
 import { numify } from "numify";
 import TimeAgo from "javascript-time-ago";
 import { supabase } from "../../SupabaseClient";
+import ytDuration from "youtube-duration";
+
 
 const DashboardHeader = () => {
   const { setShowUpload } = useChannelState();
@@ -41,17 +43,27 @@ const VideoPerformance = () => {
     useChannelState();
   const [latestVideo, setLatestVideo] = useState();
   const [channelVideos, setChannelVideos] = useState([]);
+  const [comments, setComments] = useState(0);
   const router = useRouter();
 
-  // useEffect(() => {
-  //   fetchChannelVideos().then((data) => setChannelVideos(data));
-  // }, []);
+  useEffect(() => {
+    const fetchLatestVideo = async () => {
+      const {data} = await supabase.from('videos').select().eq('channelRef', currentChannel?.uid).order('timestamp', {ascending: false})
+      const videos = data;
+      setLatestVideo(videos[data?.length -1 ]);
+    }
+    fetchLatestVideo();
+  }, [])
 
   useEffect(() => {
-    const myFunction = async () => {
-      const {data} = await supabase.from('videos').select().order('timestamp', {ascending: false})
+    
+    const fetchComments = async () => {
+      const {data:comments} = await supabase.from('comments').select().eq('videoUid',latestVideo?.uid);
+      setComments(comments?.length);
     }
-  }, [])
+    fetchComments();
+
+  }, [latestVideo])
 
   function getDaysAndHoursFromOldTimestamp(oldTimestamp) {
     const currentTimestamp = new Date().getTime();
@@ -64,8 +76,10 @@ const VideoPerformance = () => {
     const hours = totalHours % 24;
     return `First ${days} days and ${hours} hours`;
   }
-  function getVideoRank(video) {
-    const sortedVideos = videos.slice().sort((a, b) => b.views - a.views);
+
+  async function getVideoRank(video) {
+    const videos = await fetchChannelVideos();
+    const sortedVideos = videos?.slice().sort((a, b) => b.views - a.views);
     const rank = sortedVideos.findIndex((v) => v === video) + 1;
     return `${rank} of ${sortedVideos.length}`;
   }
@@ -73,7 +87,7 @@ const VideoPerformance = () => {
     <div className="flex flex-col h-max dark:text-white rounded-md border dark:border-200/40 border-gray-600/40 p-4 dark:bg-neutral-800">
       <h3 className="text-bold text-lg">Latest video performance</h3>
       <img
-        src="https://avatars.githubusercontent.com/u/88154142?v=4"
+        src={latestVideo?.thumbnail}
         alt="latest video"
         className="rounded w-full h-48 my-2 object-cover"
       />
@@ -88,7 +102,9 @@ const VideoPerformance = () => {
         </p>
         <p className="flex items-center justify-between text-sm">
           <span>views</span>
-          <span className="font-semibold">{numify(23231121212)}</span>
+          {latestVideo?.views &&
+          <span className="font-semibold">{numify(latestVideo?.views?.length)}</span>
+}
         </p>
         <p className="flex items-center justify-between text-sm">
           <span>Impressions click-through rate</span>
@@ -96,7 +112,9 @@ const VideoPerformance = () => {
         </p>
         <p className="flex items-center justify-between text-sm">
           <span>Average view duration</span>
-          <span className="font-semibold">0:22</span>
+          <span className="font-semibold">
+          {ytDuration.format(`PT0M${latestVideo?.duration}S`)}
+          </span>
         </p>
       </div>
 
@@ -114,7 +132,7 @@ const VideoPerformance = () => {
           router.push("/");
         }}
       >
-        See Commments ({numify(232323232)})
+        See Commments ({numify(comments)})
       </button>
     </div>
   );

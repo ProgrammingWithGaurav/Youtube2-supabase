@@ -12,13 +12,13 @@ import { useChannelState } from "../../../context/ChannelState";
 import { useStateContext } from "../../../context/StateContext";
 import Tooltip from "../../Tooltip";
 import copy from "clipboard-copy";
+import { supabase } from "../../../SupabaseClient";
 
 const Header = ({
   uid,
   setEditedDetails,
   videoDetails,
   editedDetails,
-  hasPlaylistChanged,
 }) => {
   const router = useRouter();
   const { editDialog, setEditDialog, startLoadingBar } = useChannelState();
@@ -36,16 +36,7 @@ const Header = ({
   };
 
   const saveEditedDetails = () => {
-    if (hasPlaylistChanged) {
-      // change the video details in the server by the edited edited details
-      // steps for changing the video from a playlist to another playlist
-      // 1. filtered all the playlists not containing the video added playlist name and the playlist name from which video uid is being removed
-      // 2. fetch the video added playilst
-      // 3. fetch the playlist from video is getting removed and
-      // - filter the uid's other than the removed video uid
-      // 4/ add that uid to new video playlist
-      // 5. concat all the array
-    }
+   
   };
 
   return (
@@ -112,6 +103,7 @@ const Header = ({
 
 const PlayVideo = ({ url }) => {
   const { setToast, toast } = useStateContext();
+  
   return (
     <div className="col-span-1 flex flex-col h-max ring-gray-400/20 dark:ring-gray-100/20 ring-1 rounded-lg p-2">
       <video className="w-full rounded-md" controls>
@@ -142,30 +134,27 @@ const PlayVideo = ({ url }) => {
   );
 };
 
-const EditVideo = ({ uid, videoDetails, userPlaylists }) => {
+const EditVideo = ({ uid, videoDetails }) => {
   const { thumbnailDialog, setThumbnailDialog, GetUid } = useChannelState();
   const thumbnailRef = useRef(null);
   const [editedDetails, setEditedDetails] = useState(videoDetails);
-  const [videoPlaylist, setVideoPlaylist] = useState();
 
   useEffect(() => {
     setEditedDetails(videoDetails);
   }, [videoDetails]);
 
-  useEffect(() => {
-    setVideoPlaylist(
-      userPlaylists?.filter((playlist) => playlist?.videos?.includes(uid))[0]
-        ?.name
-    );
-  }, [userPlaylists]);
-
-  const uploadFile = (event) => {
+  const uploadFile = async (event) => {
     const file = event.target.files[0];
-    const reader = new FileReader();
-    reader.onload = () => {
-      setEditedDetails({ ...editedDetails, thumbnail: reader.result });
-    };
-    reader.readAsDataURL(file);
+    const location = GetUid();
+    const { data } = await supabase.storage
+      .from("thumbnails")
+      .upload(location, file, {
+        cacheControl: "3600",
+        upsert: false,
+      });
+    const path = data?.path;
+    const newThumbnail = `https://lumsrpmlumtfpbbafpug.supabase.co/storage/v1/object/public/thumbnails/${path}`;
+    setEditedDetails({ ...editedDetails, thumbnail: newThumbnail });
   };
   return (
     <Fragment>
@@ -174,7 +163,6 @@ const EditVideo = ({ uid, videoDetails, userPlaylists }) => {
         setEditedDetails={setEditedDetails}
         editedDetails={editedDetails}
         videoDetails={videoDetails}
-        userPlaylists={userPlaylists}
       />
       <div className="grid h-screen overflow-y-auto p-3 sm:mr-4 scrollbar lg:grid-cols-3 sm:grid-cols-1">
         <div className="col-span-2 flex flex-col mr-4">
@@ -222,7 +210,7 @@ const EditVideo = ({ uid, videoDetails, userPlaylists }) => {
             />
           </div>
 
-          <div>
+          {/* <div>
             <label
               htmlFor="playlist"
               className="block my-4 text-xl font-medium text-gray-900 dark:text-white"
@@ -242,11 +230,13 @@ const EditVideo = ({ uid, videoDetails, userPlaylists }) => {
                     {playlist?.name}
                   </option>
                 ) : (
-                  <option value={playlist?.name} key={GetUid()}>{playlist?.name}</option>
+                  <option value={playlist?.name} key={GetUid()}>
+                    {playlist?.name}
+                  </option>
                 )
               )}
             </select>
-          </div>
+          </div> */}
 
           <div className="mb-6">
             <p className="my-4 flex flex-col text-bold text-lg text-gray-900 dark:text-white">
@@ -326,27 +316,22 @@ const Edit = () => {
   const { videos } = useStateContext();
   const { currentChannel, fetchVideoDetails } = useChannelState();
 
-  const [userPlaylists, setUserPlaylists] = useState(currentChannel?.playlists);
   // Playlist containing video
   const [videoDetails, setVideoDetails] = useState();
 
   const getVideoDetails = async () => {
-    const videoDetails = await fetchVideoDetails(videos, query?.uid);
+    const videoDetails = await fetchVideoDetails(query?.uid);
     setVideoDetails(videoDetails);
   };
 
   useEffect(() => {
-    const runFunctions = async () => {
-      await getVideoDetails();
-    };
-    runFunctions();
+    getVideoDetails();
   }, []);
 
   return (
     <div className="flex-1 h-screen mt-16 p-4 w-[95vw] ml-[60px] flex flex-col">
       <EditVideo
         uid={query?.uid}
-        userPlaylists={userPlaylists}
         videoDetails={videoDetails}
       />
     </div>

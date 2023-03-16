@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 import { useContext, createContext, useState } from "react";
 import { async } from "regenerator-runtime";
 import { uid } from "uid";
@@ -208,6 +209,7 @@ export const ChannelStateProvider = ({ children }) => {
   const [videoDetailSidebar, setVideoDetailSidebar] = useState("Edit");
   const [editDialog, setEditDialog] = useState(false);
   const [thumbnailDialog, setThumbnailDialog] = useState(false);
+  const router = useRouter();
 
   const handleLogin = async () => {
     await supabase.auth.signInWithOAuth({
@@ -491,6 +493,13 @@ export const ChannelStateProvider = ({ children }) => {
       .eq("uid", uid);
     return videoDetails[0];
   };
+  
+  const deleteVideo = async(uid) => {
+    await supabase.from('videos').delete().eq('uid', uid);
+    router.push('/');
+    window.location.reload();
+    return;
+  }
 
   const fetchLikedVideos = async () => {
     const { data: videos } = await supabase.from("videos").select();

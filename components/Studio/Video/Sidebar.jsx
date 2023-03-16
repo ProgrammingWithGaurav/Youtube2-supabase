@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   ChartBarSquareIcon,
   RectangleGroupIcon,
@@ -82,8 +82,7 @@ const Sidebar = () => {
       ),
     },
   ];
-  const { isSidebar, setLoading, setLoadingProgress, videos } =
-    useStateContext();
+  const { isSidebar, setLoading, setLoadingProgress } = useStateContext();
   const {
     videoDetailSidebar,
     setVideoDetailSidebar,
@@ -91,8 +90,16 @@ const Sidebar = () => {
     fetchVideoDetails,
     startLoadingBar,
   } = useChannelState();
-  const videoDetails = fetchVideoDetails(videos, query?.uid);
+  const [videoDetails, setVideoDetails] = useState();
 
+  async function getVideoDetails() {
+    const details = await fetchVideoDetails(query?.uid);
+    setVideoDetails(details);
+  }
+
+  useEffect(() => {
+    getVideoDetails();
+  }, []);
   return (
     <div
       className={`${
@@ -107,7 +114,9 @@ const Sidebar = () => {
         <span
           className="cursor-pointer group"
           onClick={() =>
-            window.open(`${process.env.NEXT_PUBLIC_BASE_URL}/watch/${query?.uid}`)
+            window.open(
+              `${process.env.NEXT_PUBLIC_BASE_URL}/watch/${query?.uid}`
+            )
           }
         >
           <img
@@ -128,9 +137,7 @@ const Sidebar = () => {
         {isSidebar && (
           <div className="flex flex-col items-center">
             <span className="text-bold text-xs">Your Video</span>
-            <span className="text-gray text-xs">
-              {videoDetails?.title}
-            </span>
+            <span className="text-gray text-xs">{videoDetails?.title}</span>
           </div>
         )}
       </div>
@@ -159,7 +166,9 @@ const Sidebar = () => {
                 : ""
             }`}
           >
-            {videoDetailSidebar === option.name ? option.activeIcon : option.icon}
+            {videoDetailSidebar === option.name
+              ? option.activeIcon
+              : option.icon}
             {isSidebar && option.name}
           </div>
         ))}
