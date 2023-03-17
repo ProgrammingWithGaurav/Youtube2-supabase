@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useContext, createContext, useState } from "react";
+import { useContext, createContext, useState, useEffect } from "react";
 import { async } from "regenerator-runtime";
 import { uid } from "uid";
 import UIDGenerator from "uid-generator";
@@ -13,35 +13,15 @@ export const ChannelStateProvider = ({ children }) => {
   const [commentOption, setCommentOption] = useState("");
   const [likedVideos, setLikedVideos] = useState([]);
 
-  const [News, setNews] = useState([
-    {
-      image: "https://avatars.githubusercontent.com/u/88154142?v=4",
-      title: "Make your videos more impressive by this tool",
-      description: `sLorem ipsum dolor sit amet, consectetur adipisicing elit. Beatae animi aliquam est ratione cum ducimus suscipit necessitatibus? Quia, corporis architecto.`,
-      url: "https://yotuube-nextjs.netlify.app/news/helloworld",
-    },
-    {
-      image:
-        "https://cdn.pixabay.com/photo/2023/01/31/05/59/zebra-7757193_640.jpg",
-      title: "Make your videos more ✅",
-      description: `sLorem ipsum dolor sit amet, consectetur adipisicing elit. Beatae animi aliquam est ratione cum ducimus suscipit necessitatibus? Quia, corporis architecto.`,
-      url: "https://yotuube-nextjs.netlify.app/news/helloworld",
-    },
-    {
-      image:
-        "https://cdn.pixabay.com/photo/2023/01/05/22/35/flower-7700011_640.jpg",
-      title: "Make your videos more impressive 🌟🌟🙂",
-      description: `Check out this powerful tool for the Youtube SEO`,
-      url: "https://yotuube-nextjs.netlify.app/news/helloworld",
-    },
-    {
-      image:
-        "https://cdn.pixabay.com/photo/2023/02/13/05/58/doodle-7786568__340.png",
-      title: "Make your videos more impressive by this tool",
-      description: `sLorem ipsum dolor sit amet, consectetur adipisicing elit. Beatae animi aliquam est ratione cum ducimus suscipit necessitatibus? Quia, corporis architecto.`,
-      url: "https://yotuube-nextjs.netlify.app/news/helloworld",
-    },
-  ]);
+  const [News, setNews] = useState([]);
+
+  useEffect(() => {
+    const fetchNews = async () => {
+      const {data}= await supabase.from('news').select();
+      setNews(data);
+    };
+    fetchNews();
+  },[])
 
   const [Ideas, setIdeas] = useState([
     {

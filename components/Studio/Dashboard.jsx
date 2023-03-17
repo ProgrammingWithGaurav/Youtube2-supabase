@@ -351,7 +351,7 @@ const ChannelAnalytics = () => {
 const Ideas = () => {
   const { News, Ideas, currentChannel } = useChannelState();
   const [index, setIndex] = useState(1);
-  const [activeNews, setActiveNews] = useState(News[0]);
+  const [activeNews, setActiveNews] = useState(News?.length > 0 && News[0]);
   const [channelIdeas, setChannelIdeas] = useState();
   const [showMenu, setShowMenu] = useState(false);
   useEffect(() => {
@@ -456,8 +456,8 @@ const Dashboard = () => {
       <DashboardHeader />
       <div className="grid my-3  gap-2 lg:grid-cols-3 md:grid-cols-2 lg:pr-0 pr-10 sm:grid-cols-1">
         <VideoPerformance />
-        {/* <ChannelAnalytics /> 
-        <Ideas />  */}
+        {/* <ChannelAnalytics /> */}
+        {/* <Ideas />   */}
       </div>
     </div>
   );

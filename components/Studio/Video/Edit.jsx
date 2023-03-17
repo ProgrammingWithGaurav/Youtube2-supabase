@@ -14,12 +14,7 @@ import Tooltip from "../../Tooltip";
 import copy from "clipboard-copy";
 import { supabase } from "../../../SupabaseClient";
 
-const Header = ({
-  uid,
-  setEditedDetails,
-  videoDetails,
-  editedDetails,
-}) => {
+const Header = ({ uid, setEditedDetails, videoDetails, editedDetails }) => {
   const router = useRouter();
   const { editDialog, setEditDialog, startLoadingBar } = useChannelState();
   const { setLoading, setLoadingProgress } = useStateContext();
@@ -30,13 +25,23 @@ const Header = ({
   };
 
   const resetEditedDetails = () => {
-    startLoadingBar(setLoading, setLoadingProgress, () =>
-      setEditedDetails(videoDetails)
-    );
+    const getPreviousDetails = async () => {
+      const { data } = await supabase.from("videos").select().eq("uid", uid);
+      console.log(data)
+      setEditedDetails(data[0]);
+    };
+    startLoadingBar(setLoading, setLoadingProgress, () => getPreviousDetails());
   };
 
-  const saveEditedDetails = () => {
-   
+  const saveEditedDetails = async () => {
+    const updateNewDetails = async () => {
+      const { data } = await supabase
+        .from("videos")
+        .update({ ...editedDetails }).select()
+        .eq("uid", uid);
+      setEditedDetails(data);
+    };
+    startLoadingBar(setLoading, setLoadingProgress, () => updateNewDetails());
   };
 
   return (
@@ -103,10 +108,16 @@ const Header = ({
 
 const PlayVideo = ({ url }) => {
   const { setToast, toast } = useStateContext();
-  
+
+  const [key, setKey] = useState("key");
+
+  useEffect(() => {
+    setKey(url);
+  }, [url]);
+
   return (
     <div className="col-span-1 flex flex-col h-max ring-gray-400/20 dark:ring-gray-100/20 ring-1 rounded-lg p-2">
-      <video className="w-full rounded-md" controls>
+      <video className="w-full rounded-md" controls key={key}>
         <source src={url} type="video/mp4" />
       </video>
       <div className="flex flex-col my-4">
@@ -138,6 +149,12 @@ const EditVideo = ({ uid, videoDetails }) => {
   const { thumbnailDialog, setThumbnailDialog, GetUid } = useChannelState();
   const thumbnailRef = useRef(null);
   const [editedDetails, setEditedDetails] = useState(videoDetails);
+  const [key, setKey] = useState('key');
+
+  useEffect(() => {
+    const newKey = GetUid();
+    setKey(newKey);
+  }, [editedDetails])
 
   useEffect(() => {
     setEditedDetails(videoDetails);
@@ -155,6 +172,7 @@ const EditVideo = ({ uid, videoDetails }) => {
     const path = data?.path;
     const newThumbnail = `https://lumsrpmlumtfpbbafpug.supabase.co/storage/v1/object/public/thumbnails/${path}`;
     setEditedDetails({ ...editedDetails, thumbnail: newThumbnail });
+    event.target.value = ''
   };
   return (
     <Fragment>
@@ -244,6 +262,7 @@ const EditVideo = ({ uid, videoDetails }) => {
             </p>
             <div className="relative w-80 h-60">
               <img
+              key={key}
                 src={editedDetails?.thumbnail}
                 className="object-cover rounded-xl w-80 h-44"
                 alt="thumbnail image"
@@ -257,7 +276,7 @@ const EditVideo = ({ uid, videoDetails }) => {
                 type="file"
                 accept="image/*"
                 ref={thumbnailRef}
-                onChange={uploadFile}
+                onChange={(e) => uploadFile(e)}
                 className="w-0 h-0"
               />
               {thumbnailDialog && (
@@ -330,10 +349,7 @@ const Edit = () => {
 
   return (
     <div className="flex-1 h-screen mt-16 p-4 w-[95vw] ml-[60px] flex flex-col">
-      <EditVideo
-        uid={query?.uid}
-        videoDetails={videoDetails}
-      />
+      <EditVideo uid={query?.uid} videoDetails={videoDetails} />
     </div>
   );
 };

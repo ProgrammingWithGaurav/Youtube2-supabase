@@ -9,19 +9,29 @@ import React, { useState } from "react";
 import { useChannelState } from "../../context/ChannelState";
 import { useStateContext } from "../../context/StateContext";
 import Tooltip from "../Tooltip";
+import { supabase } from "../../SupabaseClient";
 
 const SendFeedback = () => {
   const [checked, setChecked] = useState(false);
   const [input, setInput] = useState("");
   const { setLoadingProgress, setLoading } = useStateContext();
-  const { startLoadingBar, setBottomActiveSidebar } = useChannelState();
+  const { startLoadingBar, setBottomActiveSidebar, currentChannel } = useChannelState();
 
   const handleSubmit = () => {
+    const sendFeedback = async () => {
+      const {data, error} = await supabase.from('feedbacks').insert({
+        channelRef: currentChannel?.uid,
+        feedback: input,
+        timestamp: new Date()
+      })
+      setInput('');
+      setBottomActiveSidebar("")
+      console.log(data, error)
+    }
     startLoadingBar(
       setLoading,
       setLoadingProgress,
-      setInput(""),
-      setBottomActiveSidebar("")
+      () =>sendFeedback()
     );
   };
 

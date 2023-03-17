@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
   ChartBarSquareIcon,
-  RectangleGroupIcon,
   ChatBubbleBottomCenterIcon,
   ExclamationCircleIcon,
   CurrencyDollarIcon,
@@ -94,7 +93,7 @@ const Sidebar = () => {
 
   async function getVideoDetails() {
     const details = await fetchVideoDetails(query?.uid);
-    setVideoDetails(details);
+   await setVideoDetails(details);
   }
 
   useEffect(() => {
