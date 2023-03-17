@@ -7,16 +7,18 @@ import {
 } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
 import { useChannelState } from "../../context/ChannelState";
+import { useRouter } from "next/router";
 
 export default function VideoAutoComplete({
   searchString,
   setSearchString,
   channelVideos,
 }) {
+  const router = useRouter();
   const [filteredVideos, setFilteredVideos] = useState([]);
   const getFilteredVideos = () => {
     setFilteredVideos(
-      channelVideos.filter((video) =>
+      channelVideos?.filter((video) =>
         video?.title?.toLowerCase().includes(searchString?.toLowerCase())
       )
     );
@@ -74,7 +76,7 @@ export default function VideoAutoComplete({
               </div>
               <p className="flex flex-col">
                 <span className="text-bold text-[10px]">
-                  {timestamp?.toDateString()}
+                  {new Date(timestamp)?.toDateString()}
                 </span>
                 <span className="text-[10px] dark:text-gray-300 text-gray-900">
                   Published

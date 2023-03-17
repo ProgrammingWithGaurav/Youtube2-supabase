@@ -50,6 +50,7 @@ const VideoPerformance = () => {
     const fetchLatestVideo = async () => {
       const {data} = await supabase.from('videos').select().eq('channelRef', currentChannel?.uid).order('timestamp', {ascending: false})
       const videos = data;
+      console.log(videos)
       setLatestVideo(videos[data?.length -1 ]);
     }
     fetchLatestVideo();

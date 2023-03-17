@@ -22,7 +22,15 @@ import { useChannelState } from "../../context/ChannelState";
 const Header = () => {
   const { isSidebar, setIsSidebar, user, videos } = useStateContext();
   const { fetchChannelVideos } = useChannelState();
-  const channelVideos = fetchChannelVideos(videos);
+  const [channelVideos, setChannelVideos] = useState([]);
+  useEffect(() => {
+    const getChannelVideos = async () => {
+      const videos = await fetchChannelVideos();
+      console.log(videos)
+      await setChannelVideos(videos);
+    };
+    getChannelVideos();
+  }, []);
   const [hasFocused, setHasFocused] = useState(false);
   const [searchString, setSearchString] = useState("");
   const router = useRouter();
@@ -106,9 +114,14 @@ const Header = () => {
       </div>
       <div className="flex items-center">
         <Tooltip
-          element={<VideoCameraIcon onClick={() => {
-            router.push('/studio/?create=true')
-          }} className="clickable-icon" />}
+          element={
+            <VideoCameraIcon
+              onClick={() => {
+                router.push("/studio/?create=true");
+              }}
+              className="clickable-icon"
+            />
+          }
           hoverText="Create"
         />
         <Tooltip

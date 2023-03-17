@@ -14,12 +14,18 @@ import Tooltip from "../../Tooltip";
 import copy from "clipboard-copy";
 import { supabase } from "../../../SupabaseClient";
 
-const Header = ({ uid, setEditedDetails, videoDetails, editedDetails }) => {
+const Header = ({
+  uid,
+  setEditedDetails,
+  videoDetails,
+  url,
+  editedDetails,
+}) => {
   const router = useRouter();
   const { editDialog, setEditDialog, startLoadingBar } = useChannelState();
   const { setLoading, setLoadingProgress } = useStateContext();
-  const Delete = () => {
-    console.log("deleted the video ...");
+  const Delete = async () => {
+    await supabase.from("videos").delete().eq("uid", uid);
     setEditDialog(false);
     router.push("/studio?content=true");
   };
@@ -27,7 +33,7 @@ const Header = ({ uid, setEditedDetails, videoDetails, editedDetails }) => {
   const resetEditedDetails = () => {
     const getPreviousDetails = async () => {
       const { data } = await supabase.from("videos").select().eq("uid", uid);
-      console.log(data)
+      console.log(data);
       setEditedDetails(data[0]);
     };
     startLoadingBar(setLoading, setLoadingProgress, () => getPreviousDetails());
@@ -37,7 +43,8 @@ const Header = ({ uid, setEditedDetails, videoDetails, editedDetails }) => {
     const updateNewDetails = async () => {
       const { data } = await supabase
         .from("videos")
-        .update({ ...editedDetails }).select()
+        .update({ ...editedDetails })
+        .select()
         .eq("uid", uid);
       setEditedDetails(data);
     };
@@ -88,12 +95,12 @@ const Header = ({ uid, setEditedDetails, videoDetails, editedDetails }) => {
               className="flex items-center gap-4 click-show cursor-pointer hover:bg-gray-100 rounded-xl px-2 py-1 dark:hover:bg-white/10"
             >
               <ArrowDownTrayIcon className="icon" />
-              <a download href={`${process.env.NEXT_PUBLIC_BASE_URL}`}>
+              <a href={`${url}`} download>
                 <span className="lg:block hidden">Download</span>
               </a>
             </p>
             <p
-              onClick={Delete}
+              onClick={() => Delete()}
               className="flex items-center gap-4 click-show cursor-pointer hover:bg-gray-100 rounded-xl px-2 py-1 dark:hover:bg-white/10"
             >
               <TrashIcon className="icon" />
@@ -149,12 +156,12 @@ const EditVideo = ({ uid, videoDetails }) => {
   const { thumbnailDialog, setThumbnailDialog, GetUid } = useChannelState();
   const thumbnailRef = useRef(null);
   const [editedDetails, setEditedDetails] = useState(videoDetails);
-  const [key, setKey] = useState('key');
+  const [key, setKey] = useState("key");
 
   useEffect(() => {
     const newKey = GetUid();
     setKey(newKey);
-  }, [editedDetails])
+  }, [editedDetails]);
 
   useEffect(() => {
     setEditedDetails(videoDetails);
@@ -172,11 +179,12 @@ const EditVideo = ({ uid, videoDetails }) => {
     const path = data?.path;
     const newThumbnail = `https://lumsrpmlumtfpbbafpug.supabase.co/storage/v1/object/public/thumbnails/${path}`;
     setEditedDetails({ ...editedDetails, thumbnail: newThumbnail });
-    event.target.value = ''
+    event.target.value = "";
   };
   return (
     <Fragment>
       <Header
+        url={editedDetails?.url}
         uid={uid}
         setEditedDetails={setEditedDetails}
         editedDetails={editedDetails}
@@ -262,7 +270,7 @@ const EditVideo = ({ uid, videoDetails }) => {
             </p>
             <div className="relative w-80 h-60">
               <img
-              key={key}
+                key={key}
                 src={editedDetails?.thumbnail}
                 className="object-cover rounded-xl w-80 h-44"
                 alt="thumbnail image"
