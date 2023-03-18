@@ -3,14 +3,14 @@ import { useStateContext } from "../context/StateContext";
 import CataegoriesBar from "./CataegoriesBar";
 import Masonry from "react-masonry-css";
 import Video from "./Video";
+import { supabase } from "../SupabaseClient";
 
 const Home = () => {
+  const [videos, setVideos] = useState([]);
   const {
     Cataegories,
     activeCataegory,
-    videos,
     searchString,
-    setVideos,
     setActiveCataegory,
     setLoading,
     setLoadingProgress,
@@ -23,37 +23,54 @@ const Home = () => {
   };
 
   useEffect(() => {
-    if (searchString === "") setVideos(videos);
-    setLoadingProgress(70);
-    setLoading(true);
-    setTimeout(() => {
-      const newVideos = videos?.filter((video) =>
-        video?.title?.toLowerCase().includes(searchString.toLowerCase())
-      );
-      setLoadingProgress(90);
-      setLoading(false);
-      setLoadingProgress(100);
-    }, [1000]);
+    const myFunction = async () => {
+      if (searchString === "") {
+        const { data: videos } = await supabase.from("videos").select();
+        setVideos(videos);
+      } else {
+        setLoadingProgress(70);
+        setLoading(true);
+        setTimeout(async () => {
+          const { data: videos } = await supabase.from("videos").select();
+          const newVideos = await videos?.filter((video) =>
+            video?.title?.toLowerCase().includes(searchString.toLowerCase())
+          );
+          setVideos(newVideos);
+          setLoadingProgress(90);
+          setLoading(false);
+          setLoadingProgress(100);
+        }, [1000]);
+      }
+    };
+    myFunction();
   }, [searchString]);
 
-  // useEffect(() => {
-  //   if(activeCataegory === 'All') setVideos(videos);
-  //   setLoadingProgress(70);
-  //   setLoading(true);
-  //   setTimeout(() => {
-  //     const newVideos = videos?.filter((video) =>
-  //       video?.type?.includes(activeCataegory.toLowerCase())
-  //     );
-  //     setLoadingProgress(90);
-  //     setNewVideos(newVideos);
-  //     setLoading(false);
-  //     setLoadingProgress(100);
-  //   }, [1000]);
-  // }, [activeCataegory])
-
-  // useEffect(() => {setNewVideos(videos)}, [])
-
-  
+  useEffect(() => {
+    const myFunction = async () => {
+      if (activeCataegory === "All") {
+        const { data: videos } = await supabase.from("videos").select();
+        setVideos(videos);
+        console.log('setted videos....')
+      }
+      setLoadingProgress(70);
+      setLoading(true);
+      setTimeout(async () => {
+        if(activeCataegory === 'All') {
+        setLoadingProgress(100);
+          return;
+        };
+        const { data: videos } = await supabase.from("videos").select();
+        const newVideos = videos?.filter((video) =>
+          video?.type?.toLowerCase().startsWith(activeCataegory.toLowerCase())
+        );
+        setVideos(newVideos);
+        setLoadingProgress(90);
+        setLoading(false);
+        setLoadingProgress(100);
+      }, [1000]);
+    };
+    myFunction();
+  }, [activeCataegory]);
 
   return (
     <div className="flex-1">

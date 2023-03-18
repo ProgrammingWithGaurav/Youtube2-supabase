@@ -131,6 +131,7 @@ export const StateProvider = ({ children }) => {
       activeIcon: <ActiveHomeIcon className="icon" />,
       onClick: () => {
         router.push("/");
+        setSearchString('');
       },
     },
     {
