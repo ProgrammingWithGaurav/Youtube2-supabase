@@ -23,7 +23,7 @@ export default function Video({
 }) {
   const { VideoOptions, videoOption, setVideoOption } = useStateContext();
   const [channelDetails, setChannelDetails] = useState();
-  const { fetchChannelDetails } = useChannelState();
+  const { fetchChannelDetails , currentChannel} = useChannelState();
   
   const router = useRouter();
 
@@ -93,7 +93,7 @@ export default function Video({
               <div
                 onClick={() => {
                   setVideoOption("");
-                  option.onClick(uid, title, thumbnail);
+                  option.onClick(uid, title, thumbnail, currentChannel?.uid);
                 }}
                 className={`flex rounded-xl dark:hover:bg-white/20 items-center cursor-pointer transition my-2 hover:bg-gray-100 active:bg-gray-200`}
                 key={option.name}

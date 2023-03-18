@@ -170,7 +170,7 @@ export const StateProvider = ({ children }) => {
       icon: <SwatchIcon className="icon" />,
       activeIcon: <ActiveSwatchIcon className="icon" />,
       onClick: () => {
-        router.push("/");
+        router.push("/playlist/WL");
       },
     },
     {
@@ -296,8 +296,12 @@ export const StateProvider = ({ children }) => {
     {
       name: "Save to Watch Later",
       icon: <ClockIcon className="icon" />,
-      onClick: () => {
-        console.log("saved video to watch later");
+      onClick:async  (uid, title, thumbnail,channelRef) => {
+        const {data} = await supabase.from('channelInfo').select().eq('channelRef',channelRef);
+        let videosUid = data[0]?.watchLater;
+        if(videosUid?.includes(uid)) return;
+        videosUid?.push(uid);
+        await supabase.from('channelInfo').update({watchLater: videosUid}).eq('channelRef', channelRef);
       },
     },
     {

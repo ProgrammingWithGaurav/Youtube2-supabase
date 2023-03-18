@@ -12,16 +12,17 @@ export const ChannelStateProvider = ({ children }) => {
   const [channelSearch, setChannelSearch] = useState("");
   const [commentOption, setCommentOption] = useState("");
   const [likedVideos, setLikedVideos] = useState([]);
+  const [watchLaterVideos, setWatchLaterVideos] = useState([]);
 
   const [News, setNews] = useState([]);
 
   useEffect(() => {
     const fetchNews = async () => {
-      const {data}= await supabase.from('news').select();
+      const { data } = await supabase.from("news").select();
       setNews(data);
     };
     fetchNews();
-  },[])
+  }, []);
 
   const [Ideas, setIdeas] = useState([
     {
@@ -226,29 +227,27 @@ export const ChannelStateProvider = ({ children }) => {
   };
 
   const changeChannelImage = async (e, setNewChannelImage) => {
-      const avatarImage = e.target.files[0];
-      const location = uid();
-      const { data, error } = await supabase.storage
-        .from("channel-images")
-        .upload(location, avatarImage, {
-          cacheControl: "3600",
-          upsert: false,
-        });
-      const path =  data?.path;
-      const channelImage = `https://lumsrpmlumtfpbbafpug.supabase.co/storage/v1/object/public/channel-images/${path}`;
-      setNewChannelImage(channelImage);
-      await supabase
-        .from("channels")
-        .update({ channelImage: channelImage })
-        .eq('uid', currentChannel?.uid)
-      setCurrentChannel({ ...currentChannel, channelImage: channelImage });
-      e.target.value = "";
+    const avatarImage = e.target.files[0];
+    const location = uid();
+    const { data, error } = await supabase.storage
+      .from("channel-images")
+      .upload(location, avatarImage, {
+        cacheControl: "3600",
+        upsert: false,
+      });
+    const path = data?.path;
+    const channelImage = `https://lumsrpmlumtfpbbafpug.supabase.co/storage/v1/object/public/channel-images/${path}`;
+    setNewChannelImage(channelImage);
+    await supabase
+      .from("channels")
+      .update({ channelImage: channelImage })
+      .eq("uid", currentChannel?.uid);
+    setCurrentChannel({ ...currentChannel, channelImage: channelImage });
+    e.target.value = "";
   };
 
-  
-
   const changeChannelBannerImage = async (e, setNewBannerImage) => {
-    console.log('uploading....')
+    console.log("uploading....");
     const avatarImage = e.target.files[0];
     const location = uid();
     const { data, error } = await supabase.storage
@@ -257,16 +256,16 @@ export const ChannelStateProvider = ({ children }) => {
         cacheControl: "3600",
         upsert: false,
       });
-    const path =  data?.path;
+    const path = data?.path;
     const bannerImage = `https://lumsrpmlumtfpbbafpug.supabase.co/storage/v1/object/public/channel-banner-images/${path}`;
     setNewBannerImage(bannerImage);
     await supabase
       .from("channels")
       .update({ channelBannerImage: bannerImage })
-      .eq('uid', currentChannel?.uid)
+      .eq("uid", currentChannel?.uid);
     setCurrentChannel({ ...currentChannel, channelBannerImage: bannerImage });
     e.target.value = "";
-};
+  };
 
   const channelSearches = [
     "hello world",
@@ -473,21 +472,36 @@ export const ChannelStateProvider = ({ children }) => {
       .eq("uid", uid);
     return videoDetails[0];
   };
-  
-  const deleteVideo = async(uid) => {
-    await supabase.from('videos').delete().eq('uid', uid);
-    router.push('/');
+
+  const deleteVideo = async (uid) => {
+    await supabase.from("videos").delete().eq("uid", uid);
+    router.push("/");
     window.location.reload();
     return;
-  }
+  };
 
   const fetchLikedVideos = async () => {
     const { data: videos } = await supabase.from("videos").select();
-    console.log(videos);
     const likedVideos = videos?.filter((video) =>
       video?.likes?.includes(currentChannel?.uid)
     );
     setLikedVideos(likedVideos);
+  };
+
+  const fetchWatchLaterVideos = async () => {
+    const { data } = await supabase
+      .from("channelInfo")
+      .select()
+      .eq("channelRef", currentChannel?.uid);
+    if (data[0]?.watchLater?.length === 0) return;
+    const videosUid = data[0]?.watchLater;
+    if (videosUid?.length > 0) {
+      const { data: videos } = await supabase.from("videos").select();
+      const watchLaterVideos = videos?.filter((video) =>
+        videosUid.includes(video?.uid)
+      );
+      setWatchLaterVideos(watchLaterVideos);
+    }
   };
 
   const GetUid = () => {
@@ -580,7 +594,9 @@ export const ChannelStateProvider = ({ children }) => {
         handleLogin,
         getVideoThumbnail,
         changeChannelImage,
-        changeChannelBannerImage
+        changeChannelBannerImage,
+        fetchWatchLaterVideos,
+        watchLaterVideos,
       }}
     >
       {children}
