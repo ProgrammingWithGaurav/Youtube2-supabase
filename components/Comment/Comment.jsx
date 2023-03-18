@@ -31,6 +31,7 @@ const Comment = ({
   channelCommented,
   channelRef,
   uid,
+  videoUid,
 }) => {
   const timeAgo = new TimeAgo("en-US");
   const router = useRouter();
@@ -40,14 +41,16 @@ const Comment = ({
     setCommentOption,
     commentOption,
     fetchChannelDetails,
-    currentChannel
+    currentChannel,
+    fetchVideoDetails,
   } = useChannelState();
   const [like, setLike] = useState({ like: true, dislike: false });
   const [channelDetails, setChannelDetails] = useState();
   const [updatedLikes, setUpdatedLikes] = useState(likes?.length);
   const [showReply, setShowReply] = useState(false);
   const [Replies, setReplies] = useState([]);
-  
+  const [creatorDetails, setCreatorDetails] = useState([]);
+  const [hasGotHeart, setHasGotHeart] = useState(gotHeart);
 
   useEffect(() => {
     const myFunction = async () => {
@@ -59,6 +62,22 @@ const Comment = ({
     };
     myFunction();
   }, []);
+
+  useEffect(() => {
+    const myFunction = async () => {
+      const { data: details } = await supabase
+        .from("videos")
+        .select()
+        .eq("uid", videoUid);
+      const { data: channelInfo } = await supabase
+        .from("channelInfo")
+        .select()
+        .eq("channelRef", details[0]?.channelRef);
+      console.log(details, channelInfo, channelInfo?.channelRef === channelRef);
+      setCreatorDetails(channelInfo[0]);
+    };
+    myFunction();
+  });
 
   useEffect(() => {
     fetchChannelDetails(channelRef).then((data) => setChannelDetails(data));
@@ -77,9 +96,14 @@ const Comment = ({
   const [loading, setLoading] = useState(false);
   const [replyInput, setReplyInput] = useState(false);
 
+  const removeComment = async () => {
+    await supabase.from("comments").delete().eq("uid", uid);
+  };
 
-  const removeComment = () => {};
-
+  const Heart = async () => {
+    setHasGotHeart(true);
+    await supabase.from("comments").update({ gotHeart: true }).eq("uid", uid);
+  };
 
   return (
     <div
@@ -89,7 +113,9 @@ const Comment = ({
       <div className="flex items-center relative w-full">
         <img
           onClick={() => router.push(`/${channelDetails?.channelName}`)}
-          src={channelDetails?.channelImage || process.env.NEXT_PUBLIC_NO_IMAGE_URL}
+          src={
+            channelDetails?.channelImage || process.env.NEXT_PUBLIC_NO_IMAGE_URL
+          }
           alt="user image"
           className="clickable-icon w-16 h-16"
         />
@@ -108,12 +134,17 @@ const Comment = ({
           </p>
           <p className="text-sm flex-1">{comment}</p>
         </div>
-        <EllipsisVerticalIcon
-          className="clickable-icon absolute right-4"
-          onClick={() =>
-            commentOption === "" ? setCommentOption(uid) : setCommentOption("")
-          }
-        />
+        {/* if the logged in user has commented then only comment can be edited */}
+        {channelRef === currentChannel?.uid && (
+          <EllipsisVerticalIcon
+            className="clickable-icon absolute right-4"
+            onClick={() =>
+              commentOption === ""
+                ? setCommentOption(uid)
+                : setCommentOption("")
+            }
+          />
+        )}
         {uid === commentOption && (
           <div className="flex flex-col text-xs bg-white dark:bg-neutral-900 shadow-sm p-1 rounded absolute top-4 right-16 z-[10000]">
             <span className="flex items-center cursor-pointer hover:bg-gray-100 dark:hover:bg-white/10 rounded-xl px-2">
@@ -163,12 +194,15 @@ const Comment = ({
               }
             />
           )}
-          {gotHeart && (
+          {hasGotHeart && (
             <Tooltip
               element={
                 <span className="relative ml-8 cursor-pointer">
                   <img
-                    src={channelDetails?.channelImage || process.env.NEXT_PUBLIC_NO_IMAGE_URL} 
+                    src={
+                      channelDetails?.channelImage ||
+                      process.env.NEXT_PUBLIC_NO_IMAGE_URL
+                    }
                     className="w-6 h-6 rounded-full cursor-pointer p-1"
                     alt="channel heart"
                   />
@@ -176,6 +210,21 @@ const Comment = ({
                 </span>
               }
               hoverText={`🤍 by ${channelCommented}`}
+              width="w-36"
+            />
+          )}
+
+          {creatorDetails?.channelRef === currentChannel?.uid && (
+            <Tooltip
+              element={
+                <span
+                  className="relative ml-8 cursor-pointer"
+                  onClick={() => Heart()}
+                >
+                  <HeartIcon className="w-4 h-4 text-gray-400 absolute -bottom-1 -right-1" />
+                </span>
+              }
+              hoverText={`🤍 Heart ?`}
               width="w-36"
             />
           )}
