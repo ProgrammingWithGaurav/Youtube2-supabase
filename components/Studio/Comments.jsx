@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useChannelState } from '../../context/ChannelState';
 import { supabase } from '../../SupabaseClient';
 import { uid } from 'uid';
+import Comment from '../Comment/Comment';
 
 const Header = () => {
 
