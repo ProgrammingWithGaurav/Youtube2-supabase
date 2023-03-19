@@ -3,6 +3,7 @@ import { ArrowTrendingUpIcon, FlagIcon } from "@heroicons/react/24/outline";
 import { NumericFormat } from "react-number-format";
 import { useStateContext } from "../../context/StateContext";
 import { supabase } from "../../SupabaseClient";
+import SocialLogo from "social-logos";
 
 const ChannelAbout = () => {
   const {
@@ -64,11 +65,7 @@ const ChannelAbout = () => {
                 rel="noreferrer" 
                 className="w-6/12 flex items-center gap-2"
               >
-                <img
-                  src={link?.logo}
-                  alt="social link"
-                  className="icon p-0 w-4 h-4"
-                />
+                 <SocialLogo icon={link?.name} size={ 28 } />
                 <span className="tex-xs text-blue-500">{link?.name}</span>
               </a>
             ))}

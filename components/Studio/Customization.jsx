@@ -1,8 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { useChannelState } from "../../context/ChannelState";
 import { supabase } from "../../SupabaseClient";
-import { ClipboardIcon, PlusIcon } from "@heroicons/react/24/outline";
+import {
+  ArrowDownCircleIcon,
+  Bars2Icon,
+  ClipboardIcon,
+  PlusCircleIcon,
+  PlusIcon,
+  TrashIcon,
+} from "@heroicons/react/24/outline";
 import copy from "clipboard-copy";
+import {
+  CountryDropdown,
+  RegionDropdown,
+  CountryRegionData,
+} from "react-country-region-selector";
+import { uid } from "uid";
 
 const Header = () => {
   return (
@@ -38,12 +51,14 @@ const BasicInfo = () => {
     const { data: info1 } = await supabase
       .from("channels")
       .update({ ...channelDetails })
-      .eq("uid", currentChannel?.uid).select();
+      .eq("uid", currentChannel?.uid)
+      .select();
     const { data: info2 } = await supabase
       .from("channelInfo")
       .update({ ...channelInfo })
-      .eq("channelRef", currentChannel?.uid).select();
-      console.log(info1, info2)
+      .eq("channelRef", currentChannel?.uid)
+      .select();
+    console.log(info1, info2);
   };
 
   return (
@@ -128,8 +143,115 @@ const BasicInfo = () => {
         />
       </div>
 
-      <button 
-        className="link-btn text-center bg-blue-500 text-white w-28" onClick={() => Save()}>Publish</button>
+      <div className="flex flex-col gap-2">
+        <h2
+          htmlFor="description"
+          className="text-semibold text-gray-700 dark:text-gray-200 text-lg"
+        >
+          Location
+        </h2>
+        <CountryDropdown
+          className="py-2 px-4 text-lg bg-transparent dark:text-white border border-gray-400/40 dark:border-gray-200/40 p-2 rounded-2xl"
+          value={channelInfo?.location}
+          onChange={(val) => setChannelInfo({ ...channelInfo, location: val })}
+        />
+      </div>
+
+      <button
+        className="link-btn text-center dark:text-white bg-blue-500 text-white w-28"
+        onClick={() => Save()}
+      >
+        Publish
+      </button>
+    </div>
+  );
+};
+
+const AddNew = ({ newLink, links, setShowAddDialog, channelRef, setLinks, setNewLink }) => {
+  const Remove = () => {
+    setNewLink({ name: "", url: "" });
+    setShowAddDialog(false);
+  };
+
+  const Add = async () => {
+    const { name, url } = newLink;
+    const isCorrect = name?.trim() !== '' && url?.trim() !== '';
+    console.log(isCorrect)
+    if (isCorrect) {
+      // adding from the backend
+      await supabase.from('socialLinks').insert({
+        name: name, 
+        url: url,
+        channelRef: channelRef
+      })
+      setLinks([...links, newLink]);
+      setNewLink({ name: "", url: "" });
+      setShowAddDialog(false);
+    }
+  };
+  return (
+    <div className="flex items-center gap-2 w-full">
+      <Bars2Icon className="icon" />
+      <input
+        className="input flex-1 dark:text-gray-200"
+        placeholder="Link title (required)"
+        value={newLink?.name}
+        onChange={(e) => setNewLink({ ...newLink, name: e.target.value })}
+      />
+      <input
+        className="input flex-1 dark:text-gray-200"
+        placeholder="URL (required)"
+        value={newLink?.url}
+        onChange={(e) => setNewLink({ ...newLink, url: e.target.value })}
+      />
+      <TrashIcon className="clickable-icon" onClick={() => Remove()} />
+      <PlusCircleIcon className="clickable-icon" onClick={() => Add()} />
+    </div>
+  );
+};
+
+const Link = ({ name, url, id, setLinks }) => {
+  const [newName, setNewName] = useState(name);
+  const [newUrl, setNewUrl] = useState(url);
+  const Remove = async () => {
+    // deleting from the backend
+    await supabase.from("socialLinks").delete().eq("id", id);
+    const { data } = await supabase.from("socialLinks").select();
+    setLinks(data);
+  };
+
+  const Update = async () => {
+    // updating from the backend
+    const { data } = await supabase
+      .from("socialLinks")
+      .update({ name: newName, url: newUrl })
+      .eq("id", id)
+      .select();
+    const newData = data[0];
+    const { name, url } = newData;
+    setNewName(name);
+    setNewUrl(url);
+  };
+  return (
+    <div className="flex items-center gap-2 w-full">
+      <Bars2Icon className="icon" />
+      <input
+        className="input flex-1 dark:text-gray-200"
+        placeholder="Link title (required)"
+        value={newName}
+        onChange={(e) => setNewName(e.target.value)}
+      />
+      <input
+        className="input flex-1 dark:text-gray-200"
+        placeholder="URL (required)"
+        value={newUrl}
+        onChange={(e) => setNewUrl(e.target.value)}
+      />
+      <TrashIcon className="clickable-icon" onClick={() => Remove()} />
+      <ArrowDownCircleIcon
+        className="clickable-icon"
+        onClick={() => Update()}
+      />
     </div>
   );
 };
@@ -137,15 +259,22 @@ const BasicInfo = () => {
 const Links = () => {
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [links, setLinks] = useState();
-  const {currentChannel} = useChannelState();
+  const [newLink, setNewLink] = useState({
+    name: "",
+    url: "",
+  });
+  const { currentChannel } = useChannelState();
 
   useEffect(() => {
-    const fetchLinks = async() => {
-      const {data} = await supabase.from('links').select().eq('channelRef', currentChannel?.uid)
+    const fetchLinks = async () => {
+      const { data } = await supabase
+        .from("socialLinks")
+        .select()
+        .eq("channelRef", currentChannel?.uid);
       setLinks(data);
-    }
+    };
     fetchLinks();
-  }, [])
+  }, []);
   return (
     <div className="flex flex-col space-y-3 my-2">
       <h3 className="text-bold text-lg my-2 text-gray-700">Links</h3>
@@ -153,7 +282,27 @@ const Links = () => {
         Add links to sites you want to share with your viewers
       </span>
       <button
-        className="link-btn text-left flex items-center w-40"><PlusIcon className='icon'/> Add Link</button>
+        onClick={() => setShowAddDialog(true)}
+        className="link-btn text-left flex items-center w-40"
+      >
+        <PlusIcon className="icon" /> Add Link
+      </button>
+
+      <div className="flex flex-col gap-2 w-[85vw]">
+        {showAddDialog && (
+          <AddNew
+            newLink={newLink}
+            setNewLink={setNewLink}
+            setLinks={setLinks}
+            links={links}
+            setShowAddDialog={setShowAddDialog}
+            channelRef={currentChannel?.uid}
+          />
+        )}
+        {links?.map((link) => (
+          <Link key={uid()} setLinks={setLinks} {...link} />
+        ))}
+      </div>
     </div>
   );
 };
