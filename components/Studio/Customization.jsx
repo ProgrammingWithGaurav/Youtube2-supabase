@@ -32,19 +32,25 @@ const BasicInfo = () => {
   const { currentChannel } = useChannelState();
 
   useEffect(() => {
-    const fetchDetails = async () => {
-      const { data: info1 } = await supabase
-        .from("channels")
-        .select()
-        .eq("uid", currentChannel?.uid);
-      const { data: info2 } = await supabase
-        .from("channelInfo")
-        .select()
-        .eq("channelRef", currentChannel?.uid);
-      setChannelDetails(info1[0]);
-      setChannelInfo(info2[0]);
-    };
-    fetchDetails();
+    try {
+      const fetchDetails = async () => {
+        const { data: info1 } = await supabase
+          .from("channels")
+          .select()
+          .eq("uid", currentChannel?.uid);
+        const { data: info2 } = await supabase
+          .from("channelInfo")
+          .select()
+          .eq("channelRef", currentChannel?.uid);
+        if (info1 && info2) {
+          setChannelDetails(info1[0]);
+          setChannelInfo(info2[0]);
+        }
+      };
+      fetchDetails();
+    } catch {
+      (err) => console.log(err);
+    }
   }, []);
 
   const Save = async () => {
@@ -71,6 +77,7 @@ const BasicInfo = () => {
           Name
         </lable>
         <input
+          spellCheck={false}
           id="channelName"
           className="input dark:text-gray-200"
           value={channelDetails?.channelName}
@@ -90,6 +97,7 @@ const BasicInfo = () => {
           Display Name
         </lable>
         <input
+          spellCheck={false}
           id="channelDisplayName"
           className="input dark:text-gray-200"
           value={channelDetails?.channelDisplayName}
@@ -167,7 +175,14 @@ const BasicInfo = () => {
   );
 };
 
-const AddNew = ({ newLink, links, setShowAddDialog, channelRef, setLinks, setNewLink }) => {
+const AddNew = ({
+  newLink,
+  links,
+  setShowAddDialog,
+  channelRef,
+  setLinks,
+  setNewLink,
+}) => {
   const Remove = () => {
     setNewLink({ name: "", url: "" });
     setShowAddDialog(false);
@@ -175,15 +190,14 @@ const AddNew = ({ newLink, links, setShowAddDialog, channelRef, setLinks, setNew
 
   const Add = async () => {
     const { name, url } = newLink;
-    const isCorrect = name?.trim() !== '' && url?.trim() !== '';
-    console.log(isCorrect)
+    const isCorrect = name?.trim() !== "" && url?.trim() !== "";
     if (isCorrect) {
       // adding from the backend
-      await supabase.from('socialLinks').insert({
-        name: name, 
+      await supabase.from("socialLinks").insert({
+        name: name,
         url: url,
-        channelRef: channelRef
-      })
+        channelRef: channelRef,
+      });
       setLinks([...links, newLink]);
       setNewLink({ name: "", url: "" });
       setShowAddDialog(false);
@@ -193,12 +207,15 @@ const AddNew = ({ newLink, links, setShowAddDialog, channelRef, setLinks, setNew
     <div className="flex items-center gap-2 w-full">
       <Bars2Icon className="icon" />
       <input
+        spellCheck={false}
         className="input flex-1 dark:text-gray-200"
         placeholder="Link title (required)"
         value={newLink?.name}
         onChange={(e) => setNewLink({ ...newLink, name: e.target.value })}
       />
       <input
+        type='url'
+        spellCheck={false}
         className="input flex-1 dark:text-gray-200"
         placeholder="URL (required)"
         value={newLink?.url}
@@ -210,14 +227,18 @@ const AddNew = ({ newLink, links, setShowAddDialog, channelRef, setLinks, setNew
   );
 };
 
-const Link = ({ name, url, id, setLinks }) => {
+const Link = ({ name, url, id, setLinks, channelRef }) => {
   const [newName, setNewName] = useState(name);
   const [newUrl, setNewUrl] = useState(url);
   const Remove = async () => {
     // deleting from the backend
-    await supabase.from("socialLinks").delete().eq("id", id);
-    const { data } = await supabase.from("socialLinks").select();
-    setLinks(data);
+    const { data } = await supabase.from("socialLinks").delete().eq("id", id);
+    const { data: newLinks } = await supabase
+      .from("socialLinks")
+      .select()
+      .eq("channelRef", channelRef);
+
+    setLinks(newLinks);
   };
 
   const Update = async () => {
@@ -236,15 +257,18 @@ const Link = ({ name, url, id, setLinks }) => {
     <div className="flex items-center gap-2 w-full">
       <Bars2Icon className="icon" />
       <input
+        spellCheck={false}
         className="input flex-1 dark:text-gray-200"
         placeholder="Link title (required)"
         value={newName}
         onChange={(e) => setNewName(e.target.value)}
       />
       <input
+        spellCheck={false}
         className="input flex-1 dark:text-gray-200"
         placeholder="URL (required)"
         value={newUrl}
+        type='url'
         onChange={(e) => setNewUrl(e.target.value)}
       />
       <TrashIcon className="clickable-icon" onClick={() => Remove()} />
