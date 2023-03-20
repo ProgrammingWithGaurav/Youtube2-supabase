@@ -19,16 +19,23 @@ const NewComment = (
   gotHeart,
   channelRef,
   uid,
-  thumbnail
+  thumbnail,
+  videoUid
 ) => {
   const [channelDetails, setChannelDetails] = useState();
-  const { fetchChannelDetails } = useChannelState();
+  const [videoDetails, setVideoDetails] = useState();
+  const { fetchChannelDetails, fetchVideoDetails } = useChannelState();
   useEffect(() => {
     fetchChannelDetails(channelRef).then((data) => {
       setChannelDetails(data);
     });
+
+    const fetchDetailsOfVideo = async () => {
+      const details = await fetchVideoDetails(videoUid);
+      setVideoDetails(details);
+    };
+    fetchDetailsOfVideo();
   }, []);
-  console.log('hi')
   return (
     <div className="flex items-center justify-between w-full">
       <Comment
@@ -41,7 +48,7 @@ const NewComment = (
         uid={uid}
       />
       <img
-        src={thumbnail}
+        src={videoDetails?.thumbnail}
         alt="video thumbnail"
         className="w-20 h-12 rounded"
       />
@@ -51,23 +58,29 @@ const NewComment = (
 
 const Comments = () => {
   const [comments, setComments] = useState();
-  const { currentChannel } = useChannelState();
+  const { currentChannel, fetchChannelVideos } = useChannelState();
+
   useEffect(() => {
-    const myFunction = async () => {
-      const { data: videos } = await supabase
-        .from("videos")
-        .select()
-        .eq("channelRef", currentChannel?.uid);
-      setComments(videos);
+    const fetchComments = async () => {
+      const channelVideos = await fetchChannelVideos();
+      let videoUids = [];
+      channelVideos?.map((video) => videoUids.push(video?.uid));
+      const { data } = await supabase.from("comments").select();
+      let newComments = [];
+      data?.map((comment) => {
+        videoUids.includes(comment?.videoUid) && newComments.push(comment);
+      });
+      return newComments;
     };
-    myFunction();
+    fetchComments().then(data => {setComments(data); console.log(comments, data)});
   }, []);
+
   return (
     <div className="flex-1 h-screen mt-16 p-4 w-[95vw] ml-[60px] flex flex-col">
       <Header />
       <div className="grid my-3 gap-2 lg:grid-cols-2 md:grid-cols-1 lg:pr-0 pr-10 sm:grid-cols-1 flex-1">
         {comments?.map((comment) => (
-            console.log(comment)
+          <NewComment key={uid()} {...comment} />
         ))}
       </div>
     </div>

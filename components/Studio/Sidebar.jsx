@@ -116,7 +116,7 @@ const Sidebar = () => {
       >
         <span
           className="cursor-pointer group"
-          onClick={() => router.push(`/${currentChannel?.channelName}`)}
+          onClick={() => window.open(`${process.env.NEXT_PUBLIC_BASE_URL}/${currentChannel?.channelName}`)}
         >
           <img
             className={`rounded-full ${

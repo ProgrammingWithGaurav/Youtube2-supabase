@@ -73,11 +73,10 @@ const Comment = ({
         .from("channelInfo")
         .select()
         .eq("channelRef", details[0]?.channelRef);
-      console.log(details, channelInfo, channelInfo?.channelRef === channelRef);
       setCreatorDetails(channelInfo[0]);
     };
     myFunction();
-  });
+  }, []);
 
   useEffect(() => {
     fetchChannelDetails(channelRef).then((data) => setChannelDetails(data));
@@ -105,6 +104,14 @@ const Comment = ({
     await supabase.from("comments").update({ gotHeart: true }).eq("uid", uid);
   };
 
+  const RemoveHeart = async () => {
+    console.log(creatorDetails?.channelRef === currentChannel.uid, currentChannel.uid, creatorDetails)
+    if(creatorDetails?.channelRef === currentChannel.uid){
+      setHasGotHeart(false);
+      console.log("revemoed heart", uid);
+      await supabase.from("comments").update({ gotHeart: false }).eq("uid", uid);
+    }
+  };
   return (
     <div
       className="flex flex-col dark:text-white"
@@ -197,7 +204,10 @@ const Comment = ({
           {hasGotHeart && (
             <Tooltip
               element={
-                <span className="relative ml-8 cursor-pointer">
+                <span
+                  className="relative ml-8 cursor-pointer"
+                  onClick={() => RemoveHeart()}
+                >
                   <img
                     src={
                       channelDetails?.channelImage ||
@@ -214,20 +224,21 @@ const Comment = ({
             />
           )}
 
-          {creatorDetails?.channelRef === currentChannel?.uid && (
-            <Tooltip
-              element={
-                <span
-                  className="relative ml-8 cursor-pointer"
-                  onClick={() => Heart()}
-                >
-                  <HeartIcon className="w-4 h-4 text-gray-400 absolute -bottom-1 -right-1" />
-                </span>
-              }
-              hoverText={`🤍 Heart ?`}
-              width="w-36"
-            />
-          )}
+          {!hasGotHeart &&
+            creatorDetails?.channelRef === currentChannel?.uid && (
+              <Tooltip
+                element={
+                  <span
+                    className="relative ml-8 cursor-pointer"
+                    onClick={() => Heart()}
+                  >
+                    <HeartIcon className="w-4 h-4 text-gray-400 absolute -bottom-1 -right-1" />
+                  </span>
+                }
+                hoverText={`🤍 Heart ?`}
+                width="w-36"
+              />
+            )}
 
           <button
             onClick={() => setReplyInput(true)}
@@ -275,6 +286,7 @@ const Comment = ({
             <div className="flex flex-col space-y-2">
               {Replies?.map((reply) => (
                 <Reply
+                  creatorDetails={creatorDetails}
                   channelReplied={channelCommented}
                   {...reply}
                   key={reply?.uid}

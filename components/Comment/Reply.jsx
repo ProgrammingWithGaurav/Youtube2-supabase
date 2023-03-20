@@ -32,16 +32,18 @@ const Reply = ({
   uid,
   commentRef,
   setReplies,
+  creatorDetails,
 }) => {
   const timeAgo = new TimeAgo("en-US");
   const router = useRouter();
+  const [hasGotHeart, setHasGotHeart] = useState(gotHeart);
   const {
     Like,
     Dislike,
     setCommentOption,
     commentOption,
     fetchChannelDetails,
-    currentChannel
+    currentChannel,
   } = useChannelState();
 
   const [channelDetails, setChannelDetails] = useState();
@@ -70,6 +72,23 @@ const Reply = ({
     };
     hasLikedOrDisliked();
   }, []);
+
+  const Heart = async () => {
+    setHasGotHeart(true);
+    await supabase.from("replies").update({ gotHeart: true }).eq("uid", uid);
+  };
+
+  const RemoveHeart = async () => {
+    console.log(
+      creatorDetails?.channelRef === currentChannel.uid,
+      currentChannel.uid,
+      creatorDetails
+    );
+    if (creatorDetails?.channelRef === currentChannel.uid) {
+      setHasGotHeart(false);
+      await supabase.from("replies").update({ gotHeart: false }).eq("uid", uid);
+    }
+  };
   return (
     <div
       className="flex flex-col dark:text-white"
@@ -151,12 +170,19 @@ const Reply = ({
               }
             />
           )}
-          {gotHeart && (
+
+          {hasGotHeart && (
             <Tooltip
               element={
-                <span className="relative ml-8 cursor-pointer">
+                <span
+                  className="relative ml-8 cursor-pointer"
+                  onClick={() => RemoveHeart()}
+                >
                   <img
-                    src={channelDetails?.channelImage}
+                    src={
+                      channelDetails?.channelImage ||
+                      process.env.NEXT_PUBLIC_NO_IMAGE_URL
+                    }
                     className="w-6 h-6 rounded-full cursor-pointer p-1"
                     alt="channel heart"
                   />
@@ -167,6 +193,22 @@ const Reply = ({
               width="w-36"
             />
           )}
+
+          {!hasGotHeart &&
+            creatorDetails?.channelRef === currentChannel?.uid && (
+              <Tooltip
+                element={
+                  <span
+                    className="relative ml-8 cursor-pointer"
+                    onClick={() => Heart()}
+                  >
+                    <HeartIcon className="w-4 h-4 text-gray-400 absolute -bottom-1 -right-1" />
+                  </span>
+                }
+                hoverText={`🤍 Heart ?`}
+                width="w-36"
+              />
+            )}
 
           <button
             onClick={() => setReplyInput(true)}

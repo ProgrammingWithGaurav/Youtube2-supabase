@@ -458,11 +458,13 @@ export const ChannelStateProvider = ({ children }) => {
   };
 
   const fetchChannelDetails = async (channelRef) => {
+    try {
     const { data } = await supabase
       .from("channels")
       .select()
       .eq("uid", channelRef);
     return data[0];
+    } catch{err => console.log(err)}
   };
 
   const fetchVideoDetails = async (uid) => {
