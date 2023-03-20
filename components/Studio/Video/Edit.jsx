@@ -157,6 +157,7 @@ const EditVideo = ({ uid, videoDetails }) => {
   const thumbnailRef = useRef(null);
   const [editedDetails, setEditedDetails] = useState(videoDetails);
   const [key, setKey] = useState("key");
+  const router = useRouter();
 
   useEffect(() => {
     const newKey = GetUid();
@@ -180,6 +181,11 @@ const EditVideo = ({ uid, videoDetails }) => {
     const newThumbnail = `https://lumsrpmlumtfpbbafpug.supabase.co/storage/v1/object/public/thumbnails/${path}`;
     setEditedDetails({ ...editedDetails, thumbnail: newThumbnail });
     event.target.value = "";
+  };
+
+  const Delete = async () => {
+    await supabase.from("videos").delete().eq("uid", uid);
+    router.push("/studio?content=true");
   };
   return (
     <Fragment>
@@ -235,34 +241,6 @@ const EditVideo = ({ uid, videoDetails }) => {
               placeholder="Tell viewers about your video"
             />
           </div>
-
-          {/* <div>
-            <label
-              htmlFor="playlist"
-              className="block my-4 text-xl font-medium text-gray-900 dark:text-white"
-            >
-              Choose a playlist
-            </label>
-            <select
-              onChange={(e) => {
-                setVideoPlaylist(e.target.value);
-              }}
-              id="playlist"
-              className="ring-1 bg-transparent text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full py-3 px-4 text-blue-400 dark:focus:ring-blue-500 outline-none"
-            >
-              {userPlaylists?.map((playlist) =>
-                playlist?.name === videoPlaylist ? (
-                  <option value={playlist?.name} selected key={GetUid()}>
-                    {playlist?.name}
-                  </option>
-                ) : (
-                  <option value={playlist?.name} key={GetUid()}>
-                    {playlist?.name}
-                  </option>
-                )
-              )}
-            </select>
-          </div> */}
 
           <div className="mb-6">
             <p className="my-4 flex flex-col text-bold text-lg text-gray-900 dark:text-white">
@@ -326,6 +304,7 @@ const EditVideo = ({ uid, videoDetails }) => {
 
           <button
             type="button"
+            onClick={() => Delete()}
             className="focus:outline-none text-white bg-red-500 hover:bg-red-600 focus:ring-4 focus:ring-red-300 font-medium rounded-lg w-20 transition px-5 py-2.5 mr-2 mb-2 dark:bg-red-500 dark:hover:bg-red-400 dark:focus:ring-red-900"
           >
             Delete

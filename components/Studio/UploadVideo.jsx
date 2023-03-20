@@ -78,7 +78,7 @@ const UploadVideo = () => {
             });
           const { path } = data;
 
-          await supabase.from("videos").insert({
+         const {data: videoDetails} =  await supabase.from("videos").insert({
             uid: videoPath,
             url: videoUrl,
             thumbnail: thumbnailUrl + path,
@@ -91,10 +91,12 @@ const UploadVideo = () => {
             dislikes: [],
             channelRef: currentChannel?.uid,
             views: [],
-          });
+          }).select();
+
+          console.log(videoDetails)
 
           e.target.value = "";
-          router.push("/");
+          router.push(`/studio/video/${videoDetails[0]?.uid}?edit=true`);
           window.location.reload();
         });
       });

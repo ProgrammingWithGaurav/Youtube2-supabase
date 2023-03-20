@@ -36,7 +36,7 @@ export default function Video({
   const timeAgo = new TimeAgo("en-US");
 
   return (
-    <div className=" cursor-pointer w-full h-64 my-2 hover:scale-105 transition group">
+    <div className=" cursor-pointer w-full h-64 my-5 mt-14 hover:scale-105 transition group">
       <div className="relative">
         <img
           src={ thumbnail}
